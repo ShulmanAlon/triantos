@@ -18,11 +18,11 @@ const AttributeRow: FC<AttributeRowProps> = ({
   pool,
   onChange,
 }) => {
-  const nextValue = value + 1;
-  const prevValue = value - 1;
-
   const min = baseline - 4;
   const max = baseline + 8;
+
+  const nextValue = value + 1;
+  const prevValue = value - 1;
 
   const cost = getPointCostChange(value, nextValue, baseline);
   const refund = getPointCostChange(prevValue, value, baseline);
@@ -32,13 +32,19 @@ const AttributeRow: FC<AttributeRowProps> = ({
 
   const handleIncrease = () => {
     if (canIncrease) {
-      onChange(attr, nextValue, -cost);
+      onChange(attr, nextValue, -cost); // Use actual cost
+      console.log(
+        `Spending ${cost} points for increasing ${attr} from ${value} to ${nextValue}`
+      );
     }
   };
 
   const handleDecrease = () => {
     if (canDecrease) {
-      onChange(attr, prevValue, refund);
+      onChange(attr, prevValue, refund); // Use actual refund
+      console.log(
+        `Refunding ${refund} points for decreasing ${attr} from ${value} to ${prevValue}`
+      );
     }
   };
 
@@ -51,7 +57,11 @@ const AttributeRow: FC<AttributeRowProps> = ({
           onClick={handleDecrease}
           disabled={!canDecrease}
           className="px-2 py-1 border rounded disabled:opacity-50"
-          title={canDecrease ? 'Remove point' : 'Cannot go below baseline'}
+          title={
+            !canDecrease
+              ? `Minimum (${min}) reached`
+              : `Refunds ${refund} point${refund > 1 ? 's' : ''}`
+          }
         >
           −
         </button>
@@ -61,9 +71,11 @@ const AttributeRow: FC<AttributeRowProps> = ({
           disabled={!canIncrease}
           className="px-2 py-1 border rounded disabled:opacity-50"
           title={
-            canIncrease
-              ? `Costs ${cost} point${cost > 1 ? 's' : ''}`
-              : `Need ${cost} point${cost > 1 ? 's' : ''} to increase`
+            !canIncrease
+              ? value >= max
+                ? `Maximum (${max}) reached`
+                : `Need ${cost} point${cost > 1 ? 's' : ''} to increase`
+              : `Costs ${cost} point${cost > 1 ? 's' : ''}`
           }
         >
           +
