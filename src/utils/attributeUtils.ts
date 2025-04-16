@@ -1,6 +1,4 @@
-export interface AttributeState {
-  [key: string]: number;
-}
+import { AttributeState } from '../types/attributes';
 
 export const BASELINE: AttributeState = {
   STR: 10,
