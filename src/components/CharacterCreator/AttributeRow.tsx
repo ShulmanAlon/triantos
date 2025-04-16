@@ -1,75 +1,81 @@
-import React from 'react';
+import { FC } from 'react';
+import { Attribute } from '../../types/attributes';
 import { getModifier } from '../../utils/modifier';
+import { getPointCostChange } from '../../utils/attributeUtils';
 
 interface AttributeRowProps {
-  attr: string;
+  attr: Attribute;
   value: number;
   baseline: number;
-  pointsLeft: number;
-  onChange: (attr: string, delta: number) => void;
+  pool: number;
+  onChange: (attr: Attribute, newValue: number, poolDelta: number) => void;
 }
 
-const getPointCostChange = (
-  current: number,
-  next: number,
-  baseline: number
-): number => {
-  if (next <= baseline) return 0;
-  return next - baseline;
-};
-
-const AttributeRow: React.FC<AttributeRowProps> = ({
+const AttributeRow: FC<AttributeRowProps> = ({
   attr,
   value,
   baseline,
-  pointsLeft,
+  pool,
   onChange,
 }) => {
-  const modifier = getModifier(value);
-  const nextCost = getPointCostChange(value, value + 1, baseline);
-  const canIncrease = pointsLeft >= nextCost;
-  const canDecrease = value > 1;
+  const nextValue = value + 1;
+  const prevValue = value - 1;
+
+  const min = baseline - 4;
+  const max = baseline + 8;
+
+  const cost = getPointCostChange(value, nextValue, baseline);
+  const refund = getPointCostChange(prevValue, value, baseline);
+
+  const canIncrease = value < max && pool >= cost;
+  const canDecrease = value > min;
+
+  const handleIncrease = () => {
+    if (canIncrease) {
+      onChange(attr, nextValue, -cost);
+    }
+  };
+
+  const handleDecrease = () => {
+    if (canDecrease) {
+      onChange(attr, prevValue, refund);
+    }
+  };
 
   return (
-    <div className="flex items-center gap-4 mb-2 flex-wrap sm:flex-nowrap">
-      <div className="w-16 font-semibold">{attr}</div>
+    <div className="flex items-center gap-4 mb-3">
+      <div className="w-20 font-semibold capitalize">{attr}</div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1">
         <button
-          onClick={() => onChange(attr, -1)}
-          className="px-2 py-1 bg-gray-200 rounded disabled:opacity-50"
+          onClick={handleDecrease}
           disabled={!canDecrease}
-          title={!canDecrease ? 'Minimum value reached' : ''}
+          className="px-2 py-1 border rounded disabled:opacity-50"
+          title={canDecrease ? 'Remove point' : 'Cannot go below baseline'}
         >
-          -
+          −
         </button>
-
         <span className="w-8 text-center">{value}</span>
-
         <button
-          onClick={() => onChange(attr, 1)}
-          className="px-2 py-1 bg-gray-200 rounded disabled:opacity-50"
+          onClick={handleIncrease}
           disabled={!canIncrease}
+          className="px-2 py-1 border rounded disabled:opacity-50"
           title={
-            !canIncrease
-              ? `Requires ${nextCost} points, only ${pointsLeft} left`
-              : ''
+            canIncrease
+              ? `Costs ${cost} point${cost > 1 ? 's' : ''}`
+              : `Need ${cost} point${cost > 1 ? 's' : ''} to increase`
           }
         >
           +
         </button>
       </div>
 
-      <div className="text-sm text-gray-600">Mod: {modifier}</div>
+      <div className="text-sm text-gray-600 ml-4">
+        Mod: {getModifier(value)}
+      </div>
 
-      <div className="flex items-center text-sm text-gray-600">
-        <span className="ml-4">Next point cost: {nextCost} pts</span>
-        <span
-          className="ml-1 cursor-pointer"
-          title="Points required to raise this attribute by 1"
-        >
-          ℹ️
-        </span>
+      <div className="text-sm text-gray-500 ml-4">
+        Next cost: {cost} pt{cost > 1 ? 's' : ''}
       </div>
     </div>
   );

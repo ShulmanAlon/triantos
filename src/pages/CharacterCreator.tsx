@@ -1,83 +1,61 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import AttributeRow from '../components/CharacterCreator/AttributeRow';
+import { Attribute, AttributeState } from '../types/attributes';
+import { BASELINE } from '../data/attributeData';
 
-interface AttributeState {
-  [key: string]: number;
-}
+const initialAttributes: AttributeState = { ...BASELINE };
+const TOTAL_STARTING_POINTS = 38;
 
-const BASELINE: AttributeState = {
-  STR: 10,
-  DEX: 10,
-  WIS: 10,
-  INT: 10,
-  CON: 10,
-  CHA: 10,
-};
+export const CharacterCreator = () => {
+  const [attributes, setAttributes] =
+    useState<AttributeState>(initialAttributes);
+  const [pool, setPool] = useState<number>(TOTAL_STARTING_POINTS);
 
-const getPointCostChange = (
-  current: number,
-  next: number,
-  baseline: number
-): number => {
-  if (next <= baseline) return 0;
-  return next - baseline;
-};
-
-export const CharacterCreator: React.FC = () => {
-  const [attributes, setAttributes] = useState<AttributeState>({ ...BASELINE });
-  const [pointsLeft, setPointsLeft] = useState(38);
-
-  const handleChange = (attr: string, delta: number) => {
-    const current = attributes[attr];
-    const next = current + delta;
-    const costChange =
-      getPointCostChange(current, next, BASELINE[attr]) -
-      getPointCostChange(current, current, BASELINE[attr]);
-
-    if (next < 1 || pointsLeft - costChange < 0) return;
-
-    setAttributes((prev) => ({ ...prev, [attr]: next }));
-    setPointsLeft((prev) => prev - costChange);
+  const handleAttributeChange = (
+    attr: Attribute,
+    newValue: number,
+    poolDelta: number
+  ) => {
+    setAttributes((prev) => ({ ...prev, [attr]: newValue }));
+    setPool((prev) => prev + poolDelta);
   };
 
   return (
-    <div className="max-w-xl mx-auto p-6">
-      <h2 className="text-3xl font-bold mb-4">Character Creator</h2>
+    <div className="max-w-2xl mx-auto p-4">
+      <h2 className="text-2xl font-bold mb-4">Character Creator</h2>
 
-      <div className="mb-4">
-        <label className="font-medium mr-2">Character Name</label>
-        <input type="text" className="border rounded px-2 py-1" />
-      </div>
-
-      <div className="mb-4">
-        <label className="font-medium mr-2">Player Name</label>
-        <input type="text" className="border rounded px-2 py-1" />
+      <div className="mb-6">
+        <label className="block mb-1 font-medium">Character Name</label>
+        <input className="border rounded px-2 py-1 w-full" />
       </div>
 
       <div className="mb-6">
-        <label className="font-medium mr-2">Race</label>
-        <select className="border rounded px-2 py-1">
-          <option>Human</option>
+        <label className="block mb-1 font-medium">Player Name</label>
+        <input className="border rounded px-2 py-1 w-full" />
+      </div>
+
+      <div className="mb-6">
+        <label className="block mb-1 font-medium">Race</label>
+        <select className="border rounded px-2 py-1 w-full">
+          <option value="">Select Race</option>
+          {/* Add real race options here */}
         </select>
         <p className="text-sm text-gray-600 mt-2">
-          Greedy, cunning and power hungry, humans are the most influential and
-          numerous race in The Exile even though they are the shortest lived.
-          Very adaptable. Standing 1.5 up to 2.20 meters tall. Life expectancy
-          ~80 years
+          Race bonuses and traits will appear here.
         </p>
       </div>
 
-      <h3 className="text-xl font-semibold mb-2">Attributes</h3>
-      <p className="mb-4">Points left: {pointsLeft}</p>
+      <h3 className="text-xl font-semibold mt-8 mb-2">Attributes</h3>
+      <p className="mb-4 text-gray-700 font-medium">Points left: {pool}</p>
 
       {Object.keys(attributes).map((attr) => (
         <AttributeRow
           key={attr}
-          attr={attr}
-          value={attributes[attr]}
-          baseline={BASELINE[attr]}
-          pointsLeft={pointsLeft}
-          onChange={handleChange}
+          attr={attr as Attribute}
+          value={attributes[attr as Attribute]}
+          baseline={BASELINE[attr as Attribute]}
+          pool={pool}
+          onChange={handleAttributeChange}
         />
       ))}
     </div>

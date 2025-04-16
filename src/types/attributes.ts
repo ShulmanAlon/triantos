@@ -1,3 +1,3 @@
-export interface AttributeState {
-  [key: string]: number;
-}
+export type Attribute = 'str' | 'dex' | 'int' | 'wis' | 'con' | 'cha';
+
+export type AttributeState = Record<Attribute, number>;
