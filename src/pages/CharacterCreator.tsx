@@ -1,52 +1,45 @@
-import React from 'react';
+import React, { useState } from 'react';
+import AttributeRow from '../components/CharacterCreator/AttributeRow';
 
-interface AttributeProps {
-  attrName: string;
-  value: number;
-  modifier: string;
-  cost: number;
-  onIncrease: () => void;
-  onDecrease: () => void;
+interface AttributeState {
+  [key: string]: number;
 }
 
-const AttributeBlock: React.FC<AttributeProps> = ({
-  attrName,
-  value,
-  modifier,
-  cost,
-  onIncrease,
-  onDecrease,
-}) => {
-  return (
-    <div className="flex items-center gap-4 mb-4">
-      <div className="w-16 font-semibold">{attrName}</div>
+const BASELINE: AttributeState = {
+  STR: 10,
+  DEX: 10,
+  WIS: 10,
+  INT: 10,
+  CON: 10,
+  CHA: 10,
+};
 
-      <div className="flex items-center gap-2">
-        <button onClick={onDecrease} className="px-2 py-1 bg-gray-200 rounded">
-          -
-        </button>
-        <span className="w-8 text-center">{value}</span>
-        <button onClick={onIncrease} className="px-2 py-1 bg-gray-200 rounded">
-          +
-        </button>
-      </div>
-
-      <div className="text-sm text-gray-600">Mod: {modifier}</div>
-
-      <div className="flex items-center text-sm text-gray-600">
-        <span className="ml-4">Next point cost: {cost} pts</span>
-        <span
-          className="ml-1 cursor-pointer"
-          title="Points required to raise this attribute by 1"
-        >
-          ℹ️
-        </span>
-      </div>
-    </div>
-  );
+const getPointCostChange = (
+  current: number,
+  next: number,
+  baseline: number
+): number => {
+  if (next <= baseline) return 0;
+  return next - baseline;
 };
 
 export const CharacterCreator: React.FC = () => {
+  const [attributes, setAttributes] = useState<AttributeState>({ ...BASELINE });
+  const [pointsLeft, setPointsLeft] = useState(38);
+
+  const handleChange = (attr: string, delta: number) => {
+    const current = attributes[attr];
+    const next = current + delta;
+    const costChange =
+      getPointCostChange(current, next, BASELINE[attr]) -
+      getPointCostChange(current, current, BASELINE[attr]);
+
+    if (next < 1 || pointsLeft - costChange < 0) return;
+
+    setAttributes((prev) => ({ ...prev, [attr]: next }));
+    setPointsLeft((prev) => prev - costChange);
+  };
+
   return (
     <div className="max-w-xl mx-auto p-6">
       <h2 className="text-3xl font-bold mb-4">Character Creator</h2>
@@ -65,7 +58,6 @@ export const CharacterCreator: React.FC = () => {
         <label className="font-medium mr-2">Race</label>
         <select className="border rounded px-2 py-1">
           <option>Human</option>
-          {/* Add more options */}
         </select>
         <p className="text-sm text-gray-600 mt-2">
           Greedy, cunning and power hungry, humans are the most influential and
@@ -76,57 +68,18 @@ export const CharacterCreator: React.FC = () => {
       </div>
 
       <h3 className="text-xl font-semibold mb-2">Attributes</h3>
-      <p className="mb-4">Points left: 38</p>
+      <p className="mb-4">Points left: {pointsLeft}</p>
 
-      {/* Example attribute rendering - you can loop this in real app */}
-      <AttributeBlock
-        attrName="STR"
-        value={10}
-        modifier={'+0'}
-        cost={1}
-        onIncrease={() => {}}
-        onDecrease={() => {}}
-      />
-      <AttributeBlock
-        attrName="DEX"
-        value={10}
-        modifier={'+0'}
-        cost={1}
-        onIncrease={() => {}}
-        onDecrease={() => {}}
-      />
-      <AttributeBlock
-        attrName="WIS"
-        value={10}
-        modifier={'+0'}
-        cost={1}
-        onIncrease={() => {}}
-        onDecrease={() => {}}
-      />
-      <AttributeBlock
-        attrName="INT"
-        value={10}
-        modifier={'+0'}
-        cost={1}
-        onIncrease={() => {}}
-        onDecrease={() => {}}
-      />
-      <AttributeBlock
-        attrName="CON"
-        value={10}
-        modifier={'+0'}
-        cost={1}
-        onIncrease={() => {}}
-        onDecrease={() => {}}
-      />
-      <AttributeBlock
-        attrName="CHA"
-        value={10}
-        modifier={'+0'}
-        cost={1}
-        onIncrease={() => {}}
-        onDecrease={() => {}}
-      />
+      {Object.keys(attributes).map((attr) => (
+        <AttributeRow
+          key={attr}
+          attr={attr}
+          value={attributes[attr]}
+          baseline={BASELINE[attr]}
+          pointsLeft={pointsLeft}
+          onChange={handleChange}
+        />
+      ))}
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { getPointCostChange } from '../utils/attributeCost';
-import { getModifier } from '../utils/modifier';
+import { getPointCostChange } from '../../utils/attributeCost';
+import { getModifier } from '../../utils/modifier';
 
 const ATTRIBUTES = ['STR', 'DEX', 'WIS', 'INT', 'CON', 'CHA'] as const;
 type Attribute = (typeof ATTRIBUTES)[number];
