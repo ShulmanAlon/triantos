@@ -2,12 +2,12 @@ export interface Race {
   name: string;
   description: string;
   baseStats: {
-    STR: number;
-    DEX: number;
-    WIS: number;
-    INT: number;
-    CON: number;
-    CHA: number;
+    str: number;
+    dex: number;
+    wis: number;
+    int: number;
+    con: number;
+    cha: number;
   };
   specialAbilities: string[];
   restrictions: string[];

@@ -8,6 +8,7 @@ interface AttributeRowProps {
   baseline: number;
   pool: number;
   onChange: (attr: Attribute, newValue: number, poolDelta: number) => void;
+  raceBase: number;
 }
 
 export default function AttributeRow({
@@ -16,6 +17,7 @@ export default function AttributeRow({
   baseline,
   pool,
   onChange,
+  raceBase,
 }: AttributeRowProps) {
   const nextValue = value + 1;
   const prevValue = value - 1;
@@ -37,7 +39,12 @@ export default function AttributeRow({
           textTransform: 'capitalize',
         }}
       >
-        {attr}
+        {attr.toUpperCase()}
+      </td>
+      <td
+        style={{ width: '80px', textAlign: 'center', fontFamily: 'monospace' }}
+      >
+        {raceBase}
       </td>
 
       {/* Controls */}

@@ -1,10 +1,10 @@
 import { AttributeState } from '../types/attributes';
 
 export const BASELINE: AttributeState = {
-  STR: 10,
-  DEX: 10,
-  WIS: 10,
-  INT: 10,
-  CON: 10,
-  CHA: 10,
+  str: 10,
+  dex: 10,
+  wis: 10,
+  int: 10,
+  con: 10,
+  cha: 10,
 };
