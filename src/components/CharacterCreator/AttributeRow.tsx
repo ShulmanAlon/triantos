@@ -1,4 +1,3 @@
-import { FC } from 'react';
 import { Attribute } from '../../types/attributes';
 import { getModifier } from '../../utils/modifier';
 import { getPointCostChange } from '../../utils/attributeUtils';
@@ -11,86 +10,115 @@ interface AttributeRowProps {
   onChange: (attr: Attribute, newValue: number, poolDelta: number) => void;
 }
 
-const AttributeRow: FC<AttributeRowProps> = ({
+export default function AttributeRow({
   attr,
   value,
   baseline,
   pool,
   onChange,
-}) => {
-  const min = baseline - 4;
-  const max = baseline + 8;
-
+}: AttributeRowProps) {
   const nextValue = value + 1;
   const prevValue = value - 1;
-
   const cost = getPointCostChange(value, nextValue, baseline);
   const refund = getPointCostChange(prevValue, value, baseline);
+  const min = baseline - 4;
+  const max = baseline + 8;
 
   const canIncrease = value < max && pool >= cost;
   const canDecrease = value > min;
 
-  const handleIncrease = () => {
-    if (canIncrease) {
-      onChange(attr, nextValue, -cost); // Use actual cost
-      console.log(
-        `Spending ${cost} points for increasing ${attr} from ${value} to ${nextValue}`
-      );
-    }
-  };
-
-  const handleDecrease = () => {
-    if (canDecrease) {
-      onChange(attr, prevValue, refund); // Use actual refund
-      console.log(
-        `Refunding ${refund} points for decreasing ${attr} from ${value} to ${prevValue}`
-      );
-    }
-  };
-
   return (
-    <div className="flex items-center gap-4 mb-3">
-      <div className="w-20 font-semibold capitalize">{attr}</div>
+    <tr style={{ verticalAlign: 'middle' }}>
+      {/* Attribute */}
+      <td
+        style={{
+          width: '80px',
+          fontWeight: 'bold',
+          textTransform: 'capitalize',
+        }}
+      >
+        {attr}
+      </td>
 
-      <div className="flex items-center gap-1">
-        <button
-          onClick={handleDecrease}
-          disabled={!canDecrease}
-          className="px-2 py-1 border rounded disabled:opacity-50"
-          title={
-            !canDecrease
-              ? `Minimum (${min}) reached`
-              : `Refunds ${refund} point${refund > 1 ? 's' : ''}`
-          }
+      {/* Controls */}
+      <td
+        style={{
+          paddingRight: '16px',
+          textAlign: 'center',
+          verticalAlign: 'middle',
+        }}
+      >
+        <div
+          style={{
+            width: '110px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
         >
-          −
-        </button>
-        <span className="w-8 text-center">{value}</span>
-        <button
-          onClick={handleIncrease}
-          disabled={!canIncrease}
-          className="px-2 py-1 border rounded disabled:opacity-50"
-          title={
-            !canIncrease
-              ? value >= max
-                ? `Maximum (${max}) reached`
-                : `Need ${cost} point${cost > 1 ? 's' : ''} to increase`
-              : `Costs ${cost} point${cost > 1 ? 's' : ''}`
-          }
-        >
-          +
-        </button>
-      </div>
+          <button
+            onClick={() => canDecrease && onChange(attr, prevValue, refund)}
+            disabled={!canDecrease}
+            style={{
+              width: '32px',
+              height: '32px',
+              fontSize: '18px',
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+              opacity: canDecrease ? 1 : 0.5,
+            }}
+          >
+            −
+          </button>
 
-      <div className="text-sm text-gray-600 ml-4">
-        Mod: {getModifier(value)}
-      </div>
+          <div
+            style={{
+              width: '30px',
+              height: '32px',
+              textAlign: 'center',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontFamily: 'monospace',
+            }}
+          >
+            {value}
+          </div>
 
-      <div className="text-sm text-gray-500 ml-4">
+          <button
+            onClick={() => canIncrease && onChange(attr, nextValue, -cost)}
+            disabled={!canIncrease}
+            style={{
+              width: '32px',
+              height: '32px',
+              fontSize: '18px',
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+              opacity: canIncrease ? 1 : 0.5,
+            }}
+          >
+            +
+          </button>
+        </div>
+      </td>
+
+      {/* Mod */}
+      <td
+        style={{
+          paddingRight: '16px',
+          fontFamily: 'monospace',
+          textAlign: 'right',
+          width: '100px',
+        }}
+      >
+        Mod:{' '}
+        {getModifier(value) > 0 ? `+${getModifier(value)}` : getModifier(value)}
+      </td>
+
+      {/* Next cost */}
+      <td style={{ fontFamily: 'monospace', width: '160px' }}>
         Next cost: {cost} pt{cost > 1 ? 's' : ''}
-      </div>
-    </div>
+      </td>
+    </tr>
   );
-};
-
-export default AttributeRow;
+}

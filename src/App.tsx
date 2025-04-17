@@ -1,9 +1,8 @@
-import React from 'react';
 import { CharacterCreator } from './pages/CharacterCreator';
 
 function App() {
   return (
-    <main className="max-w-xl mx-auto">
+    <main className="w-full max-w-screen-md mx-auto p-4">
       <CharacterCreator />
     </main>
   );

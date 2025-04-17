@@ -4,7 +4,7 @@ import { Attribute, AttributeState } from '../types/attributes';
 import { BASELINE } from '../data/attributeData';
 
 const initialAttributes: AttributeState = { ...BASELINE };
-const TOTAL_STARTING_POINTS = 38;
+const TOTAL_STARTING_POINTS = 38; // TODO: move to static file
 
 export const CharacterCreator = () => {
   const [attributes, setAttributes] =
@@ -48,16 +48,36 @@ export const CharacterCreator = () => {
       <h3 className="text-xl font-semibold mt-8 mb-2">Attributes</h3>
       <p className="mb-4 text-gray-700 font-medium">Points left: {pool}</p>
 
-      {Object.keys(attributes).map((attr) => (
-        <AttributeRow
-          key={attr}
-          attr={attr as Attribute}
-          value={attributes[attr as Attribute]}
-          baseline={BASELINE[attr as Attribute]}
-          pool={pool}
-          onChange={handleAttributeChange}
-        />
-      ))}
+      <table className="w-full table-fixed border-separate border-spacing-y-1">
+        <thead>
+          <tr>
+            <th style={{ textAlign: 'left', paddingBottom: '0.5rem' }}>
+              Attribute
+            </th>
+            <th style={{ textAlign: 'center', paddingBottom: '0.5rem' }}>
+              Value
+            </th>
+            <th style={{ textAlign: 'center', paddingBottom: '0.5rem' }}>
+              Mod
+            </th>
+            <th style={{ textAlign: 'center', paddingBottom: '0.5rem' }}>
+              Next Cost
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {Object.keys(attributes).map((attr) => (
+            <AttributeRow
+              key={attr}
+              attr={attr as Attribute}
+              value={attributes[attr as Attribute]}
+              baseline={BASELINE[attr as Attribute]}
+              pool={pool}
+              onChange={handleAttributeChange}
+            />
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
