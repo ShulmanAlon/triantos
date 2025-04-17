@@ -9,7 +9,9 @@ interface AttributeRowProps {
   baseline: number;
   pool: number;
   onChange: (attr: Attribute, newValue: number, poolDelta: number) => void;
-  raceBase: number;
+  isLevelUpMode: boolean;
+  usedPoints: number;
+  hasAbilityPointThisLevel: boolean;
 }
 
 export default function AttributeRow({
@@ -18,7 +20,9 @@ export default function AttributeRow({
   baseline,
   pool,
   onChange,
-  raceBase,
+  isLevelUpMode,
+  usedPoints,
+  hasAbilityPointThisLevel,
 }: AttributeRowProps) {
   const nextValue = value + 1;
   const prevValue = value - 1;
@@ -27,9 +31,12 @@ export default function AttributeRow({
   const min = baseline - 4;
   const max = baseline + 8;
 
-  const canIncrease = value < max && pool >= cost;
+  // const canIncrease = value < max && pool >= cost;
+  const canIncrease = isLevelUpMode
+    ? hasAbilityPointThisLevel && usedPoints < 1
+    : cost <= pool && value < max;
 
-  const canDecrease = value > min;
+  const canDecrease = !isLevelUpMode && value > min;
 
   const modifier = getModifier(value);
 
@@ -51,7 +58,7 @@ export default function AttributeRow({
       <td
         style={{ width: '80px', textAlign: 'center', fontFamily: 'monospace' }}
       >
-        {raceBase}
+        {baseline}
       </td>
 
       {/* Controls */}
@@ -73,7 +80,7 @@ export default function AttributeRow({
         >
           <button
             onClick={() => canDecrease && onChange(attr, prevValue, refund)}
-            disabled={!canDecrease}
+            disabled={!canDecrease || isLevelUpMode}
             style={{
               width: '32px',
               height: '32px',
@@ -83,7 +90,7 @@ export default function AttributeRow({
               opacity: canDecrease ? 1 : 0.5,
             }}
           >
-            −
+            -
           </button>
 
           <div
@@ -101,7 +108,10 @@ export default function AttributeRow({
           </div>
 
           <button
-            onClick={() => canIncrease && onChange(attr, nextValue, -cost)}
+            onClick={() => {
+              if (!canIncrease) return;
+              onChange(attr, nextValue, isLevelUpMode ? 1 : -cost);
+            }}
             disabled={!canIncrease}
             style={{
               width: '32px',

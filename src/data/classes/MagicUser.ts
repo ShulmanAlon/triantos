@@ -27,6 +27,7 @@ export const MagicUser: GameClass = {
       level: 3,
       skill: '+1',
       attackBonus: 1,
+      abilityPoint: true,
     },
     // ... continue through level 18 with parsed spells like:
     // spells: { 1: 2, 2: 1, ... }
