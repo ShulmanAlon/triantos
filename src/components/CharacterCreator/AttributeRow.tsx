@@ -1,6 +1,7 @@
 import { Attribute } from '../../types/attributes';
 import { getModifier } from '../../utils/modifier';
 import { getPointCostChange } from '../../utils/attributeUtils';
+import { ATTRIBUTE_EFFECTS } from '../../config/constants'; // or wherever you put it
 
 interface AttributeRowProps {
   attr: Attribute;
@@ -27,12 +28,16 @@ export default function AttributeRow({
   const max = baseline + 8;
 
   const canIncrease = value < max && pool >= cost;
+
   const canDecrease = value > min;
+
+  const modifier = getModifier(value);
 
   return (
     <tr style={{ verticalAlign: 'middle' }}>
       {/* Attribute */}
       <td
+        title={ATTRIBUTE_EFFECTS[attr]}
         style={{
           width: '80px',
           fontWeight: 'bold',
@@ -41,6 +46,8 @@ export default function AttributeRow({
       >
         {attr.toUpperCase()}
       </td>
+
+      {/* Race Base */}
       <td
         style={{ width: '80px', textAlign: 'center', fontFamily: 'monospace' }}
       >
@@ -50,6 +57,7 @@ export default function AttributeRow({
       {/* Controls */}
       <td
         style={{
+          paddingLeft: '16px',
           paddingRight: '16px',
           textAlign: 'center',
           verticalAlign: 'middle',
@@ -111,20 +119,34 @@ export default function AttributeRow({
 
       {/* Mod */}
       <td
+        title={ATTRIBUTE_EFFECTS[attr]}
         style={{
           paddingRight: '16px',
           fontFamily: 'monospace',
-          textAlign: 'right',
-          width: '100px',
+          textAlign: 'center',
+          width: '80px',
+          backgroundColor:
+            modifier > 0
+              ? 'rgba(0, 128, 0, 0.1)'
+              : modifier < 0
+              ? 'rgba(255, 0, 0, 0.1)'
+              : 'transparent',
+          borderRadius: '4px',
         }}
       >
-        Mod:{' '}
-        {getModifier(value) > 0 ? `+${getModifier(value)}` : getModifier(value)}
+        {modifier > 0 ? `+${modifier}` : modifier}
       </td>
 
       {/* Next cost */}
-      <td style={{ fontFamily: 'monospace', width: '160px' }}>
-        Next cost: {cost} pt{cost > 1 ? 's' : ''}
+      <td
+        style={{
+          fontFamily: 'monospace',
+          width: '100px',
+          textAlign: 'left',
+          paddingLeft: '16px',
+        }}
+      >
+        Cost: {cost} pt{cost > 1 ? 's' : ''}
       </td>
     </tr>
   );
