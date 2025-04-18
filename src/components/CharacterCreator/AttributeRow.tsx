@@ -14,7 +14,7 @@ interface AttributeRowProps {
   hasAbilityPointThisLevel: boolean;
 }
 
-export default function AttributeRow({
+export function AttributeRow({
   attr,
   value,
   baseline,
@@ -88,6 +88,7 @@ export default function AttributeRow({
               border: '1px solid #ccc',
               borderRadius: '4px',
               opacity: canDecrease ? 1 : 0.5,
+              padding: '4px',
             }}
           >
             -
@@ -120,6 +121,7 @@ export default function AttributeRow({
               border: '1px solid #ccc',
               borderRadius: '4px',
               opacity: canIncrease ? 1 : 0.5,
+              padding: '4px',
             }}
           >
             +
