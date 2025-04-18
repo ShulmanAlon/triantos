@@ -1,18 +1,18 @@
 import React from 'react';
-import { GameClass } from '../../types/gameClass';
+import { ClassId, GameClass } from '../../types/gameClass';
 
 interface ClassSelectorProps {
   classOptions: GameClass[];
-  selectedClass: string;
+  selectedClassId: ClassId | undefined;
   isDisabled: boolean;
-  onChange: (value: string) => void;
+  onChange: (value: ClassId | undefined) => void;
   description?: string;
   specialAbilities?: string[];
 }
 
 export const ClassSelector: React.FC<ClassSelectorProps> = ({
   classOptions,
-  selectedClass,
+  selectedClassId,
   isDisabled,
   onChange,
   description,
@@ -23,15 +23,15 @@ export const ClassSelector: React.FC<ClassSelectorProps> = ({
       <label className="block mb-1 font-medium">Class</label>
       <select
         className="border rounded px-2 py-1 w-full"
-        value={selectedClass}
-        onChange={(e) => onChange(e.target.value)}
+        value={selectedClassId}
+        onChange={(e) => onChange(e.target.value as ClassId)}
         disabled={isDisabled}
       >
         <option value="" disabled hidden>
           Select Class
         </option>
         {classOptions.map((cls) => (
-          <option key={cls.name} value={cls.name}>
+          <option key={cls.id} value={cls.id}>
             {cls.name}
           </option>
         ))}

@@ -1,4 +1,7 @@
+import { ClassId } from './gameClass';
+
 export interface Race {
+  id: RaceId;
   name: string;
   description: string;
   baseStats: {
@@ -11,4 +14,7 @@ export interface Race {
   };
   specialAbilities: string[];
   restrictions: string[];
+  allowedClassesId?: ClassId[];
 }
+
+export type RaceId = 'Human' | 'Elf' | 'Dwarf' | 'Halfling';

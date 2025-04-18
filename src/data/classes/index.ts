@@ -1,9 +1,6 @@
 import { GameClass } from '../../types/gameClass';
-import { Cleric } from './Cleric.ts';
-import { MagicUser } from './MagicUser';
+import { cleric } from './cleric';
+import { magicUser } from './magicUser';
+import { fighter } from './fighter';
 
-export { MagicUser } from './MagicUser';
-// export { Fighter } from './Fighter';
-export { Cleric } from './Cleric';
-
-export const CLASSES: GameClass[] = [MagicUser, Cleric];
+export const classes: GameClass[] = [fighter, magicUser, cleric];

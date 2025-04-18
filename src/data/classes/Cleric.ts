@@ -1,35 +1,33 @@
 import { GameClass } from '../../types/gameClass';
 
-export const Cleric: GameClass = {
+export const cleric: GameClass = {
+  id: 'Cleric',
   name: 'Cleric',
   description:
-    'Arcane spellcaster who manipulates the elements and minds through spellbooks.',
-  primaryStats: ['int', 'wis'],
-  specialAbilities: [
-    'Uses spellbooks',
-    'Limited armor',
-    'Learns arcane spells',
-  ],
+    'Healer and buffer who channels the power of his deity to empower him and his allies.',
+  primaryStats: { wis: 13, con: 11 },
+  specialAbilities: ['Divine spellcasting', 'Turn ability'],
   hpPerLevelToNine: 6,
   hpPerLevelFromTen: 2,
   progression: [
     {
       level: 1,
       skill: '+2',
-      attackBonus: 20,
+      attackBonus: 1,
     },
     {
       level: 2,
       skill: 'human +1',
-      attackBonus: 30,
+      attackBonus: 1,
+      spells: { 1: 1 },
     },
     {
       level: 3,
       skill: '+1',
-      attackBonus: 40,
+      attackBonus: 2,
       abilityPoint: true,
+      spells: { 1: 2 },
     },
-    // ... continue through level 18 with parsed spells like:
-    // spells: { 1: 2, 2: 1, ... }
+    // TODO: ... continue through level 18
   ],
 };

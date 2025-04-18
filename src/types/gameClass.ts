@@ -1,10 +1,11 @@
 import { Attribute } from './attributes';
 
 export interface GameClass {
+  id: ClassId;
   name: string;
   description: string;
   specialAbilities: string[];
-  primaryStats: Attribute[];
+  primaryStats: Partial<Record<Attribute, number>>;
   progression: ClassLevel[];
   hpPerLevelToNine: number;
   hpPerLevelFromTen: number;
@@ -20,3 +21,5 @@ export interface ClassLevel {
   feature?: string;
   spells?: SpellSlots;
 }
+
+export type ClassId = 'Fighter' | 'Cleric' | 'MagicUser';

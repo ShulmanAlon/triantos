@@ -1,16 +1,17 @@
 import { useEffect, useState } from 'react';
 import { Attribute, AttributeState } from '../types/attributes';
-import { races } from '../data/races';
+import { races } from '../data/races/index';
 import { TOTAL_STARTING_POINTS, ARRGS_BASELINE } from '../config/constants';
 import { calculateDerivedStats } from '../utils/derivedStats';
-import { GameClass } from '../types/gameClass';
-import { CLASSES } from '../data/classes';
+import { ClassId } from '../types/gameClass';
+import { classes } from '../data/classes';
 import { getPointCostChange } from '../utils/attributeUtils';
 import { CharacterNameForm } from '../components/CharacterCreator/CharacterNameForm';
 import { ClassSelector } from '../components/CharacterCreator/ClassSelector';
 import { RaceSelector } from '../components/CharacterCreator/RaceSelector';
 import { AttributeAllocator } from '../components/CharacterCreator/AttributeAllocator';
 import { CharacterSheet } from '../components/CharacterCreator/CharacterSheet';
+import { RaceId } from '../types/race';
 
 const initialAttributes: AttributeState = { ...ARRGS_BASELINE };
 
@@ -27,19 +28,17 @@ export const CharacterCreator = ({ mode }: CharacterCreatorProps) => {
   const [creationStep, setCreationStep] = useState<CreationStep>('class');
   const [characterName, setCharacterName] = useState('');
   const [playerName, setPlayerName] = useState('');
-  const [selectedRace, setSelectedRace] = useState('');
-  const [selectedClass, setSelectedClass] = useState('');
+  const [selectedRaceId, setSelectedRaceId] = useState<RaceId | undefined>();
+  const [selectedClassId, setSelectedClassId] = useState<ClassId | undefined>();
   const [level, setLevel] = useState(1);
   const [usedPoints, setUsedPoints] = useState(0);
   const [isCharacterFinished, setIsCharacterFinished] = useState(false);
-  const selectedClassData: GameClass | undefined = CLASSES.find(
-    (c) => c.name === selectedClass
-  );
+  const selectedClassData = classes.find((cls) => cls.id === selectedClassId);
   const currentLevelData = selectedClassData?.progression.find(
     (l) => l.level === level
   );
   const hasAbilityPointThisLevel = !!currentLevelData?.abilityPoint;
-  const selectedRaceData = races.find((r) => r.name === selectedRace);
+  const selectedRaceData = races.find((r) => r.id === selectedRaceId);
   const effectiveBaseline = selectedRaceData?.baseStats ?? ARRGS_BASELINE;
 
   const [attributes, setAttributes] =
@@ -60,18 +59,32 @@ export const CharacterCreator = ({ mode }: CharacterCreatorProps) => {
     }
   };
 
-  function handleClassChange(newClass: string) {
-    setSelectedClass(newClass);
-    setSelectedRace('');
+  const derived = selectedClassData
+    ? calculateDerivedStats(selectedClassData, attributes, level)
+    : null;
+
+  const allowedRaces = selectedClassId
+    ? races
+        .filter((race) => {
+          const allowed = race.allowedClassesId;
+          return !allowed || allowed.includes(selectedClassId);
+        })
+        .map((race) => race.name)
+    : [];
+
+  function handleClassChange(newClassId: ClassId | undefined) {
+    if (!newClassId) return;
+    setSelectedClassId(newClassId);
+    setSelectedRaceId(undefined);
     resetAttributes();
     setUsedPoints(0);
     // resetSkills(); // for later
     setCreationStep('race');
   }
 
-  function handleRaceChange(newRace: string) {
-    setSelectedRace(newRace);
-    resetAttributes(newRace);
+  function handleRaceChange(newRaceId: RaceId | undefined) {
+    setSelectedRaceId(newRaceId);
+    resetAttributes(newRaceId);
     setUsedPoints(0);
     // resetSkills(); // for later
     setCreationStep('attributes');
@@ -111,10 +124,6 @@ export const CharacterCreator = ({ mode }: CharacterCreatorProps) => {
     }
   }, [attributes, creationStep, isLevelUpMode, effectiveBaseline]);
 
-  const derived = selectedClassData
-    ? calculateDerivedStats(selectedClassData, attributes, level)
-    : null;
-
   return (
     <div className="max-w-2xl mx-auto p-4">
       {!isCharacterFinished && (
@@ -133,8 +142,8 @@ export const CharacterCreator = ({ mode }: CharacterCreatorProps) => {
           {/* Class */}
           <div className="mb-6">
             <ClassSelector
-              classOptions={CLASSES}
-              selectedClass={selectedClass}
+              classOptions={classes}
+              selectedClassId={selectedClassId}
               isDisabled={isLevelUpMode || isCharacterFinished}
               onChange={handleClassChange}
               description={
@@ -154,7 +163,7 @@ export const CharacterCreator = ({ mode }: CharacterCreatorProps) => {
           <div className="mb-6">
             <RaceSelector
               raceOptions={races}
-              selectedRace={selectedRace}
+              selectedRaceId={selectedRaceId}
               isDisabled={
                 creationStep === 'class' || isLevelUpMode || isCharacterFinished
               }
@@ -174,6 +183,7 @@ export const CharacterCreator = ({ mode }: CharacterCreatorProps) => {
                   ? selectedRaceData?.restrictions
                   : undefined
               }
+              allowedRaces={allowedRaces}
             />
           </div>
 
@@ -213,8 +223,8 @@ export const CharacterCreator = ({ mode }: CharacterCreatorProps) => {
         <CharacterSheet
           characterName={characterName}
           playerName={playerName}
-          selectedClass={selectedClass}
-          selectedRace={selectedRace}
+          selectedClassId={selectedClassId}
+          selectedRaceId={selectedRaceId}
           level={level}
           attributes={attributes}
           derived={derived}
@@ -228,7 +238,22 @@ export const CharacterCreator = ({ mode }: CharacterCreatorProps) => {
         <button
           className="mt-4 px-4 py-2 bg-blue-600 text-white rounded"
           disabled={!characterName || !playerName}
-          onClick={() => setIsCharacterFinished(true)}
+          onClick={() => {
+            const meetsPrimaryRequirements = Object.entries(
+              selectedClassData?.primaryStats || {}
+            ).every(
+              ([attr, required]) => attributes[attr as Attribute] >= required
+            );
+            console.log(selectedClassData?.primaryStats);
+            if (!meetsPrimaryRequirements) {
+              alert(
+                'You must meet the primary attribute requirements for this class.'
+              );
+              return;
+            }
+
+            setIsCharacterFinished(true);
+          }}
         >
           Finish Character Creation
         </button>

@@ -1,42 +1,47 @@
 import React from 'react';
-import { Race } from '../../types/race';
+import { Race, RaceId } from '../../types/race';
 
 interface RaceSelectorProps {
   raceOptions: Race[];
-  selectedRace: string;
+  selectedRaceId: RaceId | undefined;
   isDisabled: boolean;
-  onChange: (value: string) => void;
+  onChange: (value: RaceId | undefined) => void;
   description?: string;
   specialAbilities?: string[];
   restrictions?: string[];
+  allowedRaces?: string[];
 }
 
 export const RaceSelector: React.FC<RaceSelectorProps> = ({
   raceOptions,
-  selectedRace,
+  selectedRaceId,
   isDisabled,
   onChange,
   description,
   specialAbilities = [],
   restrictions = [],
+  allowedRaces,
 }) => {
   return (
     <div className="mb-6">
       <label className="block mb-1 font-medium">Race</label>
       <select
         className="border rounded px-2 py-1 w-full"
-        value={selectedRace}
-        onChange={(e) => onChange(e.target.value)}
+        value={selectedRaceId}
+        onChange={(e) => onChange(e.target.value as RaceId)}
         disabled={isDisabled}
       >
         <option value="" disabled hidden>
           Select Race
         </option>
-        {raceOptions.map((race) => (
-          <option key={race.name} value={race.name}>
-            {race.name}
-          </option>
-        ))}
+        {raceOptions.map((race) => {
+          const isAllowed = allowedRaces?.includes(race.name) ?? true;
+          return (
+            <option key={race.name} value={race.name} disabled={!isAllowed}>
+              {race.name}
+            </option>
+          );
+        })}
       </select>
 
       {description && (
