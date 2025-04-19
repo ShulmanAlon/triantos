@@ -9,5 +9,4 @@ export const halfling: Race = {
     'Lucky criticals: Double damage in 19 and 20 attack rolls (19 only if attack hit)',
   ],
   restrictions: ['Cannot use large items'],
-  allowedClassesId: ['Fighter', 'MagicUser', 'Cleric'],
 };

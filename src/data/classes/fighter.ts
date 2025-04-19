@@ -5,10 +5,11 @@ export const fighter: GameClass = {
   name: 'Fighter',
   description:
     'Melee and ranged damage dealer and tank, excells in battle and versatile.',
-  primaryStats: { str: 13, dex: 11 },
+  primaryAttributes: { str: 13, dex: 11 },
   specialAbilities: [],
   hpPerLevelToNine: 8,
   hpPerLevelFromTen: 3,
+  allowedRaces: ['Human', 'Elf', 'Dwarf', 'Halfling'],
   progression: [
     {
       level: 1,

@@ -12,6 +12,7 @@ interface AttributeRowProps {
   isLevelUpMode: boolean;
   usedPoints: number;
   hasAbilityPointThisLevel: boolean;
+  requiredValue?: number;
 }
 
 export function AttributeRow({
@@ -23,6 +24,7 @@ export function AttributeRow({
   isLevelUpMode,
   usedPoints,
   hasAbilityPointThisLevel,
+  requiredValue,
 }: AttributeRowProps) {
   const nextValue = value + 1;
   const prevValue = value - 1;
@@ -103,6 +105,10 @@ export function AttributeRow({
               alignItems: 'center',
               justifyContent: 'center',
               fontFamily: 'monospace',
+              color:
+                requiredValue !== undefined && value < requiredValue
+                  ? 'red'
+                  : undefined,
             }}
           >
             {value}

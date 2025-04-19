@@ -5,10 +5,11 @@ export const magicUser: GameClass = {
   name: 'Magic User',
   description:
     'Arcane spellcaster who uses a spellbook to cast powerful spells.',
-  primaryStats: { int: 13, wis: 11 },
+  primaryAttributes: { int: 13, wis: 11 },
   specialAbilities: ['Arcane spellcasting'],
   hpPerLevelToNine: 4,
   hpPerLevelFromTen: 1,
+  allowedRaces: ['Human', 'Elf', 'Halfling'],
   progression: [
     {
       level: 1,

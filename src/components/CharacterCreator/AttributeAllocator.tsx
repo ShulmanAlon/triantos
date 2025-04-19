@@ -1,4 +1,5 @@
 import { Attribute } from '../../types/attributes';
+import { GameClass } from '../../types/gameClass';
 import { AttributeRow } from './AttributeRow';
 
 interface AttributeAllocatorProps {
@@ -9,6 +10,7 @@ interface AttributeAllocatorProps {
   usedPoints: number;
   hasAbilityPointThisLevel: boolean;
   onChange: (attr: Attribute, newValue: number, cost: number) => void;
+  selectedClassData?: GameClass | undefined;
 }
 
 export const AttributeAllocator: React.FC<AttributeAllocatorProps> = ({
@@ -19,6 +21,7 @@ export const AttributeAllocator: React.FC<AttributeAllocatorProps> = ({
   usedPoints,
   hasAbilityPointThisLevel,
   onChange,
+  selectedClassData,
 }) => {
   return (
     <div className="mb-6">
@@ -51,6 +54,9 @@ export const AttributeAllocator: React.FC<AttributeAllocatorProps> = ({
               usedPoints={usedPoints}
               hasAbilityPointThisLevel={hasAbilityPointThisLevel}
               onChange={onChange}
+              requiredValue={
+                selectedClassData?.primaryAttributes?.[attr as Attribute]
+              }
             />
           ))}
         </tbody>

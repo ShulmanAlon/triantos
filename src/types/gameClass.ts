@@ -1,14 +1,16 @@
 import { Attribute } from './attributes';
+import { RaceId } from './race';
 
 export interface GameClass {
   id: ClassId;
   name: string;
   description: string;
   specialAbilities: string[];
-  primaryStats: Partial<Record<Attribute, number>>;
+  primaryAttributes: Partial<Record<Attribute, number>>;
   progression: ClassLevel[];
   hpPerLevelToNine: number;
   hpPerLevelFromTen: number;
+  allowedRaces: RaceId[];
 }
 
 export type SpellSlots = Record<number, number>; // e.g., { 1: 2, 2: 1 }

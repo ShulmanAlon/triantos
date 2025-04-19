@@ -63,14 +63,8 @@ export const CharacterCreator = ({ mode }: CharacterCreatorProps) => {
     ? calculateDerivedStats(selectedClassData, attributes, level)
     : null;
 
-  const allowedRaces = selectedClassId
-    ? races
-        .filter((race) => {
-          const allowed = race.allowedClassesId;
-          return !allowed || allowed.includes(selectedClassId);
-        })
-        .map((race) => race.name)
-    : [];
+  const allowedRacesId =
+    selectedClassData?.allowedRaces ?? races.map((r) => r.id);
 
   function handleClassChange(newClassId: ClassId | undefined) {
     if (!newClassId) return;
@@ -156,6 +150,13 @@ export const CharacterCreator = ({ mode }: CharacterCreatorProps) => {
                   ? selectedClassData?.specialAbilities
                   : undefined
               }
+              allowedRacesId={allowedRacesId}
+              primaryAttributes={
+                isCharacterFinished || !isLevelUpMode
+                  ? selectedClassData?.primaryAttributes
+                  : undefined
+              }
+              currentAttributes={attributes}
             />
           </div>
 
@@ -183,7 +184,7 @@ export const CharacterCreator = ({ mode }: CharacterCreatorProps) => {
                   ? selectedRaceData?.restrictions
                   : undefined
               }
-              allowedRaces={allowedRaces}
+              allowedRacesId={allowedRacesId}
             />
           </div>
 
@@ -213,6 +214,7 @@ export const CharacterCreator = ({ mode }: CharacterCreatorProps) => {
               usedPoints={usedPoints}
               hasAbilityPointThisLevel={hasAbilityPointThisLevel}
               onChange={handleAttributeChange}
+              selectedClassData={selectedClassData}
             />
           )}
         </>
@@ -240,11 +242,10 @@ export const CharacterCreator = ({ mode }: CharacterCreatorProps) => {
           disabled={!characterName || !playerName}
           onClick={() => {
             const meetsPrimaryRequirements = Object.entries(
-              selectedClassData?.primaryStats || {}
+              selectedClassData?.primaryAttributes || {}
             ).every(
               ([attr, required]) => attributes[attr as Attribute] >= required
             );
-            console.log(selectedClassData?.primaryStats);
             if (!meetsPrimaryRequirements) {
               alert(
                 'You must meet the primary attribute requirements for this class.'

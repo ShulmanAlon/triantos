@@ -9,7 +9,7 @@ interface RaceSelectorProps {
   description?: string;
   specialAbilities?: string[];
   restrictions?: string[];
-  allowedRaces?: string[];
+  allowedRacesId?: RaceId[];
 }
 
 export const RaceSelector: React.FC<RaceSelectorProps> = ({
@@ -20,14 +20,14 @@ export const RaceSelector: React.FC<RaceSelectorProps> = ({
   description,
   specialAbilities = [],
   restrictions = [],
-  allowedRaces,
+  allowedRacesId,
 }) => {
   return (
     <div className="mb-6">
       <label className="block mb-1 font-medium">Race</label>
       <select
         className="border rounded px-2 py-1 w-full"
-        value={selectedRaceId}
+        value={selectedRaceId ?? ''}
         onChange={(e) => onChange(e.target.value as RaceId)}
         disabled={isDisabled}
       >
@@ -35,9 +35,9 @@ export const RaceSelector: React.FC<RaceSelectorProps> = ({
           Select Race
         </option>
         {raceOptions.map((race) => {
-          const isAllowed = allowedRaces?.includes(race.name) ?? true;
+          const isAllowed = allowedRacesId?.includes(race.id) ?? true;
           return (
-            <option key={race.name} value={race.name} disabled={!isAllowed}>
+            <option key={race.id} value={race.id} disabled={!isAllowed}>
               {race.name}
             </option>
           );

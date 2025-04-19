@@ -10,5 +10,4 @@ export const elf: Race = {
     'Immunity to paralysis and sleep',
   ],
   restrictions: ['Cannot use heavy weapons without power armor'],
-  allowedClassesId: ['Fighter', 'MagicUser', 'Cleric'],
 };

@@ -7,5 +7,4 @@ export const human: Race = {
   baseStats: { str: 10, dex: 10, wis: 10, int: 10, con: 10, cha: 10 },
   specialAbilities: ['Quick learner (+1 skill on levels 2,5,8,11..)'],
   restrictions: ['None'],
-  allowedClassesId: ['Fighter', 'MagicUser', 'Cleric'],
 };

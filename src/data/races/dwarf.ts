@@ -10,5 +10,4 @@ export const dwarf: Race = {
     'Level 11: Half damage from magic effects',
   ],
   restrictions: ['Cannot use large items', 'Cannot be a magic user'],
-  allowedClassesId: ['Fighter', 'Cleric'],
 };

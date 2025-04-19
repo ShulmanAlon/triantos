@@ -5,10 +5,11 @@ export const cleric: GameClass = {
   name: 'Cleric',
   description:
     'Healer and buffer who channels the power of his deity to empower him and his allies.',
-  primaryStats: { wis: 13, con: 11 },
+  primaryAttributes: { wis: 13, con: 11 },
   specialAbilities: ['Divine spellcasting', 'Turn ability'],
   hpPerLevelToNine: 6,
   hpPerLevelFromTen: 2,
+  allowedRaces: ['Human', 'Elf', 'Dwarf', 'Halfling'],
   progression: [
     {
       level: 1,
