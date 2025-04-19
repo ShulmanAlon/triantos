@@ -3,12 +3,11 @@ import { CharacterCreator } from './pages/CharacterCreator';
 
 function App() {
   return (
-    <main className="w-full max-w-screen-md mx-auto p-4">
-      <CharacterCreator mode={'create'} />
+    <main className="min-h-screen bg-gray-100 flex items-start justify-center p-6">
+      <div className="w-full max-w-screen-md">
+        <CharacterCreator mode="create" />
+      </div>
     </main>
-    // <div className="text-red-600 font-bold text-xl">
-    //   If this is red, Tailwind is working 🎉
-    // </div> //TODO: remove after tailwind fix
   );
 }
 

@@ -28,51 +28,62 @@ export const ClassSelector: React.FC<ClassSelectorProps> = ({
   currentAttributes,
 }) => {
   return (
-    <div className="mb-6">
-      <label className="block mb-1 font-medium">Class</label>
-      <select
-        className="border rounded px-2 py-1 w-full"
-        value={selectedClassId ?? ''}
-        onChange={(e) => onChange(e.target.value as ClassId)}
-        disabled={isDisabled}
-      >
-        <option value="" disabled hidden>
-          Select Class
-        </option>
-        {classOptions.map((cls) => (
-          <option key={cls.id} value={cls.id}>
-            {cls.name}
+    <div className="mb-6 space-y-3">
+      {/* Class Dropdown */}
+      <div>
+        <label className="block text-sm font-semibold text-gray-700 mb-1">
+          Class
+        </label>
+        <select
+          className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+          value={selectedClassId ?? ''}
+          onChange={(e) => onChange(e.target.value as ClassId)}
+          disabled={isDisabled}
+        >
+          <option value="" disabled hidden>
+            Select Class
           </option>
-        ))}
-      </select>
+          {classOptions.map((cls) => (
+            <option key={cls.id} value={cls.id}>
+              {cls.name}
+            </option>
+          ))}
+        </select>
+      </div>
 
+      {/* Description */}
       {description && (
-        <p className="text-sm text-gray-600 mt-2 whitespace-pre-line">
+        <p className="text-sm text-gray-700 whitespace-pre-line">
           {description}
         </p>
       )}
+
+      {/* Special Abilities */}
       {specialAbilities && specialAbilities.length > 0 && (
-        <ul className="text-sm text-gray-600 mt-2 list-disc ml-4">
+        <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
           {specialAbilities.map((ability, index) => (
             <li key={index}>{ability}</li>
           ))}
         </ul>
       )}
-      {allowedRacesId?.length > 0 && (
-        <p className="text-sm text-gray-600 mt-2">
+
+      {/* Allowed Races */}
+      {selectedClassId && allowedRacesId?.length > 0 && (
+        <p className="text-sm text-gray-700">
           <strong>Allowed Races:</strong>{' '}
           {allowedRacesId.map((raceId) => getRaceNameById(raceId)).join(', ')}
         </p>
       )}
+
+      {/* Attribute Requirements */}
       {primaryAttributes && Object.keys(primaryAttributes).length > 0 && (
-        <div className="text-sm text-gray-600 mt-2">
+        <div className="text-sm text-gray-700">
           <p className="font-semibold mb-1">Attribute Requirements:</p>
-          <table className="w-fit text-sm border-collapse">
+          <table className="border-collapse">
             <tbody>
               {Object.entries(primaryAttributes).map(([attr, min]) => {
                 const current = currentAttributes?.[attr as Attribute];
                 const isUnmet = current !== undefined && current < min;
-                console.log(attr, 'is unmet ', isUnmet);
                 return (
                   <tr key={attr}>
                     <td

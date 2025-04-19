@@ -24,22 +24,27 @@ export const AttributeAllocator: React.FC<AttributeAllocatorProps> = ({
   selectedClassData,
 }) => {
   return (
-    <div className="mb-6">
-      <h3 className="font-medium mb-2">Attributes</h3>
+    <div className="mb-6 space-y-3">
+      {/* Title */}
+      <h3 className="text-base font-semibold text-gray-800">Attributes</h3>
+
+      {/* Pool Tracker */}
       {!isLevelUpMode && (
-        <p className="mt-2 text-sm text-right">
+        <p className="text-sm text-right text-gray-700">
           Points remaining: <strong>{pool}</strong>
         </p>
       )}
-      <table className="w-full text-sm">
+
+      {/* Attribute Table */}
+      <table className="w-full text-sm border-collapse">
         <thead>
-          <tr>
-            <th className="text-left">Attribute</th>
-            <th className="text-center">Race Base</th>
-            <th className="text-center">Value</th>
-            <th className="text-center">Modifier</th>
-            <th className="text-center">Next Point Cost</th>
-            <th />
+          <tr className="text-gray-600">
+            <th className="text-left font-semibold pb-1">Attribute</th>
+            <th className="text-center font-semibold pb-1">Race Base</th>
+            <th className="text-center font-semibold pb-1">Value</th>
+            <th className="text-center font-semibold pb-1">Modifier</th>
+            <th className="text-center font-semibold pb-1">Next Point Cost</th>
+            <th className="w-10" /> {/* Spacer for buttons column */}
           </tr>
         </thead>
         <tbody>

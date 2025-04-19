@@ -55,25 +55,9 @@ export const CharacterSheet: React.FC<CharacterSheetProps> = ({
         <table className="text-sm">
           <thead>
             <tr>
-              <th className="text-left"></th>
-              <th
-                className="text-left"
-                style={{
-                  paddingLeft: '4px',
-                  paddingRight: '4px',
-                }}
-              >
-                Value
-              </th>
-              <th
-                className="text-left"
-                style={{
-                  paddingLeft: '4px',
-                  paddingRight: '4px',
-                }}
-              >
-                Mod
-              </th>
+              <th className="text-left px-1"></th>
+              <th className="text-left px-1">Value</th>
+              <th className="text-left px-1">Mod</th>
             </tr>
           </thead>
           <tbody>
@@ -82,20 +66,8 @@ export const CharacterSheet: React.FC<CharacterSheetProps> = ({
               return (
                 <tr key={attr}>
                   <td className="pr-4 font-medium">{attr.toUpperCase()}</td>
-                  <td
-                    className="pr-4 text-right"
-                    style={{
-                      textAlign: 'center',
-                    }}
-                  >
-                    {value}
-                  </td>
-                  <td
-                    className="text-gray-500 text-right w-10"
-                    style={{
-                      textAlign: 'center',
-                    }}
-                  >
+                  <td className="pr-4 text-center">{value}</td>
+                  <td className="text-gray-500 text-center w-10">
                     {modifier > 0 ? `+${modifier}` : modifier}
                   </td>
                 </tr>

@@ -190,9 +190,11 @@ export const CharacterCreator = ({ mode }: CharacterCreatorProps) => {
 
           {/* Level */}
           <div className="mb-6">
-            <label className="block mb-1 font-medium">Level</label>
+            <label className="block mb-1 text-sm font-semibold text-gray-700">
+              Level
+            </label>
             <select
-              className="border rounded px-2 py-1 w-full"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={level}
               onChange={(e) => setLevel(parseInt(e.target.value))}
             >
@@ -235,10 +237,9 @@ export const CharacterCreator = ({ mode }: CharacterCreatorProps) => {
         />
       )}
 
-      {/* Finish character creation button */}
       {creationStep === 'skills' && !isCharacterFinished && (
         <button
-          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded"
+          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
           disabled={!characterName || !playerName}
           onClick={() => {
             const meetsPrimaryRequirements = Object.entries(
@@ -246,6 +247,7 @@ export const CharacterCreator = ({ mode }: CharacterCreatorProps) => {
             ).every(
               ([attr, required]) => attributes[attr as Attribute] >= required
             );
+
             if (!meetsPrimaryRequirements) {
               alert(
                 'You must meet the primary attribute requirements for this class.'

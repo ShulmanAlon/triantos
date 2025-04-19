@@ -43,128 +43,76 @@ export function AttributeRow({
   const modifier = getModifier(value);
 
   return (
-    <tr style={{ verticalAlign: 'middle' }}>
+    <tr className="align-middle">
       {/* Attribute */}
       <td
         title={ATTRIBUTE_EFFECTS[attr]}
-        style={{
-          width: '80px',
-          fontWeight: 'bold',
-          textTransform: 'capitalize',
-        }}
+        className="w-20 font-semibold capitalize text-sm text-gray-800"
       >
         {attr.toUpperCase()}
       </td>
 
       {/* Race Base */}
-      <td
-        style={{ width: '80px', textAlign: 'center', fontFamily: 'monospace' }}
-      >
-        {baseline}
-      </td>
+      <td className="w-20 text-center font-mono text-sm">{baseline}</td>
 
       {/* Controls */}
-      <td
-        style={{
-          paddingLeft: '16px',
-          paddingRight: '16px',
-          textAlign: 'center',
-          verticalAlign: 'middle',
-        }}
-      >
-        <div
-          style={{
-            width: '110px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
+      <td className="px-4 text-center align-middle">
+        <div className="flex items-center justify-center gap-2">
+          {/* Decrease */}
           <button
+            className={`w-8 h-8 text-m border border-gray-300 rounded flex items-center justify-center ${
+              canDecrease ? '' : 'opacity-50 cursor-not-allowed'
+            }`}
             onClick={() => canDecrease && onChange(attr, prevValue, refund)}
             disabled={!canDecrease || isLevelUpMode}
-            style={{
-              width: '32px',
-              height: '32px',
-              fontSize: '18px',
-              border: '1px solid #ccc',
-              borderRadius: '4px',
-              opacity: canDecrease ? 1 : 0.5,
-              padding: '4px',
-            }}
           >
             -
           </button>
 
+          {/* Value */}
           <div
-            style={{
-              width: '30px',
-              height: '32px',
-              textAlign: 'center',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontFamily: 'monospace',
-              color:
-                requiredValue !== undefined && value < requiredValue
-                  ? 'red'
-                  : undefined,
-            }}
+            className={`w-[30px] h-8 flex items-center justify-center font-mono text-sm ${
+              requiredValue !== undefined && value < requiredValue
+                ? 'text-red-600'
+                : ''
+            }`}
           >
             {value}
           </div>
 
+          {/* Increase */}
           <button
             onClick={() => {
               if (!canIncrease) return;
               onChange(attr, nextValue, isLevelUpMode ? 1 : -cost);
             }}
             disabled={!canIncrease}
-            style={{
-              width: '32px',
-              height: '32px',
-              fontSize: '18px',
-              border: '1px solid #ccc',
-              borderRadius: '4px',
-              opacity: canIncrease ? 1 : 0.5,
-              padding: '4px',
-            }}
+            className={`w-8 h-8 text-lg border border-gray-300 rounded flex items-center justify-center ${
+              canIncrease ? '' : 'opacity-50 cursor-not-allowed'
+            }`}
           >
             +
           </button>
         </div>
       </td>
 
-      {/* Mod */}
+      {/* Modifier */}
       <td
         title={ATTRIBUTE_EFFECTS[attr]}
-        style={{
-          paddingRight: '16px',
-          fontFamily: 'monospace',
-          textAlign: 'center',
-          width: '80px',
-          backgroundColor:
-            modifier > 0
-              ? 'rgba(0, 128, 0, 0.1)'
-              : modifier < 0
-              ? 'rgba(255, 0, 0, 0.1)'
-              : 'transparent',
-          borderRadius: '4px',
-        }}
+        className={`w-20 text-center font-mono text-sm rounded ${
+          modifier > 0
+            ? 'bg-green-100 text-green-700'
+            : modifier < 0
+            ? 'bg-red-100 text-red-700'
+            : ''
+        }`}
       >
         {modifier > 0 ? `+${modifier}` : modifier}
       </td>
 
-      {/* Next cost */}
-      <td
-        style={{
-          fontFamily: 'monospace',
-          width: '100px',
-          textAlign: 'left',
-          paddingLeft: '16px',
-        }}
-      >
-        Cost: {cost} pt{cost > 1 ? 's' : ''}
+      {/* Next Point Cost */}
+      <td className="w-24 font-mono text-center pl-4 text-sm">
+        {cost} pt{cost > 1 ? 's' : ''}
       </td>
     </tr>
   );

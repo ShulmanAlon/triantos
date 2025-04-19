@@ -23,45 +23,53 @@ export const RaceSelector: React.FC<RaceSelectorProps> = ({
   allowedRacesId,
 }) => {
   return (
-    <div className="mb-6">
-      <label className="block mb-1 font-medium">Race</label>
-      <select
-        className="border rounded px-2 py-1 w-full"
-        value={selectedRaceId ?? ''}
-        onChange={(e) => onChange(e.target.value as RaceId)}
-        disabled={isDisabled}
-      >
-        <option value="" disabled hidden>
-          Select Race
-        </option>
-        {raceOptions.map((race) => {
-          const isAllowed = allowedRacesId?.includes(race.id) ?? true;
-          return (
-            <option key={race.id} value={race.id} disabled={!isAllowed}>
-              {race.name}
-            </option>
-          );
-        })}
-      </select>
+    <div className="mb-6 space-y-3">
+      {/* Race Dropdown */}
+      <div>
+        <label className="block text-sm font-semibold text-gray-700 mb-1">
+          Race
+        </label>
+        <select
+          className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+          value={selectedRaceId ?? ''}
+          onChange={(e) => onChange(e.target.value as RaceId)}
+          disabled={isDisabled}
+        >
+          <option value="" disabled hidden>
+            Select Race
+          </option>
+          {raceOptions.map((race) => {
+            const isAllowed = allowedRacesId?.includes(race.id) ?? true;
+            return (
+              <option key={race.id} value={race.id} disabled={!isAllowed}>
+                {race.name}
+              </option>
+            );
+          })}
+        </select>
+      </div>
 
+      {/* Description */}
       {description && (
-        <p className="text-sm text-gray-600 mt-2 whitespace-pre-line">
+        <p className="text-sm text-gray-700 whitespace-pre-line">
           {description}
         </p>
       )}
 
+      {/* Special Abilities */}
       {specialAbilities?.length > 0 && (
-        <ul className="text-sm text-gray-600 mt-2 list-disc ml-4">
+        <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
           {specialAbilities.map((ability, index) => (
             <li key={index}>{ability}</li>
           ))}
         </ul>
       )}
 
+      {/* Restrictions */}
       {restrictions?.length > 0 && (
-        <div className="text-sm text-gray-600 mt-2">
+        <div className="text-sm text-gray-700">
           <p className="font-semibold mb-1">Restrictions:</p>
-          <ul className="list-disc ml-4">
+          <ul className="list-disc list-inside space-y-1">
             {restrictions.map((r, i) => (
               <li key={i}>{r}</li>
             ))}
