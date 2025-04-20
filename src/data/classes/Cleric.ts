@@ -2,11 +2,7 @@ import { GameClass } from '../../types/gameClass';
 
 export const cleric: GameClass = {
   id: 'Cleric',
-  name: 'Cleric',
-  description:
-    'Healer and buffer who channels the power of his deity to empower him and his allies.',
   primaryAttributes: { wis: 13, con: 11 },
-  specialAbilities: ['Divine spellcasting', 'Turn ability'],
   hpPerLevelToNine: 6,
   hpPerLevelFromTen: 2,
   allowedRaces: ['Human', 'Elf', 'Dwarf', 'Halfling'],

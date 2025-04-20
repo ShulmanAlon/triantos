@@ -2,11 +2,7 @@ import { GameClass } from '../../types/gameClass';
 
 export const magicUser: GameClass = {
   id: 'MagicUser',
-  name: 'Magic User',
-  description:
-    'Arcane spellcaster who uses a spellbook to cast powerful spells.',
   primaryAttributes: { int: 13, wis: 11 },
-  specialAbilities: ['Arcane spellcasting'],
   hpPerLevelToNine: 4,
   hpPerLevelFromTen: 1,
   allowedRaces: ['Human', 'Elf', 'Halfling'],

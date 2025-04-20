@@ -1,5 +1,9 @@
 import React from 'react';
 import { Race, RaceId } from '../../types/race';
+import { useLanguage } from '../../context/LanguageContext';
+import { uiLabels } from '../../i18n/ui';
+import { getRaceNameById } from '../../utils/raceUtils';
+// import { raceDictionary } from '../../i18n/races';
 
 interface RaceSelectorProps {
   raceOptions: Race[];
@@ -22,12 +26,14 @@ export const RaceSelector: React.FC<RaceSelectorProps> = ({
   restrictions = [],
   allowedRacesId,
 }) => {
+  const { language } = useLanguage();
+  const ui = uiLabels[language];
   return (
     <div className="mb-6 space-y-3">
       {/* Race Dropdown */}
       <div>
         <label className="block text-sm font-semibold text-gray-700 mb-1">
-          Race
+          {ui.race}
         </label>
         <select
           className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
@@ -36,13 +42,13 @@ export const RaceSelector: React.FC<RaceSelectorProps> = ({
           disabled={isDisabled}
         >
           <option value="" disabled hidden>
-            Select Race
+            {ui.selectRace}
           </option>
           {raceOptions.map((race) => {
             const isAllowed = allowedRacesId?.includes(race.id) ?? true;
             return (
               <option key={race.id} value={race.id} disabled={!isAllowed}>
-                {race.name}
+                {getRaceNameById(race.id as RaceId, language)}
               </option>
             );
           })}
@@ -68,7 +74,7 @@ export const RaceSelector: React.FC<RaceSelectorProps> = ({
       {/* Restrictions */}
       {restrictions?.length > 0 && (
         <div className="text-sm text-gray-700">
-          <p className="font-semibold mb-1">Restrictions:</p>
+          <p className="font-semibold mb-1">{ui.restrictions}:</p>
           <ul className="list-disc list-inside space-y-1">
             {restrictions.map((r, i) => (
               <li key={i}>{r}</li>

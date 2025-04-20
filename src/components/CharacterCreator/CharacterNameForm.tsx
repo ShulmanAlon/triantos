@@ -1,4 +1,6 @@
 import React from 'react';
+import { useLanguage } from '../../context/LanguageContext';
+import { uiLabels } from '../../i18n/ui';
 
 interface CharacterNameFormProps {
   characterName: string;
@@ -15,12 +17,14 @@ export const CharacterNameForm: React.FC<CharacterNameFormProps> = ({
   onCharacterNameChange,
   onPlayerNameChange,
 }) => {
+  const { language } = useLanguage();
+  const ui = uiLabels[language];
   return (
     <div className="mb-6 space-y-4">
       {/* Character Name */}
       <div>
         <label className="block text-sm font-semibold mb-1 text-gray-700">
-          Character Name
+          {ui.characterName}
         </label>
         <input
           type="text"
@@ -34,7 +38,7 @@ export const CharacterNameForm: React.FC<CharacterNameFormProps> = ({
       {/* Player Name */}
       <div>
         <label className="block text-sm font-semibold mb-1 text-gray-700">
-          Player Name
+          {ui.playerName}
         </label>
         <input
           type="text"

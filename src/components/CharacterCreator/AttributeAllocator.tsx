@@ -1,3 +1,6 @@
+import { ATTRIBUTE_ORDER } from '../../config/constants';
+import { useLanguage } from '../../context/LanguageContext';
+import { uiLabels } from '../../i18n/ui';
 import { Attribute } from '../../types/attributes';
 import { GameClass } from '../../types/gameClass';
 import { AttributeRow } from './AttributeRow';
@@ -23,15 +26,17 @@ export const AttributeAllocator: React.FC<AttributeAllocatorProps> = ({
   onChange,
   selectedClassData,
 }) => {
+  const { language } = useLanguage();
+  const ui = uiLabels[language];
   return (
     <div className="mb-6 space-y-3">
       {/* Title */}
-      <h3 className="text-base font-semibold text-gray-800">Attributes</h3>
+      <h3 className="text-base font-semibold text-gray-800">{ui.attributes}</h3>
 
       {/* Pool Tracker */}
       {!isLevelUpMode && (
         <p className="text-sm text-right text-gray-700">
-          Points remaining: <strong>{pool}</strong>
+          {ui.pointsRemaining}: <strong>{pool}</strong>
         </p>
       )}
 
@@ -39,16 +44,16 @@ export const AttributeAllocator: React.FC<AttributeAllocatorProps> = ({
       <table className="w-full text-sm border-collapse">
         <thead>
           <tr className="text-gray-600">
-            <th className="text-left font-semibold pb-1">Attribute</th>
-            <th className="text-center font-semibold pb-1">Race Base</th>
-            <th className="text-center font-semibold pb-1">Value</th>
-            <th className="text-center font-semibold pb-1">Modifier</th>
-            <th className="text-center font-semibold pb-1">Next Point Cost</th>
-            <th className="w-10" /> {/* Spacer for buttons column */}
+            <th className="text-left font-semibold pb-1">{ui.attribute}</th>
+            <th className="text-center font-semibold pb-1">{ui.raceBase}</th>
+            <th className="text-center font-semibold pb-1">{ui.value}</th>
+            <th className="text-center font-semibold pb-1">{ui.modifier}</th>
+            <th className="text-center font-semibold pb-1">{ui.nextCost}</th>
+            <th className="w-10">{/*Spacer for buttons column*/}</th>
           </tr>
         </thead>
         <tbody>
-          {Object.keys(attributes).map((attr) => (
+          {ATTRIBUTE_ORDER.map((attr) => (
             <AttributeRow
               key={attr}
               attr={attr as Attribute}

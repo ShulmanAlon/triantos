@@ -2,11 +2,7 @@ import { GameClass } from '../../types/gameClass';
 
 export const fighter: GameClass = {
   id: 'Fighter',
-  name: 'Fighter',
-  description:
-    'Melee and ranged damage dealer and tank, excells in battle and versatile.',
   primaryAttributes: { str: 13, dex: 11 },
-  specialAbilities: [],
   hpPerLevelToNine: 8,
   hpPerLevelFromTen: 3,
   allowedRaces: ['Human', 'Elf', 'Dwarf', 'Halfling'],

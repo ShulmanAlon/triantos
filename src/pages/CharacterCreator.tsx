@@ -12,6 +12,9 @@ import { RaceSelector } from '../components/CharacterCreator/RaceSelector';
 import { AttributeAllocator } from '../components/CharacterCreator/AttributeAllocator';
 import { CharacterSheet } from '../components/CharacterCreator/CharacterSheet';
 import { RaceId } from '../types/race';
+import { useLanguage } from '../context/LanguageContext';
+import { uiLabels } from '../i18n/ui';
+import { getBaseAttributesByRaceId } from '../utils/raceUtils';
 
 const initialAttributes: AttributeState = { ...ARRGS_BASELINE };
 
@@ -66,6 +69,9 @@ export const CharacterCreator = ({ mode }: CharacterCreatorProps) => {
   const allowedRacesId =
     selectedClassData?.allowedRaces ?? races.map((r) => r.id);
 
+  const { language } = useLanguage();
+  const ui = uiLabels[language];
+
   function handleClassChange(newClassId: ClassId | undefined) {
     if (!newClassId) return;
     setSelectedClassId(newClassId);
@@ -84,11 +90,9 @@ export const CharacterCreator = ({ mode }: CharacterCreatorProps) => {
     setCreationStep('attributes');
   }
 
-  function resetAttributes(raceName: string = 'human') {
-    const raceData = races.find((r) => r.name === raceName);
-    const base = raceData?.baseStats ?? ARRGS_BASELINE;
-    setAttributes({ ...base });
-    setPool(TOTAL_STARTING_POINTS);
+  function resetAttributes(raceId?: RaceId | undefined) {
+    const baseAttrs = getBaseAttributesByRaceId(raceId) ?? ARRGS_BASELINE;
+    setAttributes({ ...baseAttrs });
   }
 
   function handleLevelDown() {
@@ -140,16 +144,6 @@ export const CharacterCreator = ({ mode }: CharacterCreatorProps) => {
               selectedClassId={selectedClassId}
               isDisabled={isLevelUpMode || isCharacterFinished}
               onChange={handleClassChange}
-              description={
-                isCharacterFinished || !isLevelUpMode
-                  ? selectedClassData?.description
-                  : undefined
-              }
-              specialAbilities={
-                isCharacterFinished || !isLevelUpMode
-                  ? selectedClassData?.specialAbilities
-                  : undefined
-              }
               allowedRacesId={allowedRacesId}
               primaryAttributes={
                 isCharacterFinished || !isLevelUpMode
@@ -169,21 +163,6 @@ export const CharacterCreator = ({ mode }: CharacterCreatorProps) => {
                 creationStep === 'class' || isLevelUpMode || isCharacterFinished
               }
               onChange={handleRaceChange}
-              description={
-                isCharacterFinished || !isLevelUpMode
-                  ? selectedRaceData?.description
-                  : undefined
-              }
-              specialAbilities={
-                isCharacterFinished || !isLevelUpMode
-                  ? selectedRaceData?.specialAbilities
-                  : undefined
-              }
-              restrictions={
-                isCharacterFinished || !isLevelUpMode
-                  ? selectedRaceData?.restrictions
-                  : undefined
-              }
               allowedRacesId={allowedRacesId}
             />
           </div>
@@ -191,7 +170,7 @@ export const CharacterCreator = ({ mode }: CharacterCreatorProps) => {
           {/* Level */}
           <div className="mb-6">
             <label className="block mb-1 text-sm font-semibold text-gray-700">
-              Level
+              {ui.level}
             </label>
             <select
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -200,7 +179,7 @@ export const CharacterCreator = ({ mode }: CharacterCreatorProps) => {
             >
               {Array.from({ length: 18 }, (_, i) => i + 1).map((lvl) => (
                 <option key={lvl} value={lvl}>
-                  Level {lvl}
+                  {ui.level} {lvl}
                 </option>
               ))}
             </select>
@@ -258,7 +237,7 @@ export const CharacterCreator = ({ mode }: CharacterCreatorProps) => {
             setIsCharacterFinished(true);
           }}
         >
-          Finish Character Creation
+          {ui.finishCreation}
         </button>
       )}
     </div>

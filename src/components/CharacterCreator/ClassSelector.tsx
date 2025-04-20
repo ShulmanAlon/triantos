@@ -3,14 +3,16 @@ import { ClassId, GameClass } from '../../types/gameClass';
 import { RaceId } from '../../types/race';
 import { getRaceNameById } from '../../utils/raceUtils';
 import { Attribute } from '../../types/attributes';
+import { useLanguage } from '../../context/LanguageContext';
+import { uiLabels } from '../../i18n/ui';
+import { attributeLabels } from '../../i18n/attributes';
+import { classDictionary } from '../../i18n/classes';
 
 interface ClassSelectorProps {
   classOptions: GameClass[];
   selectedClassId: ClassId | undefined;
   isDisabled: boolean;
   onChange: (value: ClassId | undefined) => void;
-  description?: string;
-  specialAbilities?: string[];
   allowedRacesId: RaceId[];
   primaryAttributes?: Partial<Record<Attribute, number>>;
   currentAttributes?: Record<Attribute, number>;
@@ -21,18 +23,26 @@ export const ClassSelector: React.FC<ClassSelectorProps> = ({
   selectedClassId,
   isDisabled,
   onChange,
-  description,
-  specialAbilities,
   allowedRacesId,
   primaryAttributes,
   currentAttributes,
 }) => {
+  const { language } = useLanguage();
+  const ui = uiLabels[language];
+  const attributeNames = attributeLabels[language];
+  const localized = selectedClassId
+    ? classDictionary[selectedClassId]?.[language]
+    : undefined;
+
+  const classDescription = localized?.description;
+  const specialAbilities = localized?.specialAbilities;
+
   return (
     <div className="mb-6 space-y-3">
       {/* Class Dropdown */}
       <div>
         <label className="block text-sm font-semibold text-gray-700 mb-1">
-          Class
+          {ui.class}
         </label>
         <select
           className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
@@ -41,20 +51,20 @@ export const ClassSelector: React.FC<ClassSelectorProps> = ({
           disabled={isDisabled}
         >
           <option value="" disabled hidden>
-            Select Class
+            {ui.selectClass}
           </option>
           {classOptions.map((cls) => (
             <option key={cls.id} value={cls.id}>
-              {cls.name}
+              {classDictionary[cls.id][language].name}
             </option>
           ))}
         </select>
       </div>
 
       {/* Description */}
-      {description && (
+      {classDescription && (
         <p className="text-sm text-gray-700 whitespace-pre-line">
-          {description}
+          {classDescription}
         </p>
       )}
 
@@ -70,15 +80,17 @@ export const ClassSelector: React.FC<ClassSelectorProps> = ({
       {/* Allowed Races */}
       {selectedClassId && allowedRacesId?.length > 0 && (
         <p className="text-sm text-gray-700">
-          <strong>Allowed Races:</strong>{' '}
-          {allowedRacesId.map((raceId) => getRaceNameById(raceId)).join(', ')}
+          <strong>{ui.allowedRaces}:</strong>{' '}
+          {allowedRacesId
+            .map((raceId) => getRaceNameById(raceId, language))
+            .join(', ')}
         </p>
       )}
 
       {/* Attribute Requirements */}
       {primaryAttributes && Object.keys(primaryAttributes).length > 0 && (
         <div className="text-sm text-gray-700">
-          <p className="font-semibold mb-1">Attribute Requirements:</p>
+          <p className="font-semibold mb-1">{ui.attributeRequirements}:</p>
           <table className="border-collapse">
             <tbody>
               {Object.entries(primaryAttributes).map(([attr, min]) => {
@@ -91,7 +103,7 @@ export const ClassSelector: React.FC<ClassSelectorProps> = ({
                         isUnmet ? 'text-red-600' : 'text-green-600'
                       }`}
                     >
-                      {attr.toUpperCase()}
+                      {attributeNames[attr as Attribute]}
                     </td>
                     <td
                       className={`text-right ${

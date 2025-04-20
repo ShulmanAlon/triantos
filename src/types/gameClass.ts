@@ -3,9 +3,6 @@ import { RaceId } from './race';
 
 export interface GameClass {
   id: ClassId;
-  name: string;
-  description: string;
-  specialAbilities: string[];
   primaryAttributes: Partial<Record<Attribute, number>>;
   progression: ClassLevel[];
   hpPerLevelToNine: number;

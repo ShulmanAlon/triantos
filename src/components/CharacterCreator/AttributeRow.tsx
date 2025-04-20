@@ -2,6 +2,9 @@ import { Attribute } from '../../types/attributes';
 import { getModifier } from '../../utils/modifier';
 import { getPointCostChange } from '../../utils/attributeUtils';
 import { ATTRIBUTE_EFFECTS } from '../../config/constants'; // or wherever you put it
+import { useLanguage } from '../../context/LanguageContext';
+import { attributeLabels } from '../../i18n/attributes';
+import { uiLabels } from '../../i18n/ui';
 
 interface AttributeRowProps {
   attr: Attribute;
@@ -32,8 +35,10 @@ export function AttributeRow({
   const refund = getPointCostChange(prevValue, value, baseline);
   const min = baseline - 4;
   const max = baseline + 8;
+  const { language } = useLanguage();
+  const ui = uiLabels[language];
+  const label = attributeLabels[language][attr];
 
-  // const canIncrease = value < max && pool >= cost;
   const canIncrease = isLevelUpMode
     ? hasAbilityPointThisLevel && usedPoints < 1
     : cost <= pool && value < max;
@@ -49,7 +54,7 @@ export function AttributeRow({
         title={ATTRIBUTE_EFFECTS[attr]}
         className="w-20 font-semibold capitalize text-sm text-gray-800"
       >
-        {attr.toUpperCase()}
+        {label}
       </td>
 
       {/* Race Base */}
@@ -112,7 +117,7 @@ export function AttributeRow({
 
       {/* Next Point Cost */}
       <td className="w-24 font-mono text-center pl-4 text-sm">
-        {cost} pt{cost > 1 ? 's' : ''}
+        {cost} {cost > 1 ? ui.pts : ui.pt}
       </td>
     </tr>
   );
