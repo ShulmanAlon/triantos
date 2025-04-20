@@ -1,3 +1,3 @@
 export type Attribute = 'str' | 'int' | 'wis' | 'dex' | 'con' | 'cha';
 
-export type AttributeState = Record<Attribute, number>;
+export type AttributeMap = Record<Attribute, number>;

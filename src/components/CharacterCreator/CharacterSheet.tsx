@@ -9,6 +9,9 @@ import { RaceId } from '../../types/race';
 import { getRaceNameById } from '../../utils/raceUtils';
 import { useLanguage } from '../../context/LanguageContext';
 import { uiLabels } from '../../i18n/ui';
+import { getAttributeNameById } from '../../utils/attributeUtils';
+import { ATTRIBUTE_ORDER } from '../../config/constants';
+import { PrimaryButton } from '../ui/PrimaryButton';
 
 interface CharacterSheetProps {
   characterName: string;
@@ -73,12 +76,15 @@ export const CharacterSheet: React.FC<CharacterSheetProps> = ({
             </tr>
           </thead>
           <tbody>
-            {Object.entries(attributes).map(([attr, value]) => {
-              const modifier = getModifier(value);
+            {ATTRIBUTE_ORDER.map((attr) => {
+              const attrValue = attributes[attr];
+              const modifier = getModifier(attrValue);
               return (
                 <tr key={attr}>
-                  <td className="pr-4 font-medium">{attr.toUpperCase()}</td>
-                  <td className="pr-4 text-center">{value}</td>
+                  <td className="pr-4 font-medium">
+                    {getAttributeNameById(attr, language)}
+                  </td>
+                  <td className="pr-4 text-center">{attrValue}</td>
                   <td className="text-gray-500 text-center w-10">
                     {modifier > 0 ? `+${modifier}` : modifier}
                   </td>
@@ -104,7 +110,8 @@ export const CharacterSheet: React.FC<CharacterSheetProps> = ({
             <ul className="ml-4 list-disc text-sm text-gray-700">
               {Object.entries(derived.spellSlots).map(([level, slots]) => (
                 <li key={level}>
-                  {ui.level} {level}: {slots} slot{slots !== 1 ? 's' : ''}
+                  {ui.levelSpell} {level}: {slots}{' '}
+                  {slots !== 1 ? ui.spells : ui.spell}
                 </li>
               ))}
             </ul>
@@ -113,19 +120,9 @@ export const CharacterSheet: React.FC<CharacterSheetProps> = ({
       </div>
 
       <div className="mt-4 flex gap-2">
-        <button
-          className="px-4 py-2 bg-green-600 text-white rounded"
-          onClick={onLevelUp}
-        >
-          {ui.levelUp}
-        </button>
+        <PrimaryButton onClick={onLevelUp}>{ui.levelUp}</PrimaryButton>
         {level > 1 && (
-          <button
-            className="px-4 py-2 bg-red-600 text-white rounded"
-            onClick={onLevelDown}
-          >
-            {ui.levelDown}
-          </button>
+          <PrimaryButton onClick={onLevelDown}>{ui.levelDown}</PrimaryButton>
         )}
       </div>
     </div>

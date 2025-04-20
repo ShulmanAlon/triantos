@@ -1,10 +1,13 @@
 import { Attribute } from '../../types/attributes';
 import { getModifier } from '../../utils/modifier';
-import { getPointCostChange } from '../../utils/attributeUtils';
-import { ATTRIBUTE_EFFECTS } from '../../config/constants'; // or wherever you put it
+import {
+  getAttributeEffectDescById,
+  getAttributeNameById,
+  getPointCostChange,
+} from '../../utils/attributeUtils';
 import { useLanguage } from '../../context/LanguageContext';
-import { attributeLabels } from '../../i18n/attributes';
 import { uiLabels } from '../../i18n/ui';
+import { PrimaryButton } from '../ui/PrimaryButton';
 
 interface AttributeRowProps {
   attr: Attribute;
@@ -37,7 +40,7 @@ export function AttributeRow({
   const max = baseline + 8;
   const { language } = useLanguage();
   const ui = uiLabels[language];
-  const label = attributeLabels[language][attr];
+  const attrEffectDesc = getAttributeEffectDescById(attr, language);
 
   const canIncrease = isLevelUpMode
     ? hasAbilityPointThisLevel && usedPoints < 1
@@ -51,10 +54,10 @@ export function AttributeRow({
     <tr className="align-middle">
       {/* Attribute */}
       <td
-        title={ATTRIBUTE_EFFECTS[attr]}
+        title={attrEffectDesc}
         className="w-20 font-semibold capitalize text-sm text-gray-800"
       >
-        {label}
+        {getAttributeNameById(attr, language)}
       </td>
 
       {/* Race Base */}
@@ -64,15 +67,15 @@ export function AttributeRow({
       <td className="px-4 text-center align-middle">
         <div className="flex items-center justify-center gap-2">
           {/* Decrease */}
-          <button
-            className={`w-8 h-8 text-m border border-gray-300 rounded flex items-center justify-center ${
-              canDecrease ? '' : 'opacity-50 cursor-not-allowed'
-            }`}
+          <PrimaryButton
+            className={
+              'w-8 h-8 border rounded-lg border-gray-300 flex items-center justify-center'
+            }
             onClick={() => canDecrease && onChange(attr, prevValue, refund)}
             disabled={!canDecrease || isLevelUpMode}
           >
             -
-          </button>
+          </PrimaryButton>
 
           {/* Value */}
           <div
@@ -86,24 +89,24 @@ export function AttributeRow({
           </div>
 
           {/* Increase */}
-          <button
+          <PrimaryButton
+            className={
+              'w-8 h-8 border rounded-lg border-gray-300 flex items-center justify-center'
+            }
             onClick={() => {
               if (!canIncrease) return;
               onChange(attr, nextValue, isLevelUpMode ? 1 : -cost);
             }}
             disabled={!canIncrease}
-            className={`w-8 h-8 text-lg border border-gray-300 rounded flex items-center justify-center ${
-              canIncrease ? '' : 'opacity-50 cursor-not-allowed'
-            }`}
           >
             +
-          </button>
+          </PrimaryButton>
         </div>
       </td>
 
       {/* Modifier */}
       <td
-        title={ATTRIBUTE_EFFECTS[attr]}
+        title={attrEffectDesc}
         className={`w-20 text-center font-mono text-sm rounded ${
           modifier > 0
             ? 'bg-green-100 text-green-700'

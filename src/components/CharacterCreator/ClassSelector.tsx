@@ -1,20 +1,21 @@
 import React from 'react';
 import { ClassId, GameClass } from '../../types/gameClass';
-import { RaceId } from '../../types/race';
 import { getRaceNameById } from '../../utils/raceUtils';
 import { Attribute } from '../../types/attributes';
 import { useLanguage } from '../../context/LanguageContext';
 import { uiLabels } from '../../i18n/ui';
 import { attributeLabels } from '../../i18n/attributes';
 import { classDictionary } from '../../i18n/classes';
+import {
+  getAllowedRacesByClassId,
+  getPrimaryAttributesByClassId,
+} from '../../utils/classUtils';
 
 interface ClassSelectorProps {
   classOptions: GameClass[];
   selectedClassId: ClassId | undefined;
   isDisabled: boolean;
   onChange: (value: ClassId | undefined) => void;
-  allowedRacesId: RaceId[];
-  primaryAttributes?: Partial<Record<Attribute, number>>;
   currentAttributes?: Record<Attribute, number>;
 }
 
@@ -23,13 +24,13 @@ export const ClassSelector: React.FC<ClassSelectorProps> = ({
   selectedClassId,
   isDisabled,
   onChange,
-  allowedRacesId,
-  primaryAttributes,
   currentAttributes,
 }) => {
   const { language } = useLanguage();
   const ui = uiLabels[language];
   const attributeNames = attributeLabels[language];
+  const allowedRacesId = getAllowedRacesByClassId(selectedClassId);
+  const primaryAttributes = getPrimaryAttributesByClassId(selectedClassId);
   const localized = selectedClassId
     ? classDictionary[selectedClassId]?.[language]
     : undefined;
@@ -78,7 +79,7 @@ export const ClassSelector: React.FC<ClassSelectorProps> = ({
       )}
 
       {/* Allowed Races */}
-      {selectedClassId && allowedRacesId?.length > 0 && (
+      {allowedRacesId && selectedClassId && allowedRacesId?.length > 0 && (
         <p className="text-sm text-gray-700">
           <strong>{ui.allowedRaces}:</strong>{' '}
           {allowedRacesId

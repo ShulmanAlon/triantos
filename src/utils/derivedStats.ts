@@ -2,6 +2,7 @@ import { GameClass } from '../types/gameClass';
 import { Attribute } from '../types/attributes';
 import { getModifier } from '../utils/modifier';
 import { XP_TABLE } from '../config/progression';
+import { getClassLevelDataById } from './classUtils';
 
 export interface DerivedStats {
   hp: number;
@@ -28,7 +29,7 @@ export function calculateDerivedStats(
   const hpFromBase = Math.min(level, 9) * gameClass.hpPerLevelToNine;
   const hpFromFixed = Math.max(level - 9, 0) * gameClass.hpPerLevelFromTen;
 
-  const levelData = gameClass.progression.find((lvl) => lvl.level === level);
+  const levelData = getClassLevelDataById(gameClass.id, level);
 
   return {
     hp: hpFromCon + hpFromBase + hpFromFixed,

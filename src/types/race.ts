@@ -1,8 +1,8 @@
-import { AttributeState } from './attributes';
+import { AttributeMap } from './attributes';
 
 export interface Race {
   id: RaceId;
-  baseStats: AttributeState;
+  baseStats: AttributeMap;
 }
 
 export type RaceId = 'Human' | 'Elf' | 'Dwarf' | 'Halfling';

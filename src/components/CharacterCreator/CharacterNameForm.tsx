@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { uiLabels } from '../../i18n/ui';
+import { LabeledInput } from '../ui/LabeledInput';
 
 interface CharacterNameFormProps {
   characterName: string;
@@ -22,32 +23,20 @@ export const CharacterNameForm: React.FC<CharacterNameFormProps> = ({
   return (
     <div className="mb-6 space-y-4">
       {/* Character Name */}
-      <div>
-        <label className="block text-sm font-semibold mb-1 text-gray-700">
-          {ui.characterName}
-        </label>
-        <input
-          type="text"
-          value={characterName}
-          onChange={(e) => onCharacterNameChange(e.target.value)}
-          className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
-          disabled={isCharacterFinished}
-        />
-      </div>
+      <LabeledInput
+        label={ui.characterName}
+        value={characterName}
+        onChange={onCharacterNameChange}
+        disabled={isCharacterFinished}
+      />
 
       {/* Player Name */}
-      <div>
-        <label className="block text-sm font-semibold mb-1 text-gray-700">
-          {ui.playerName}
-        </label>
-        <input
-          type="text"
-          value={playerName}
-          onChange={(e) => onPlayerNameChange(e.target.value)}
-          className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
-          disabled={isCharacterFinished}
-        />
-      </div>
+      <LabeledInput
+        label={ui.playerName}
+        value={playerName}
+        onChange={onPlayerNameChange}
+        disabled={isCharacterFinished}
+      />
     </div>
   );
 };

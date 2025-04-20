@@ -2,17 +2,18 @@ import React from 'react';
 import { Race, RaceId } from '../../types/race';
 import { useLanguage } from '../../context/LanguageContext';
 import { uiLabels } from '../../i18n/ui';
-import { getRaceNameById } from '../../utils/raceUtils';
-// import { raceDictionary } from '../../i18n/races';
+import {
+  getRaceDescriptionById,
+  getRaceNameById,
+  getRaceRestrictionsById,
+  getRaceSpecialAbilitiesById,
+} from '../../utils/raceUtils';
 
 interface RaceSelectorProps {
   raceOptions: Race[];
   selectedRaceId: RaceId | undefined;
   isDisabled: boolean;
   onChange: (value: RaceId | undefined) => void;
-  description?: string;
-  specialAbilities?: string[];
-  restrictions?: string[];
   allowedRacesId?: RaceId[];
 }
 
@@ -21,13 +22,16 @@ export const RaceSelector: React.FC<RaceSelectorProps> = ({
   selectedRaceId,
   isDisabled,
   onChange,
-  description,
-  specialAbilities = [],
-  restrictions = [],
   allowedRacesId,
 }) => {
   const { language } = useLanguage();
   const ui = uiLabels[language];
+  const description = getRaceDescriptionById(selectedRaceId, language);
+  const specialAbilities = getRaceSpecialAbilitiesById(
+    selectedRaceId,
+    language
+  );
+  const restrictions = getRaceRestrictionsById(selectedRaceId, language);
   return (
     <div className="mb-6 space-y-3">
       {/* Race Dropdown */}

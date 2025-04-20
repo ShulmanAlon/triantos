@@ -1,3 +1,7 @@
+import { attributeEffectDesc, attributeLabels } from '../i18n/attributes';
+import { Attribute } from '../types/attributes';
+import { Language } from '../types/i18n';
+
 function getPoolPointCostAtOffset(offsetFromBaseline: number): number {
   if (offsetFromBaseline < 2) return 1;
   return Math.trunc((offsetFromBaseline + 2) / 2);
@@ -18,3 +22,19 @@ export function getPointCostChange(
 
   return cost;
 }
+
+export const getAttributeNameById = (
+  attributeId: Attribute | undefined,
+  language: Language
+): string => {
+  if (!attributeId) return '';
+  return attributeLabels[language][attributeId];
+};
+
+export const getAttributeEffectDescById = (
+  attributeId: Attribute | undefined,
+  language: Language
+): string => {
+  if (!attributeId) return '';
+  return attributeEffectDesc[language][attributeId];
+};
