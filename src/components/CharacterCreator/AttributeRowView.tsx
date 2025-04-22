@@ -7,7 +7,7 @@ import {
 } from '../../utils/attributeUtils';
 import { useLanguage } from '../../context/LanguageContext';
 import { uiLabels } from '../../i18n/ui';
-import { PrimaryButton } from '../ui/PrimaryButton';
+import { Button } from '../ui/Button';
 
 interface AttributeRowProps {
   attr: Attribute;
@@ -67,7 +67,7 @@ export function AttributeRow({
       <td className="px-4 text-center align-middle">
         <div className="flex items-center justify-center gap-2">
           {/* Decrease */}
-          <PrimaryButton
+          <Button
             className={
               'w-8 h-8 border rounded-lg border-gray-300 flex items-center justify-center'
             }
@@ -75,7 +75,7 @@ export function AttributeRow({
             disabled={!canDecrease || isLevelUpMode}
           >
             -
-          </PrimaryButton>
+          </Button>
 
           {/* Value */}
           <div
@@ -89,7 +89,7 @@ export function AttributeRow({
           </div>
 
           {/* Increase */}
-          <PrimaryButton
+          <Button
             className={
               'w-8 h-8 border rounded-lg border-gray-300 flex items-center justify-center'
             }
@@ -100,7 +100,7 @@ export function AttributeRow({
             disabled={!canIncrease}
           >
             +
-          </PrimaryButton>
+          </Button>
         </div>
       </td>
 

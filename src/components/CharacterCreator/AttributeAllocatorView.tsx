@@ -3,7 +3,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { uiLabels } from '../../i18n/ui';
 import { Attribute } from '../../types/attributes';
 import { GameClass } from '../../types/gameClass';
-import { AttributeRow } from './AttributeRow';
+import { AttributeRow } from './AttributeRowView';
 
 interface AttributeAllocatorProps {
   attributes: Record<Attribute, number>;

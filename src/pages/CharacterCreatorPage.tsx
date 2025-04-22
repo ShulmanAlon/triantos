@@ -6,17 +6,17 @@ import { calculateDerivedStats } from '../utils/derivedStats';
 import { ClassId } from '../types/gameClass';
 import { classes } from '../data/classes';
 import { getPointCostChange } from '../utils/attributeUtils';
-import { CharacterNameForm } from '../components/CharacterCreator/CharacterNameForm';
-import { ClassSelector } from '../components/CharacterCreator/ClassSelector';
-import { RaceSelector } from '../components/CharacterCreator/RaceSelector';
-import { AttributeAllocator } from '../components/CharacterCreator/AttributeAllocator';
-import { CharacterSheet } from '../components/CharacterCreator/CharacterSheet';
+import { CharacterNameForm } from '../components/CharacterCreator/CharacterNameFormView';
+import { ClassSelector } from '../components/CharacterCreator/ClassSelectorView';
+import { RaceSelector } from '../components/CharacterCreator/RaceSelectorView';
+import { AttributeAllocator } from '../components/CharacterCreator/AttributeAllocatorView';
+import { CharacterSheetView } from '../components/CharacterSheet/CharacterSheetView';
 import { RaceId } from '../types/race';
 import { useLanguage } from '../context/LanguageContext';
 import { uiLabels } from '../i18n/ui';
 import { getBaseAttributesByRaceId, getRaceById } from '../utils/raceUtils';
 import { getClassById, getClassLevelDataById } from '../utils/classUtils';
-import { PrimaryButton } from '../components/ui/PrimaryButton';
+import { Button } from '../components/ui/Button';
 
 const initialAttributes: AttributeMap = { ...ARRGS_BASELINE };
 
@@ -205,7 +205,7 @@ export const CharacterCreator = ({ mode }: CharacterCreatorProps) => {
 
       {/* Character sheet, character finished creation / level up */}
       {isCharacterFinished && derived && (
-        <CharacterSheet
+        <CharacterSheetView
           characterName={characterName}
           playerName={playerName}
           selectedClassId={selectedClassId}
@@ -230,14 +230,14 @@ export const CharacterCreator = ({ mode }: CharacterCreatorProps) => {
         </ul>
       )}
       {creationStep === 'skills' && !isCharacterFinished && (
-        <PrimaryButton
+        <Button
           disabled={!canFinishCharacter}
           onClick={() => {
             setIsCharacterFinished(true);
           }}
         >
           {ui.finishCreation}
-        </PrimaryButton>
+        </Button>
       )}
     </div>
   );

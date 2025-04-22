@@ -11,7 +11,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { uiLabels } from '../../i18n/ui';
 import { getAttributeNameById } from '../../utils/attributeUtils';
 import { ATTRIBUTE_ORDER } from '../../config/constants';
-import { PrimaryButton } from '../ui/PrimaryButton';
+import { Button } from '../ui/Button';
 
 interface CharacterSheetProps {
   characterName: string;
@@ -25,7 +25,7 @@ interface CharacterSheetProps {
   onLevelDown: () => void;
 }
 
-export const CharacterSheet: React.FC<CharacterSheetProps> = ({
+export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
   characterName,
   playerName,
   selectedClassId = undefined,
@@ -120,10 +120,8 @@ export const CharacterSheet: React.FC<CharacterSheetProps> = ({
       </div>
 
       <div className="mt-4 flex gap-2">
-        <PrimaryButton onClick={onLevelUp}>{ui.levelUp}</PrimaryButton>
-        {level > 1 && (
-          <PrimaryButton onClick={onLevelDown}>{ui.levelDown}</PrimaryButton>
-        )}
+        <Button onClick={onLevelUp}>{ui.levelUp}</Button>
+        {level > 1 && <Button onClick={onLevelDown}>{ui.levelDown}</Button>}
       </div>
     </div>
   );
