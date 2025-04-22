@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './index.css';
-import { CharacterCreator } from './pages/CharacterCreatorPage';
 import { CharacterSheet } from './pages/CharacterSheetPage';
 import { LevelUp } from './pages/LevelUpPage';
 import { LoginPage } from './pages/LoginPage';
@@ -9,8 +8,9 @@ import { Header } from './components/Layout/Header';
 import { LanguageProvider } from './context/LanguageContext';
 import LandingPage from './pages';
 import DashboardPage from './pages/DashboardPage';
-import CreateCampaignPage from './pages/CreateCampaignPage';
+import CreateCampaign from './pages/CreateCampaignPage';
 import CampaignPage from './pages/CampaignPage';
+import CreateCharacter from './pages/CreateCharacterPage';
 
 function App() {
   return (
@@ -36,7 +36,7 @@ function App() {
               element={
                 <RequireAuth>
                   <>
-                    <CreateCampaignPage />
+                    <CreateCampaign />
                   </>
                 </RequireAuth>
               }
@@ -52,11 +52,11 @@ function App() {
               }
             />
             <Route
-              path="/create"
+              path="/campaign/:id/create-character"
               element={
                 <RequireAuth>
                   <>
-                    <CharacterCreator mode={'create'} />{' '}
+                    <CreateCharacter />
                   </>
                 </RequireAuth>
               }
@@ -76,13 +76,12 @@ function App() {
               element={
                 <RequireAuth>
                   <>
-                    <LevelUp />{' '}
+                    <LevelUp />
                   </>
                 </RequireAuth>
               }
             />
           </Routes>
-          {/* <TestSupabaseConnection /> */}
         </main>
       </Router>
     </LanguageProvider>

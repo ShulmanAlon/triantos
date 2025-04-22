@@ -59,31 +59,35 @@ export const RaceSelector: React.FC<RaceSelectorProps> = ({
         </select>
       </div>
 
-      {/* Description */}
-      {description && (
-        <p className="text-sm text-gray-700 whitespace-pre-line">
-          {description}
-        </p>
-      )}
+      {!isDisabled && selectedRaceId && (
+        <div>
+          {/* Description */}
+          {description && (
+            <p className="text-sm text-gray-700 whitespace-pre-line">
+              {description}
+            </p>
+          )}
 
-      {/* Special Abilities */}
-      {specialAbilities?.length > 0 && (
-        <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
-          {specialAbilities.map((ability, index) => (
-            <li key={index}>{ability}</li>
-          ))}
-        </ul>
-      )}
+          {/* Special Abilities */}
+          {specialAbilities?.length > 0 && (
+            <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
+              {specialAbilities.map((ability, index) => (
+                <li key={index}>{ability}</li>
+              ))}
+            </ul>
+          )}
 
-      {/* Restrictions */}
-      {restrictions?.length > 0 && (
-        <div className="text-sm text-gray-700">
-          <p className="font-semibold mb-1">{ui.restrictions}:</p>
-          <ul className="list-disc list-inside space-y-1">
-            {restrictions.map((r, i) => (
-              <li key={i}>{r}</li>
-            ))}
-          </ul>
+          {/* Restrictions */}
+          {restrictions?.length > 0 && (
+            <div className="text-sm text-gray-700">
+              <p className="font-semibold mb-1">{ui.restrictions}:</p>
+              <ul className="list-disc list-inside space-y-1">
+                {restrictions.map((r, i) => (
+                  <li key={i}>{r}</li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       )}
     </div>

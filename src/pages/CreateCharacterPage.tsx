@@ -1,0 +1,275 @@
+import { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { AttributeAllocator } from '../components/CharacterCreator/AttributeAllocatorView';
+import { CharacterNameForm } from '../components/CharacterCreator/CharacterNameFormView';
+import { ClassSelector } from '../components/CharacterCreator/ClassSelectorView';
+import { RaceSelector } from '../components/CharacterCreator/RaceSelectorView';
+import { Button } from '../components/ui/Button';
+import { ARRGS_BASELINE, TOTAL_STARTING_POINTS } from '../config/constants';
+import { useLanguage } from '../context/LanguageContext';
+import { classes } from '../data/classes';
+import { races } from '../data/races';
+import { useCurrentUser } from '../hooks/useCurrentUser';
+import { uiLabels } from '../i18n/ui';
+import { supabase } from '../lib/supabaseClient';
+import { AttributeMap, Attribute } from '../types/attributes';
+import { getClassById, getClassLevelDataById } from '../utils/classUtils';
+import { calculateDerivedStats } from '../utils/derivedStats';
+import { getRaceById, getBaseAttributesByRaceId } from '../utils/raceUtils';
+import { ClassId } from '../types/gameClass';
+import { RaceId } from '../types/race';
+import { ImageWithPlaceholder } from '../components/ImageWithPlaceholder';
+import { getCharacterImage, getBlurPlaceholder } from '../utils/imageUtils';
+
+type CreationStep = 'class' | 'race' | 'attributes' | 'skills';
+
+const initialAttributes: AttributeMap = { ...ARRGS_BASELINE };
+
+export default function CharacterCreatePage() {
+  const { id: campaignId } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const user = useCurrentUser();
+  const { language } = useLanguage();
+  const ui = uiLabels[language];
+
+  const [creationStep, setCreationStep] = useState<CreationStep>('class');
+  const [characterName, setCharacterName] = useState('');
+  const [playerName, setPlayerName] = useState('');
+  const [selectedClassId, setSelectedClassId] = useState<ClassId | undefined>();
+  const [selectedRaceId, setSelectedRaceId] = useState<RaceId | undefined>();
+  const [usedPoints, setUsedPoints] = useState(0);
+  const [attributes, setAttributes] = useState<AttributeMap>(initialAttributes);
+  const [pool, setPool] = useState(TOTAL_STARTING_POINTS);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [isCharacterFinished, setIsCharacterFinished] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const level = 1;
+  const selectedClassData = getClassById(selectedClassId);
+  const currentLevelData = getClassLevelDataById(selectedClassId, level);
+  const hasAbilityPointThisLevel = !!currentLevelData?.abilityPoint;
+  const selectedRaceData = getRaceById(selectedRaceId);
+  const effectiveBaseline = selectedRaceData?.baseStats ?? ARRGS_BASELINE;
+  const allowedRacesId =
+    selectedClassData?.allowedRaces ?? races.map((r) => r.id);
+  const derivedStats = selectedClassData
+    ? calculateDerivedStats(selectedClassData, attributes, level)
+    : null;
+
+  const handleAttributeChange = (
+    attr: Attribute,
+    newValue: number,
+    poolDelta: number
+  ) => {
+    setAttributes((prev) => ({ ...prev, [attr]: newValue }));
+    if (hasAbilityPointThisLevel && poolDelta > 0) {
+      setUsedPoints((prev) => prev + 1);
+    } else {
+      setPool((prev) => prev + poolDelta);
+    }
+  };
+
+  const handleClassChange = (classId: ClassId | undefined) => {
+    setSelectedClassId(classId);
+    setSelectedRaceId(undefined);
+    resetAttributes();
+    setCreationStep('race');
+  };
+
+  const handleRaceChange = (raceId: RaceId | undefined) => {
+    setSelectedRaceId(raceId);
+    resetAttributes(raceId);
+    setCreationStep('attributes');
+  };
+
+  const resetAttributes = (raceId?: RaceId) => {
+    setUsedPoints(0);
+    const baseAttrs = getBaseAttributesByRaceId(raceId) ?? ARRGS_BASELINE;
+    setAttributes({ ...baseAttrs });
+    setPool(TOTAL_STARTING_POINTS);
+  };
+
+  const hasName = characterName.trim() !== '';
+  const hasPlayerName = playerName.trim() !== '';
+  const spentAllPoints = pool === 0;
+  const meetsRequirements = selectedClassData?.primaryAttributes
+    ? Object.entries(selectedClassData.primaryAttributes).every(
+        ([attr, min]) => attributes[attr as Attribute] >= min
+      )
+    : true;
+
+  const canFinishCharacter =
+    creationStep === 'skills' &&
+    !isCharacterFinished &&
+    hasName &&
+    hasPlayerName &&
+    spentAllPoints &&
+    meetsRequirements;
+
+  const handleCreate = async () => {
+    if (!user || !campaignId) return;
+    setSaving(true);
+    const { error: insertError } = await supabase.from('characters').insert({
+      name: characterName,
+      player_name: playerName || user.username,
+      class_id: selectedClassId,
+      race_id: selectedRaceId,
+      level,
+      attributes,
+      user_id: user.id,
+      campaign_id: campaignId,
+      image_url: imageUrl,
+      visible: true,
+      deleted: false,
+    });
+
+    if (insertError) {
+      setError(insertError.message);
+    } else {
+      navigate(`/campaign/${campaignId}`);
+    }
+
+    setSaving(false);
+  };
+
+  const handleCancel = () => {
+    navigate(`/campaign/${campaignId}`);
+  };
+
+  useEffect(() => {
+    if (creationStep === 'attributes' && spentAllPoints) {
+      setCreationStep('skills'); // skills stub for future
+    }
+  }, [attributes, creationStep, spentAllPoints]);
+
+  return (
+    <div className="max-w-2xl mx-auto p-4">
+      <h2 className="text-2xl font-bold mb-4">{ui.characterCreator}</h2>
+      <p className="text-xs italic text-gray-500">
+        Created by: {user?.username}
+      </p>
+      <div className="flex gap-4 items-start">
+        <div className="flex-1">
+          {/* Character name and player name */}
+          <CharacterNameForm
+            characterName={characterName}
+            playerName={playerName}
+            isCharacterFinished={isCharacterFinished}
+            onCharacterNameChange={setCharacterName}
+            onPlayerNameChange={setPlayerName}
+          />
+        </div>
+
+        {/* Image display & modal trigger */}
+        <div className="w-40 shrink-0">
+          <h3 className="text-sm font-medium mb-2">Character Image</h3>
+          <div
+            onClick={() => setShowImageModal(true)}
+            className="cursor-pointer w-40 h-40 border rounded overflow-hidden shadow-sm bg-gray-100 flex items-center justify-center"
+          >
+            {imageUrl ? (
+              <ImageWithPlaceholder
+                src={getCharacterImage(imageUrl, selectedClassId)}
+                blurSrc={getBlurPlaceholder(selectedClassId)}
+                alt={characterName}
+              />
+            ) : (
+              <span className="text-sm text-gray-500">+ Add Image</span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Class selection */}
+      <div className="mb-6">
+        <ClassSelector
+          classOptions={classes}
+          selectedClassId={selectedClassId}
+          isDisabled={isCharacterFinished}
+          onChange={handleClassChange}
+          currentAttributes={attributes}
+        />
+      </div>
+
+      {/* Race selection */}
+      <div className="mb-6">
+        <RaceSelector
+          raceOptions={races}
+          selectedRaceId={selectedRaceId}
+          isDisabled={creationStep === 'class' || isCharacterFinished}
+          onChange={handleRaceChange}
+          allowedRacesId={allowedRacesId}
+        />
+      </div>
+
+      {/* Attribute allocator */}
+      {['attributes', 'skills'].includes(creationStep) && (
+        <AttributeAllocator
+          attributes={attributes}
+          baseline={effectiveBaseline}
+          pool={pool}
+          isLevelUpMode={false}
+          usedPoints={usedPoints}
+          hasAbilityPointThisLevel={hasAbilityPointThisLevel}
+          onChange={handleAttributeChange}
+          selectedClassData={selectedClassData}
+        />
+      )}
+
+      {/* Derived Stats - HP, BAB, Spells */}
+      {selectedClassData && (
+        <div className="border-t pt-4 mt-4 space-y-2 text-sm text-gray-700">
+          <p>
+            <strong>HP:</strong> {derivedStats?.hp}
+          </p>
+          <p>
+            <strong>Base Attack Bonus:</strong> {derivedStats?.attackBonus}
+          </p>
+          <p>
+            <strong>Spells:</strong>{' '}
+            {Object.entries(derivedStats?.spellSlots ?? {})
+              .map(([lvl, slots]) => `Lvl ${lvl}: ${slots}`)
+              .join(', ') || 'None'}
+          </p>
+        </div>
+      )}
+
+      {/* Modal for image URL input */}
+      {showImageModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded shadow max-w-sm w-full space-y-4">
+            <h3 className="text-lg font-semibold">Set Image URL</h3>
+            <input
+              value={imageUrl || ''}
+              onChange={(e) => setImageUrl(e.target.value)}
+              placeholder="https://example.com/image.jpg"
+              className="w-full border rounded p-2"
+            />
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setShowImageModal(false)}
+              >
+                Cancel
+              </Button>
+              <Button onClick={() => setShowImageModal(false)}>Save</Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Error & Actions */}
+      {error && <p className="text-red-600 mt-4">{error}</p>}
+      <div className="flex justify-between items-center mt-8">
+        <Button variant="outline" onClick={handleCancel}>
+          {ui.cancel}
+        </Button>
+        <Button disabled={!canFinishCharacter || saving} onClick={handleCreate}>
+          {ui.finishCreation}
+        </Button>
+      </div>
+    </div>
+  );
+}

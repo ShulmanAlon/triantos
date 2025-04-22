@@ -3,6 +3,13 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { Button } from '../components/ui/Button';
+import { ImageWithPlaceholder } from '../components/ImageWithPlaceholder';
+import { getCharacterImage, getBlurPlaceholder } from '../utils/imageUtils';
+import { ClassId } from '../types/gameClass';
+
+type RawCharacter = Omit<CharacterPreview, 'owner_username'> & {
+  users: { username: string }[] | { username: string } | null;
+};
 
 interface CharacterPreview {
   id: string;
@@ -13,6 +20,7 @@ interface CharacterPreview {
   race_id: string;
   level: number;
   visible: boolean;
+  owner_username: string;
 }
 
 interface CampaignData {
@@ -55,12 +63,20 @@ export default function CampaignPage() {
       const { data: characterData } = await supabase
         .from('characters')
         .select(
-          'id, name, player_name, image_url, class_id, race_id, level, visible'
+          'id, name, player_name, image_url, class_id, race_id, level, visible, users(username)'
         )
         .eq('campaign_id', id);
 
+      const flattenedCampaign = (characterData as RawCharacter[] | null)?.map(
+        (char) => ({
+          ...char,
+          owner_username: Array.isArray(char.users)
+            ? char.users[0]?.username ?? 'unknown'
+            : char.users?.username ?? 'unknown',
+        })
+      );
       setCampaign(campaignData);
-      setCharacters(characterData || []);
+      setCharacters(flattenedCampaign || []);
       setLoading(false);
     };
 
@@ -107,7 +123,10 @@ export default function CampaignPage() {
 
       <div className="flex justify-between items-center pt-4">
         <h2 className="text-2xl font-semibold">Characters</h2>
-        <Button variant="outline" onClick={() => navigate('/create-character')}>
+        <Button
+          variant="outline"
+          onClick={() => navigate(`/campaign/${campaign.id}/create-character`)}
+        >
           + New Character
         </Button>
       </div>
@@ -119,11 +138,14 @@ export default function CampaignPage() {
             onClick={() => navigate(`/character/${char.id}`)}
             className="cursor-pointer p-4 border rounded hover:bg-gray-50 transition relative"
           >
-            <img
-              src={char.image_url || '/placeholder.png'}
+            <ImageWithPlaceholder
+              src={getCharacterImage(char.image_url, char.class_id as ClassId)}
+              blurSrc={getBlurPlaceholder(char.class_id as ClassId)}
               alt={char.name}
-              className="w-full h-40 object-cover rounded mb-2"
             />
+            <p className="text-xs italic text-gray-500">
+              Owner: {char.owner_username}
+            </p>
             <h3 className="text-lg font-bold">{char.name}</h3>
             <p className="text-sm text-gray-600">{char.player_name}</p>
             <p className="text-sm text-gray-500">

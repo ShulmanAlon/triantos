@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 
-export default function CreateCampaignPage() {
+export default function CreateCampaign() {
   const user = useCurrentUser();
   const navigate = useNavigate();
 
@@ -14,13 +14,6 @@ export default function CreateCampaignPage() {
   const [loading, setLoading] = useState(false);
 
   const handleCreate = async () => {
-    console.log(user?.id, user?.role, user?.username);
-    console.log({
-      name,
-      description,
-      image_url: imageUrl,
-      owner_id: user?.id,
-    });
     if (!name.trim() || !user) return;
 
     setLoading(true);
