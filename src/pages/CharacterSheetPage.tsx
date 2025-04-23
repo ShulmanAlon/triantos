@@ -1,42 +1,82 @@
+import { useEffect, useState } from 'react';
 import { CharacterSheetView } from '../components/CharacterSheet/CharacterSheetView';
 import { ClassId, GameClass } from '../types/gameClass';
-import { RaceId } from '../types/race';
 import { getClassById } from '../utils/classUtils';
 import { calculateDerivedStats } from '../utils/derivedStats';
+import { Button } from '../components/ui/Button';
+import EditCharacterModal from '../components/EditCharacterModal';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useCurrentUser } from '../hooks/useCurrentUser';
+import { supabase } from '../lib/supabaseClient';
+import { CharacterPreview } from '../types/character';
 
 export const CharacterSheet = () => {
-  // Temporary fake character data – we’ll use context or persistent state later
-  const character = {
-    name: 'Example Character',
-    playerName: 'Player',
-    level: 3,
-    raceId: 'Human' as RaceId,
-    classId: 'MagicUser' as ClassId,
-    attributes: {
-      str: 10,
-      int: 18,
-      wis: 12,
-      dex: 10,
-      con: 15,
-      cha: 10,
-    },
-  };
+  const { id } = useParams<{ id: string }>();
+  const [character, setCharacter] = useState<CharacterPreview | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [showEditModal, setShowEditModal] = useState(false);
 
+  const navigate = useNavigate();
+  const user = useCurrentUser();
+  const canEdit = user?.role === 'admin' || character?.user_id === user?.id;
+
+  useEffect(() => {
+    const fetchCharacter = async () => {
+      if (!id) return;
+
+      const { data, error } = await supabase
+        .from('characters')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (!error && data) {
+        setCharacter(data);
+      }
+
+      setLoading(false);
+    };
+
+    fetchCharacter();
+  }, [id]);
+
+  if (loading) return <p className="p-4">Loading...</p>;
+  if (!character)
+    return <p className="p-4 text-red-600">Character not found.</p>;
   return (
-    <CharacterSheetView
-      characterName={character.name}
-      playerName={character.playerName}
-      selectedClassId={character.classId}
-      selectedRaceId={character.raceId}
-      level={character.level}
-      attributes={character.attributes}
-      onLevelUp={() => console.log('Level Up')}
-      onLevelDown={() => console.log('Level Down')}
-      derived={calculateDerivedStats(
-        getClassById(character.classId as ClassId) as GameClass,
-        character.attributes,
-        character.level
+    <div>
+      {canEdit && (
+        <Button variant="outline" onClick={() => setShowEditModal(true)}>
+          ✏️ Edit Character
+        </Button>
       )}
-    />
+      <Button
+        variant="outline"
+        onClick={() => navigate(`/campaign/${character.campaign_id}`)}
+      >
+        ← Back to Campaign
+      </Button>
+      <CharacterSheetView
+        characterName={character.name}
+        playerName={character.player_name}
+        selectedClassId={character.class_id}
+        selectedRaceId={character.race_id}
+        level={character.level}
+        attributes={character.attributes}
+        onLevelUp={() => console.log('Level Up')}
+        onLevelDown={() => console.log('Level Down')}
+        derived={calculateDerivedStats(
+          getClassById(character.class_id as ClassId) as GameClass,
+          character.attributes,
+          character.level
+        )}
+      />
+      <EditCharacterModal
+        open={showEditModal}
+        character={character}
+        onClose={() => setShowEditModal(false)}
+        onSave={(updated) => setCharacter(updated)}
+      />
+    </div>
   );
 };

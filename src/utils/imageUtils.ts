@@ -15,7 +15,7 @@ export function getCharacterImage(
   return classId ? placeholderMap[classId] : '/images/placeholders/default.png';
 }
 
-export function getBlurPlaceholder(classId?: ClassId): string | undefined {
+export function getCharacterBlurImage(classId?: ClassId): string | undefined {
   const blurMap: Record<ClassId, string> = {
     Fighter: '/images/placeholders/blur-fighter.png',
     Cleric: '/images/placeholders/blur-cleric.png',
@@ -23,4 +23,14 @@ export function getBlurPlaceholder(classId?: ClassId): string | undefined {
   };
 
   return classId ? blurMap[classId] : undefined;
+}
+
+export function getCampaignImage(imageUrl?: string): string {
+  if (imageUrl) return imageUrl;
+
+  return '/images/placeholders/campaign.png';
+}
+
+export function getCampaignBlurImage(): string {
+  return '/images/placeholders/blur-campaign.png';
 }

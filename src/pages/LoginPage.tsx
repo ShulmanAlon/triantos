@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { useRedirectIfLoggedIn } from '../hooks/useRedirectIfLoggedIn';
+import { useNavigate } from 'react-router-dom';
 
 export const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+
+  const navigate = useNavigate();
 
   useRedirectIfLoggedIn('/dashboard');
 
@@ -20,6 +23,7 @@ export const LoginPage = () => {
       setErrorMsg(error.message);
     } else {
       setErrorMsg('');
+      navigate('/dashboard');
     }
   };
 

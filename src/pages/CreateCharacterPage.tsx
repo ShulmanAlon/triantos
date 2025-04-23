@@ -19,7 +19,8 @@ import { getRaceById, getBaseAttributesByRaceId } from '../utils/raceUtils';
 import { ClassId } from '../types/gameClass';
 import { RaceId } from '../types/race';
 import { ImageWithPlaceholder } from '../components/ImageWithPlaceholder';
-import { getCharacterImage, getBlurPlaceholder } from '../utils/imageUtils';
+import { getCharacterImage, getCharacterBlurImage } from '../utils/imageUtils';
+import ImageUrlModal from '../components/ImageUrlModal';
 
 type CreationStep = 'class' | 'race' | 'attributes' | 'skills';
 
@@ -167,21 +168,29 @@ export default function CharacterCreatePage() {
           <h3 className="text-sm font-medium mb-2">Character Image</h3>
           <div
             onClick={() => setShowImageModal(true)}
-            className="cursor-pointer w-40 h-40 border rounded overflow-hidden shadow-sm bg-gray-100 flex items-center justify-center"
+            className="relative cursor-pointer w-40 h-40 border rounded overflow-hidden shadow-sm bg-gray-100 group"
           >
             {imageUrl ? (
-              <ImageWithPlaceholder
-                src={getCharacterImage(imageUrl, selectedClassId)}
-                blurSrc={getBlurPlaceholder(selectedClassId)}
-                alt={characterName}
-              />
+              <>
+                <ImageWithPlaceholder
+                  src={getCharacterImage(imageUrl, selectedClassId)}
+                  blurSrc={getCharacterBlurImage(selectedClassId)}
+                  alt={characterName}
+                  className="w-full h-full object-cover"
+                />
+                {/* Hover Overlay */}
+                <div className="absolute inset-0 bg-black bg-opacity-30 opacity-0 group-hover:opacity-60 transition-opacity flex items-center justify-center">
+                  <span className="text-white text-sm font-medium">Edit</span>
+                </div>
+              </>
             ) : (
-              <span className="text-sm text-gray-500">+ Add Image</span>
+              <div className="w-full h-full flex items-center justify-center text-sm text-gray-500">
+                + Add Image
+              </div>
             )}
           </div>
         </div>
       </div>
-
       {/* Class selection */}
       <div className="mb-6">
         <ClassSelector
@@ -192,7 +201,6 @@ export default function CharacterCreatePage() {
           currentAttributes={attributes}
         />
       </div>
-
       {/* Race selection */}
       <div className="mb-6">
         <RaceSelector
@@ -203,7 +211,6 @@ export default function CharacterCreatePage() {
           allowedRacesId={allowedRacesId}
         />
       </div>
-
       {/* Attribute allocator */}
       {['attributes', 'skills'].includes(creationStep) && (
         <AttributeAllocator
@@ -217,7 +224,6 @@ export default function CharacterCreatePage() {
           selectedClassData={selectedClassData}
         />
       )}
-
       {/* Derived Stats - HP, BAB, Spells */}
       {selectedClassData && (
         <div className="border-t pt-4 mt-4 space-y-2 text-sm text-gray-700">
@@ -236,29 +242,14 @@ export default function CharacterCreatePage() {
         </div>
       )}
 
-      {/* Modal for image URL input */}
-      {showImageModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded shadow max-w-sm w-full space-y-4">
-            <h3 className="text-lg font-semibold">Set Image URL</h3>
-            <input
-              value={imageUrl || ''}
-              onChange={(e) => setImageUrl(e.target.value)}
-              placeholder="https://example.com/image.jpg"
-              className="w-full border rounded p-2"
-            />
-            <div className="flex justify-end gap-2">
-              <Button
-                variant="outline"
-                onClick={() => setShowImageModal(false)}
-              >
-                Cancel
-              </Button>
-              <Button onClick={() => setShowImageModal(false)}>Save</Button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* { Modal for image URL input */}
+      <ImageUrlModal
+        isOpen={showImageModal}
+        imageUrl={imageUrl || ''}
+        setImageUrl={setImageUrl}
+        onClose={() => setShowImageModal(false)}
+        title="Set Character Image URL"
+      />
 
       {/* Error & Actions */}
       {error && <p className="text-red-600 mt-4">{error}</p>}

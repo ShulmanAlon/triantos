@@ -1,5 +1,6 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useUserCampaigns } from '../hooks/useUserCampaigns';
+import { CampaignListItem } from '../components/CampaignListItem';
 
 export default function DashboardPage() {
   const { campaigns, loading, error } = useUserCampaigns();
@@ -17,51 +18,18 @@ export default function DashboardPage() {
       ) : (
         <div className="space-y-4">
           {campaigns.map((c) => (
-            <Link
-              to={`/campaign/${c.id}`}
-              key={c.id}
-              className="flex items-start gap-4 p-4 bg-white rounded-lg shadow-sm border hover:bg-gray-50 transition"
-            >
-              {c.image_url && (
-                <img
-                  src={c.image_url}
-                  alt={`${c.name} image`}
-                  className="w-24 h-24 object-cover rounded"
-                />
-              )}
-
-              <div className="flex flex-col gap-1">
-                <h2 className="text-xl font-semibold">{c.name}</h2>
-                <p className="text-sm text-gray-600">{c.description}</p>
-
-                <p className="text-sm text-gray-500">
-                  DM:{' '}
-                  <span className="font-medium">
-                    {c.members.find((m) => m.role === 'dm')?.username ??
-                      'Unknown'}
-                  </span>
-                </p>
-
-                <p className="text-sm text-gray-500">
-                  Players:{' '}
-                  {c.members
-                    .filter((m) => m.role === 'player')
-                    .map((m) => m.username)
-                    .join(', ') || 'None'}
-                </p>
-              </div>
-            </Link>
+            <CampaignListItem key={c.campaign_id} campaign={c} />
           ))}
-          <div className="pt-6">
-            <button
-              onClick={() => navigate('/create-campaign')}
-              className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-            >
-              + Create New Campaign
-            </button>
-          </div>
         </div>
       )}
+      <div className="pt-6">
+        <button
+          onClick={() => navigate('/create-campaign')}
+          className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+        >
+          + Create New Campaign
+        </button>
+      </div>
     </main>
   );
 }

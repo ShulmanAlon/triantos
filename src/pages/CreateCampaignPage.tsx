@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import { useCurrentUser } from '../hooks/useCurrentUser';
+import { ImageWithPlaceholder } from '../components/ImageWithPlaceholder';
+import { getCampaignBlurImage, getCampaignImage } from '../utils/imageUtils';
+import ImageUrlModal from '../components/ImageUrlModal';
 
 export default function CreateCampaign() {
   const user = useCurrentUser();
@@ -12,6 +15,7 @@ export default function CreateCampaign() {
   const [imageUrl, setImageUrl] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showImageModal, setShowImageModal] = useState(false);
 
   const handleCreate = async () => {
     if (!name.trim() || !user) return;
@@ -41,7 +45,6 @@ export default function CreateCampaign() {
       .insert({
         user_id: user.id,
         campaign_id: campaign.id,
-        role: 'dm',
       });
 
     if (memberError) {
@@ -55,6 +58,29 @@ export default function CreateCampaign() {
   return (
     <main className="max-w-xl mx-auto p-6 space-y-4">
       <h1 className="text-2xl font-bold">Create New Campaign</h1>
+      <div
+        onClick={() => setShowImageModal(true)}
+        className="relative cursor-pointer w-40 h-40 border rounded overflow-hidden shadow-sm bg-gray-100 group"
+      >
+        {imageUrl ? (
+          <>
+            <ImageWithPlaceholder
+              src={getCampaignImage(imageUrl)}
+              blurSrc={getCampaignBlurImage()}
+              alt="Campaign preview"
+              className="w-full h-full object-cover"
+            />
+            {/* Hover Overlay */}
+            <div className="absolute inset-0 bg-black bg-opacity-30 opacity-0 group-hover:opacity-60 transition-opacity flex items-center justify-center">
+              <span className="text-white text-sm font-medium">Edit</span>
+            </div>
+          </>
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-sm text-gray-500">
+            + Add Image
+          </div>
+        )}
+      </div>
 
       <label className="block">
         <span className="text-sm font-medium">Campaign Name</span>
@@ -71,16 +97,6 @@ export default function CreateCampaign() {
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="w-full mt-1 p-2 border rounded"
-        />
-      </label>
-
-      <label className="block">
-        <span className="text-sm font-medium">Image URL (optional)</span>
-        <input
-          type="text"
-          value={imageUrl}
-          onChange={(e) => setImageUrl(e.target.value)}
           className="w-full mt-1 p-2 border rounded"
         />
       </label>
@@ -102,6 +118,14 @@ export default function CreateCampaign() {
         </button>
       </div>
 
+      {/* { Modal for image URL input */}
+      <ImageUrlModal
+        isOpen={showImageModal}
+        imageUrl={imageUrl || ''}
+        setImageUrl={setImageUrl}
+        onClose={() => setShowImageModal(false)}
+        title="Set Campaign Image URL"
+      />
       {error && <p className="text-red-600">{error}</p>}
     </main>
   );
