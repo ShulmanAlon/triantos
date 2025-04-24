@@ -6,7 +6,6 @@ import { LabeledInput } from '../ui/LabeledInput';
 interface CharacterNameFormProps {
   characterName: string;
   playerName: string;
-  isCharacterFinished: boolean;
   onCharacterNameChange: (value: string) => void;
   onPlayerNameChange: (value: string) => void;
 }
@@ -14,7 +13,6 @@ interface CharacterNameFormProps {
 export const CharacterNameForm: React.FC<CharacterNameFormProps> = ({
   characterName,
   playerName,
-  isCharacterFinished,
   onCharacterNameChange,
   onPlayerNameChange,
 }) => {
@@ -27,7 +25,6 @@ export const CharacterNameForm: React.FC<CharacterNameFormProps> = ({
         label={ui.characterName}
         value={characterName}
         onChange={onCharacterNameChange}
-        disabled={isCharacterFinished}
       />
 
       {/* Player Name */}
@@ -35,7 +32,6 @@ export const CharacterNameForm: React.FC<CharacterNameFormProps> = ({
         label={ui.playerName}
         value={playerName}
         onChange={onPlayerNameChange}
-        disabled={isCharacterFinished}
       />
     </div>
   );

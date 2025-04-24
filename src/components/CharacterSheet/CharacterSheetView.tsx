@@ -11,7 +11,6 @@ import { useLanguage } from '../../context/LanguageContext';
 import { uiLabels } from '../../i18n/ui';
 import { getAttributeNameById } from '../../utils/attributeUtils';
 import { ATTRIBUTE_ORDER } from '../../config/constants';
-import { Button } from '../ui/Button';
 
 interface CharacterSheetProps {
   characterName: string;
@@ -21,8 +20,6 @@ interface CharacterSheetProps {
   level: number;
   attributes: Record<Attribute, number>;
   derived: DerivedStats | null;
-  onLevelUp: () => void;
-  onLevelDown: () => void;
 }
 
 export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
@@ -33,8 +30,6 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
   level,
   attributes,
   derived,
-  onLevelUp,
-  onLevelDown,
 }) => {
   const { language } = useLanguage();
   const ui = uiLabels[language];
@@ -117,11 +112,6 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
             </ul>
           </div>
         )}
-      </div>
-
-      <div className="mt-4 flex gap-2">
-        <Button onClick={onLevelUp}>{ui.levelUp}</Button>
-        {level > 1 && <Button onClick={onLevelDown}>{ui.levelDown}</Button>}
       </div>
     </div>
   );

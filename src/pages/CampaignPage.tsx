@@ -13,35 +13,20 @@ import {
 import { ClassId } from '../types/gameClass';
 import EditCampaignModal from '../components/EditCampaignModal';
 import { CampaignInterface } from '../types/campaign';
-
-type RawCharacter = Omit<CharacterPreview, 'owner_username'> & {
-  users: { username: string }[] | { username: string } | null;
-};
-
-interface CharacterPreview {
-  id: string;
-  name: string;
-  player_name: string;
-  image_url?: string;
-  class_id: string;
-  race_id: string;
-  level: number;
-  visible: boolean;
-  owner_username: string;
-}
+import { CharacterPreview, RawCharacter } from '../types/character';
 
 export default function CampaignPage() {
   const { id } = useParams<{ id: string }>();
+  const user = useCurrentUser();
   const navigate = useNavigate();
+
   const [campaign, setCampaign] = useState<CampaignInterface | null>(null);
   const [characters, setCharacters] = useState<CharacterPreview[]>([]);
   const [loading, setLoading] = useState(true);
   const [showEditModal, setShowEditModal] = useState(false);
 
-  const user = useCurrentUser();
-  const canEdit =
-    user?.role === 'admin' ||
-    (campaign && campaign.members.some((m) => m.user_id === campaign.owner_id));
+  const canEditCampaign =
+    user !== null && (campaign?.owner_id === user.id || user.role === 'admin');
 
   useEffect(() => {
     if (!id || !user) return;
@@ -52,7 +37,7 @@ export default function CampaignPage() {
       const { data: campaignData } = await supabase
         .from('dashboard_campaigns')
         .select('*')
-        .eq('id', id)
+        .eq('campaign_id', id)
         .maybeSingle();
 
       const { data: characterData } = await supabase
@@ -60,7 +45,8 @@ export default function CampaignPage() {
         .select(
           'id, name, player_name, image_url, class_id, race_id, level, visible, users(username)'
         )
-        .eq('campaign_id', id);
+        .eq('campaign_id', id)
+        .eq('deleted', false);
 
       const flattenedCampaign = (characterData as RawCharacter[] | null)?.map(
         (char) => ({
@@ -76,21 +62,24 @@ export default function CampaignPage() {
     };
 
     fetchData();
-  }, [id]);
+  }, [id, user]);
 
   if (loading) return <p className="p-6">Loading campaign...</p>;
   if (!campaign) return <p className="p-6 text-red-600">Campaign not found.</p>;
 
   return (
     <main className="p-6 space-y-6">
-      {canEdit && (
+      {canEditCampaign && (
         <Button variant="outline" onClick={() => setShowEditModal(true)}>
           ✏️ Edit Campaign
         </Button>
       )}
       <div className="flex gap-2">
         <h1 className="text-3xl font-bold">{campaign.name}</h1>
-        <Button variant="primary" onClick={() => navigate('/handbook')}>
+        <Button
+          variant="primary"
+          onClick={() => navigate(`/campaign/${campaign.campaign_id}/handbook`)}
+        >
           Player’s Handbook
         </Button>
         <Button variant="outline" onClick={() => navigate('/dashboard')}>
@@ -131,32 +120,46 @@ export default function CampaignPage() {
         </Button>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {characters.map((char) => (
-          <div
-            key={char.id}
-            onClick={() => navigate(`/character/${char.id}`)}
-            className="cursor-pointer p-4 border rounded hover:bg-gray-50 transition relative"
-          >
-            <ImageWithPlaceholder
-              src={getCharacterImage(char.image_url, char.class_id as ClassId)}
-              blurSrc={getCharacterBlurImage(char.class_id as ClassId)}
-              alt={char.name}
-            />
-            <p className="text-xs italic text-gray-500">
-              Owner: {char.owner_username}
-            </p>
-            <h3 className="text-lg font-bold">{char.name}</h3>
-            <p className="text-sm text-gray-600">{char.player_name}</p>
-            <p className="text-sm text-gray-500">
-              {char.class_id} • {char.race_id} • Level {char.level}
-            </p>
-            {!char.visible && (
-              <div className="absolute top-2 right-2 text-gray-500">👁️‍🗨️</div>
-            )}
-          </div>
-        ))}
+        {characters
+          .filter((char) => {
+            if (!user) return;
+            const isOwner = char.user_id === user.id;
+            const isAdmin = user.role === 'admin';
+            const isDM = campaign.owner_id === user.id;
+
+            return char.visible || isOwner || isAdmin || isDM;
+          })
+          .map((char) => (
+            <div
+              key={char.id}
+              onClick={() => navigate(`/character/${char.id}`)}
+              className="cursor-pointer p-4 border rounded hover:bg-gray-50 transition relative"
+            >
+              <ImageWithPlaceholder
+                src={getCharacterImage(
+                  char.image_url,
+                  char.class_id as ClassId
+                )}
+                blurSrc={getCharacterBlurImage(char.class_id as ClassId)}
+                alt={char.name}
+              />
+              <p className="text-xs italic text-gray-500">
+                Owner: {char.owner_username}
+              </p>
+              <h3 className="text-lg font-bold">{char.name}</h3>
+              <p className="text-sm text-gray-600">{char.player_name}</p>
+              <p className="text-sm text-gray-500">
+                {char.class_id} • {char.race_id} • Level {char.level}
+              </p>
+              {!char.visible && (
+                <div className="absolute text-4xl top-2 right-2 text-gray-500">
+                  👁️‍🗨️
+                </div>
+              )}
+            </div>
+          ))}
       </div>
-      {canEdit && (
+      {canEditCampaign && (
         <Button
           variant="destructive"
           onClick={async () => {

@@ -43,7 +43,6 @@ export default function CharacterCreatePage() {
   const [pool, setPool] = useState(TOTAL_STARTING_POINTS);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [showImageModal, setShowImageModal] = useState(false);
-  const [isCharacterFinished, setIsCharacterFinished] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -103,7 +102,6 @@ export default function CharacterCreatePage() {
 
   const canFinishCharacter =
     creationStep === 'skills' &&
-    !isCharacterFinished &&
     hasName &&
     hasPlayerName &&
     spentAllPoints &&
@@ -112,6 +110,7 @@ export default function CharacterCreatePage() {
   const handleCreate = async () => {
     if (!user || !campaignId) return;
     setSaving(true);
+
     const { error: insertError } = await supabase.from('characters').insert({
       name: characterName,
       player_name: playerName || user.username,
@@ -126,12 +125,21 @@ export default function CharacterCreatePage() {
       deleted: false,
     });
 
-    if (insertError) {
-      setError(insertError.message);
-    } else {
-      navigate(`/campaign/${campaignId}`);
+    const { error: upsertError } = await supabase
+      .from('campaign_members')
+      .upsert([{ campaign_id: campaignId, user_id: user.id }], {
+        onConflict: 'campaign_id, user_id',
+      });
+
+    if (insertError || upsertError) {
+      setError(
+        (insertError?.message ?? null) || (upsertError?.message ?? null)
+      );
+      setSaving(false);
+      return;
     }
 
+    navigate(`/campaign/${campaignId}`);
     setSaving(false);
   };
 
@@ -157,7 +165,6 @@ export default function CharacterCreatePage() {
           <CharacterNameForm
             characterName={characterName}
             playerName={playerName}
-            isCharacterFinished={isCharacterFinished}
             onCharacterNameChange={setCharacterName}
             onPlayerNameChange={setPlayerName}
           />
@@ -196,7 +203,7 @@ export default function CharacterCreatePage() {
         <ClassSelector
           classOptions={classes}
           selectedClassId={selectedClassId}
-          isDisabled={isCharacterFinished}
+          isDisabled={false}
           onChange={handleClassChange}
           currentAttributes={attributes}
         />
@@ -206,7 +213,7 @@ export default function CharacterCreatePage() {
         <RaceSelector
           raceOptions={races}
           selectedRaceId={selectedRaceId}
-          isDisabled={creationStep === 'class' || isCharacterFinished}
+          isDisabled={creationStep === 'class'}
           onChange={handleRaceChange}
           allowedRacesId={allowedRacesId}
         />

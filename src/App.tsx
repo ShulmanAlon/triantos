@@ -11,6 +11,7 @@ import DashboardPage from './pages/DashboardPage';
 import CreateCampaign from './pages/CreateCampaignPage';
 import CampaignPage from './pages/CampaignPage';
 import CreateCharacter from './pages/CreateCharacterPage';
+import CampaignHandbookPage from './pages/CampaignHandbookPage';
 
 function App() {
   return (
@@ -77,6 +78,16 @@ function App() {
                 <RequireAuth>
                   <>
                     <LevelUp />
+                  </>
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/campaign/:id/handbook"
+              element={
+                <RequireAuth>
+                  <>
+                    <CampaignHandbookPage />
                   </>
                 </RequireAuth>
               }

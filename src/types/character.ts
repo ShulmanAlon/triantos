@@ -16,3 +16,7 @@ export interface CharacterPreview {
   campaign_id: string;
   owner_username?: string;
 }
+
+export type RawCharacter = Omit<CharacterPreview, 'owner_username'> & {
+  users: { username: string }[] | { username: string } | null;
+};

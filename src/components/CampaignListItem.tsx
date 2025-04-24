@@ -28,7 +28,7 @@ export function CampaignListItem({
           DM: <span className="font-medium">{campaign.owner_username}</span>
         </p>
         <p className="text-sm text-gray-600">
-          Members:
+          Members:{' '}
           {campaign.members
             .filter((m) => m.user_id !== campaign.owner_id)
             .map((m) => m.username)
