@@ -8,9 +8,9 @@ export interface DerivedStats {
   hp: number;
   spellSlots?: Record<number, number>;
   attackBonus?: number;
-  // You can add: initiative, AC, mana, etc. here later
 }
 
+// TODO: Used for XP-based level-up calculations
 export function getLevelFromXP(xp: number): number {
   for (let i = XP_TABLE.length - 1; i >= 0; i--) {
     if (xp >= XP_TABLE[i]) return i + 1;

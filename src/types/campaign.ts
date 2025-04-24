@@ -1,3 +1,4 @@
+// TODO for backoffice functionality
 export interface CampaignMember {
   user_id: string;
   campaign_id: string;

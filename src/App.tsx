@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './index.css';
 import { CharacterSheet } from './pages/CharacterSheetPage';
-import { LevelUp } from './pages/LevelUpPage';
+import CharacterLevelUpPage from './pages/LevelUpPage';
 import { LoginPage } from './pages/LoginPage';
 import { RequireAuth } from './components/Auth/RequireAuth';
 import { Header } from './components/Layout/Header';
@@ -77,7 +77,7 @@ function App() {
               element={
                 <RequireAuth>
                   <>
-                    <LevelUp />
+                    <CharacterLevelUpPage />
                   </>
                 </RequireAuth>
               }

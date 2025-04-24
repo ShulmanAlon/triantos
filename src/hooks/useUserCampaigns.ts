@@ -8,7 +8,7 @@ export function useUserCampaigns() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const user = useCurrentUser(); // assumes you have this returning { id, role }
+  const user = useCurrentUser();
 
   useEffect(() => {
     if (!user) return;

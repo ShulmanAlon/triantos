@@ -10,7 +10,7 @@ export interface GameClass {
   allowedRaces: RaceId[];
 }
 
-export type SpellSlots = Record<number, number>; // e.g., { 1: 2, 2: 1 }
+type SpellSlots = Record<number, number>; // e.g., { 1: 2, 2: 1 }
 
 export interface ClassLevel {
   level: number;

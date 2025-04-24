@@ -44,7 +44,7 @@ export default function CampaignHandbookPage() {
     };
 
     fetchCampaign();
-  }, [id, user]);
+  }, [id, user, navigate]);
 
   if (loading) return <p className="p-6">Loading handbook...</p>;
   if (!campaign) return <p className="p-6 text-red-600">Campaign not found.</p>;

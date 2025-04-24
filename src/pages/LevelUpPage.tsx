@@ -1,3 +1,7 @@
-export const LevelUp = () => {
-  return <div>Level Up View (To be implemented)</div>;
-};
+export default function CharacterLevelUpPage() {
+  return (
+    <div className="p-4 text-gray-600 italic">
+      Level-up functionality coming soon...
+    </div>
+  );
+}
