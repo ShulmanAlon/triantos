@@ -10,10 +10,10 @@ import {
   getCharacterBlurImage,
   getCharacterImage,
 } from '../utils/imageUtils';
-import { ClassId } from '../types/gameClass';
+import type { ClassId } from '../types/gameClass';
 import EditCampaignModal from '../components/EditCampaignModal';
-import { CampaignInterface } from '../types/campaign';
-import { CharacterPreview, RawCharacter } from '../types/character';
+import type { CampaignInterface } from '../types/campaign';
+import type { CharacterPreview, RawCharacter } from '../types/character';
 
 export default function CampaignPage() {
   const { id } = useParams<{ id: string }>();

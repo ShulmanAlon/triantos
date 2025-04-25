@@ -1,4 +1,3 @@
-// components/CampaignListItem.tsx
 import { Link } from 'react-router-dom';
 import { getCampaignImage, getCampaignBlurImage } from '../utils/imageUtils';
 import { ImageWithPlaceholder } from './ImageWithPlaceholder';

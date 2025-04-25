@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getPointCostChange } from '../attributeUtils';
+import { getPointCostChange } from './attributeUtils';
 
 describe('getPointCostChange', () => {
   it(() => {

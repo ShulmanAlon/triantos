@@ -1,37 +1,40 @@
-// src/components/ui/PrimaryButton.tsx
-type Props = {
+import React from 'react';
+
+export type ButtonProps = {
   children: React.ReactNode;
   onClick: () => void;
   disabled?: boolean;
   className?: string;
-  type?: 'button' | 'submit' | 'reset';
+  type?: 'button' | 'submit';
   variant?: 'primary' | 'outline' | 'destructive';
 };
 
-export const Button: React.FC<Props> = ({
+export function Button({
   children,
   onClick,
   disabled = false,
   className = '',
   type = 'button',
   variant = 'primary',
-}) => {
-  const base =
-    'px-4 py-2 rounded text-sm font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed';
-  const variants: Record<typeof variant, string> = {
+}: ButtonProps) {
+  const baseClasses = 'rounded px-4 py-2 font-semibold text-sm shadow-sm';
+  const variantClasses = {
     primary: 'bg-blue-600 text-white hover:bg-blue-700',
-    outline: 'border border-gray-400 text-gray-800 bg-white hover:bg-gray-100',
+    outline: 'border border-gray-300 text-gray-700 hover:bg-gray-100',
     destructive: 'bg-red-600 text-white hover:bg-red-700',
-  };
+  }[variant];
 
   return (
     <button
-      type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`${base} ${variants[variant]} ${className}`}
+      type={type}
+      className={`${baseClasses} ${variantClasses} ${
+        disabled ? 'opacity-50 cursor-not-allowed' : ''
+      } ${className}`}
+      data-testid="button"
     >
       {children}
     </button>
   );
-};
+}

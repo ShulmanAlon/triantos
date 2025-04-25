@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getModifier } from '../modifier';
+import { getModifier } from './modifier';
 
 describe('getModifier', () => {
   it('returns 0 for baseline 10', () => {
