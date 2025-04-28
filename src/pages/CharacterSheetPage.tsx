@@ -7,8 +7,6 @@ import { Button } from '../components/ui/Button';
 import EditCharacterModal from '../components/EditCharacterModal';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCurrentUser } from '../hooks/useCurrentUser';
-import { supabase } from '../lib/supabaseClient';
-import { TABLES } from '../config/dbTables';
 import { USER_ROLES } from '../config/userRoles';
 import { useCharacterById } from '../hooks/useCharacterById';
 
@@ -29,22 +27,6 @@ export const CharacterSheet = () => {
     (character.user_id === user.id ||
       character.campaign_owner_id === user.id ||
       user.role === USER_ROLES.ADMIN);
-
-  const handleDelete = async () => {
-    if (!character) return;
-
-    const { error } = await supabase
-      .from(TABLES.CHARACTERS)
-      .update({ deleted: true })
-      .eq('id', character.id);
-
-    if (error) {
-      alert('Failed to delete character: ' + error.message);
-    } else {
-      setShowDeleteModal(false);
-      navigate(`/campaign/${character.campaign_id}`);
-    }
-  };
 
   if (loading) return <p className="p-4">Loading...</p>;
   if (error)
@@ -133,7 +115,14 @@ export const CharacterSheet = () => {
               >
                 Cancel
               </Button>
-              <Button variant="destructive" onClick={handleDelete}>
+              <Button
+                variant="destructive"
+                onClick={() => {
+                  updateCharacter({ deleted: true });
+                  setShowDeleteModal(false);
+                  navigate(`/campaign/${character.campaign_id}`);
+                }}
+              >
                 Delete
               </Button>
             </div>

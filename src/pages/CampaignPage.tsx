@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { supabase } from '../lib/supabaseClient';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { Button } from '../components/ui/Button';
 import { ImageWithPlaceholder } from '../components/ImageWithPlaceholder';
@@ -12,7 +11,6 @@ import {
 } from '../utils/imageUtils';
 import type { ClassId } from '../types/gameClass';
 import EditCampaignModal from '../components/EditCampaignModal';
-import { TABLES } from '../config/dbTables';
 import { USER_ROLES } from '../config/userRoles';
 import { useCampaignById } from '../hooks/useCamapaignById';
 import { useCharactersByCampaignId } from '../hooks/useCharactersByCampaignId';
@@ -149,16 +147,8 @@ export default function CampaignPage() {
             );
             if (!confirmed) return;
 
-            const { error } = await supabase
-              .from(TABLES.CAMPAIGNS)
-              .update({ deleted: true })
-              .eq('id', campaign.campaign_id);
-
-            if (error) {
-              alert('Failed to delete campaign: ' + error.message);
-            } else {
-              navigate('/dashboard');
-            }
+            await updateCampaign({ deleted: true });
+            navigate('/dashboard');
           }}
         >
           Delete Campaign

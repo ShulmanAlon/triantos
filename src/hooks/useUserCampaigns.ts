@@ -32,7 +32,11 @@ export function useUserCampaigns() {
           const isAdmin = user.role === USER_ROLES.ADMIN;
           const isDeleted = c.deleted;
 
-          return isAdmin || isOwner || (isMember && !isDeleted);
+          return (
+            (isAdmin && !isDeleted) ||
+            (isOwner && !isDeleted) ||
+            (isMember && !isDeleted)
+          );
         });
 
         setCampaigns(filtered);
