@@ -102,5 +102,6 @@ export function useCharacterById(characterId: string | undefined) {
     if (!characterId || !user) return;
     fetchCharacter();
   }, [characterId, user]);
+
   return { character, loading, error, updateCharacter };
 }
