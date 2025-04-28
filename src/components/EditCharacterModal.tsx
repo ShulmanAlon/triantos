@@ -1,13 +1,12 @@
-import { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabaseClient';
+import { useState } from 'react';
 import { Button } from './ui/Button';
-import { CharacterPreview } from '../types/character';
+import { CharacterPreview, CharacterWithCampaign } from '../types/character';
 
 interface EditCharacterModalProps {
   open: boolean;
-  character: CharacterPreview;
+  character: CharacterWithCampaign;
   onClose: () => void;
-  onSave?: (updated: CharacterPreview) => void;
+  onSave?: (updated: Partial<CharacterPreview>) => void;
 }
 
 export default function EditCharacterModal({
@@ -16,46 +15,9 @@ export default function EditCharacterModal({
   onClose,
   onSave,
 }: EditCharacterModalProps) {
-  const [name, setName] = useState('');
-  const [playerName, setPlayerName] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
-  const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    if (character) {
-      setName(character.name);
-      setPlayerName(character.player_name);
-      setImageUrl(character.image_url || '');
-    }
-  }, [character]);
-
-  const handleSave = async () => {
-    setSaving(true);
-    const { error } = await supabase
-      .from('characters')
-      .update({
-        name: name.trim(),
-        player_name: playerName.trim(),
-        image_url: imageUrl.trim(),
-      })
-      .eq('id', character.id);
-
-    setSaving(false);
-    if (error) {
-      alert('Failed to update character: ' + error.message);
-      return;
-    }
-
-    const updatedCharacter = {
-      ...character,
-      name: name.trim(),
-      player_name: playerName.trim(),
-      image_url: imageUrl.trim(),
-    };
-
-    onSave?.(updatedCharacter);
-    onClose();
-  };
+  const [name, setName] = useState(character.name);
+  const [playerName, setPlayerName] = useState(character.player_name);
+  const [imageUrl, setImageUrl] = useState(character.image_url);
 
   if (!open) return null;
 
@@ -96,11 +58,15 @@ export default function EditCharacterModal({
         </div>
 
         <div className="flex justify-end gap-2 pt-4">
-          <Button variant="outline" onClick={onClose} disabled={saving}>
+          <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button onClick={handleSave} disabled={saving || !name.trim()}>
-            {saving ? 'Saving...' : 'Save Changes'}
+          <Button
+            onClick={() =>
+              onSave?.({ name, player_name: playerName, image_url: imageUrl })
+            }
+          >
+            Save
           </Button>
         </div>
       </div>

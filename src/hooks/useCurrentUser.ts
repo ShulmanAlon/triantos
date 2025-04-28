@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import type { UserRole } from '../types/users';
+import { TABLES } from '../config/dbTables';
 
 export function useCurrentUser() {
   const [user, setUser] = useState<{
@@ -21,7 +22,7 @@ export function useCurrentUser() {
       }
 
       const { data, error } = await supabase
-        .from('users')
+        .from(TABLES.USERS)
         .select('id, username, role')
         .eq('auth_id', authUser.id)
         .single();

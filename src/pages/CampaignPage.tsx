@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import { useCurrentUser } from '../hooks/useCurrentUser';
@@ -12,59 +12,40 @@ import {
 } from '../utils/imageUtils';
 import type { ClassId } from '../types/gameClass';
 import EditCampaignModal from '../components/EditCampaignModal';
-import type { CampaignInterface } from '../types/campaign';
-import type { CharacterPreview, RawCharacter } from '../types/character';
+import { TABLES } from '../config/dbTables';
+import { USER_ROLES } from '../config/userRoles';
+import { useCampaignById } from '../hooks/useCamapaignById';
+import { useCharactersByCampaignId } from '../hooks/useCharactersByCampaignId';
 
 export default function CampaignPage() {
-  const { id } = useParams<{ id: string }>();
+  const { id: campaignId } = useParams<{ id: string }>();
   const user = useCurrentUser();
   const navigate = useNavigate();
 
-  const [campaign, setCampaign] = useState<CampaignInterface | null>(null);
-  const [characters, setCharacters] = useState<CharacterPreview[]>([]);
-  const [loading, setLoading] = useState(true);
   const [showEditModal, setShowEditModal] = useState(false);
 
+  const {
+    campaign,
+    loading: campaignLoading,
+    error: campaignError,
+    updateCampaign,
+  } = useCampaignById(campaignId);
+  const {
+    characters,
+    loading: charactersLoading,
+    error: charactersError,
+  } = useCharactersByCampaignId(campaignId);
+
   const canEditCampaign =
-    user !== null && (campaign?.owner_id === user.id || user.role === 'admin');
+    user !== null &&
+    (campaign?.owner_id === user.id || user.role === USER_ROLES.ADMIN);
 
-  useEffect(() => {
-    if (!id || !user) return;
-
-    const fetchData = async () => {
-      setLoading(true);
-
-      const { data: campaignData } = await supabase
-        .from('dashboard_campaigns')
-        .select('*')
-        .eq('campaign_id', id)
-        .maybeSingle();
-
-      const { data: characterData } = await supabase
-        .from('characters')
-        .select(
-          'id, name, player_name, image_url, class_id, race_id, level, visible, users(username)'
-        )
-        .eq('campaign_id', id)
-        .eq('deleted', false);
-
-      const flattenedCampaign = (characterData as RawCharacter[] | null)?.map(
-        (char) => ({
-          ...char,
-          owner_username: Array.isArray(char.users)
-            ? char.users[0]?.username ?? 'unknown'
-            : char.users?.username ?? 'unknown',
-        })
-      );
-      setCampaign(campaignData);
-      setCharacters(flattenedCampaign || []);
-      setLoading(false);
-    };
-
-    fetchData();
-  }, [id, user]);
+  const loading = campaignLoading || charactersLoading;
+  const error = campaignError || charactersError;
 
   if (loading) return <p className="p-6">Loading campaign...</p>;
+  if (error)
+    return <p className="p-6 text-red-600">Error loading campaign: {error}</p>;
   if (!campaign) return <p className="p-6 text-red-600">Campaign not found.</p>;
 
   return (
@@ -124,7 +105,7 @@ export default function CampaignPage() {
           .filter((char) => {
             if (!user) return;
             const isOwner = char.user_id === user.id;
-            const isAdmin = user.role === 'admin';
+            const isAdmin = user.role === USER_ROLES.ADMIN;
             const isDM = campaign.owner_id === user.id;
 
             return char.visible || isOwner || isAdmin || isDM;
@@ -169,7 +150,7 @@ export default function CampaignPage() {
             if (!confirmed) return;
 
             const { error } = await supabase
-              .from('campaigns')
+              .from(TABLES.CAMPAIGNS)
               .update({ deleted: true })
               .eq('id', campaign.campaign_id);
 
@@ -189,7 +170,10 @@ export default function CampaignPage() {
         open={showEditModal}
         campaign={campaign}
         onClose={() => setShowEditModal(false)}
-        onSave={(updated) => setCampaign(updated)}
+        onSave={async (updated) => {
+          await updateCampaign(updated);
+          setShowEditModal(false);
+        }}
       />
     </main>
   );

@@ -5,6 +5,7 @@ import { useCurrentUser } from '../hooks/useCurrentUser';
 import { ImageWithPlaceholder } from '../components/ImageWithPlaceholder';
 import { getCampaignBlurImage, getCampaignImage } from '../utils/imageUtils';
 import ImageUrlModal from '../components/ImageUrlModal';
+import { TABLES } from '../config/dbTables';
 
 export default function CreateCampaign() {
   const user = useCurrentUser();
@@ -24,7 +25,7 @@ export default function CreateCampaign() {
     setError(null);
 
     const { data: campaign, error: insertError } = await supabase
-      .from('campaigns')
+      .from(TABLES.CAMPAIGNS)
       .insert({
         name,
         description,
@@ -41,7 +42,7 @@ export default function CreateCampaign() {
     }
 
     const { error: memberError } = await supabase
-      .from('campaign_members')
+      .from(TABLES.CAMPAIGN_MEMBERS)
       .insert({
         user_id: user.id,
         campaign_id: campaign.id,

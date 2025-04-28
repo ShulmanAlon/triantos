@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { CharacterSheetView } from '../components/CharacterSheet/CharacterSheetView';
 import { ClassId, GameClass } from '../types/gameClass';
 import { getClassById } from '../utils/classUtils';
@@ -8,76 +8,33 @@ import EditCharacterModal from '../components/EditCharacterModal';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { supabase } from '../lib/supabaseClient';
-import { CharacterPreview } from '../types/character';
+import { TABLES } from '../config/dbTables';
+import { USER_ROLES } from '../config/userRoles';
+import { useCharacterById } from '../hooks/useCharacterById';
 
 export const CharacterSheet = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id: characterId } = useParams<{ id: string }>();
   const user = useCurrentUser();
   const navigate = useNavigate();
 
-  const [character, setCharacter] = useState<CharacterPreview | null>(null);
-  const [campaignOwnerId, setCampaignOwnerId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const { character, loading, error, updateCharacter } =
+    useCharacterById(characterId);
 
   const canEditCharacter =
     character !== null &&
     user !== null &&
     (character.user_id === user.id ||
-      campaignOwnerId === user.id ||
-      user.role === 'admin');
-
-  const handleToggleVisibility = async () => {
-    if (!character) return;
-
-    const { error } = await supabase
-      .from('characters')
-      .update({ visible: !character.visible })
-      .eq('id', character.id);
-
-    if (error) {
-      alert('Failed to update visibility: ' + error.message);
-    } else {
-      setCharacter({ ...character, visible: !character.visible });
-    }
-  };
-
-  useEffect(() => {
-    const fetchCharacter = async () => {
-      if (!id) return;
-
-      const { data: characterData, error: characterError } = await supabase
-        .from('characters')
-        .select('*')
-        .eq('id', id)
-        .single();
-
-      if (!characterError && characterData) {
-        setCharacter(characterData);
-      }
-
-      const { data: campaignData, error: campaignError } = await supabase
-        .from('campaigns')
-        .select('owner_id')
-        .eq('id', characterData?.campaign_id)
-        .maybeSingle();
-
-      if (!campaignError && campaignData) {
-        setCampaignOwnerId(campaignData.owner_id ?? null);
-      }
-
-      setLoading(false);
-    };
-
-    fetchCharacter();
-  }, [id]);
+      character.campaign_owner_id === user.id ||
+      user.role === USER_ROLES.ADMIN);
 
   const handleDelete = async () => {
     if (!character) return;
 
     const { error } = await supabase
-      .from('characters')
+      .from(TABLES.CHARACTERS)
       .update({ deleted: true })
       .eq('id', character.id);
 
@@ -90,6 +47,8 @@ export const CharacterSheet = () => {
   };
 
   if (loading) return <p className="p-4">Loading...</p>;
+  if (error)
+    return <p className="p-6 text-red-600">Error loading character: {error}</p>;
   if (!character)
     return <p className="p-4 text-red-600">Character not found.</p>;
   return (
@@ -108,7 +67,9 @@ export const CharacterSheet = () => {
       {canEditCharacter && (
         <Button
           variant="outline"
-          onClick={handleToggleVisibility}
+          onClick={() => {
+            updateCharacter({ visible: !character.visible });
+          }}
           className="mt-2"
         >
           {character.visible
@@ -144,7 +105,10 @@ export const CharacterSheet = () => {
         open={showEditModal}
         character={character}
         onClose={() => setShowEditModal(false)}
-        onSave={(updated) => setCharacter(updated)}
+        onSave={async (updated) => {
+          await updateCharacter(updated);
+          setShowEditModal(false);
+        }}
       />
       {canEditCharacter && (
         <Button

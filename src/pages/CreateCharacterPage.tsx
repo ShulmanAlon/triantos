@@ -21,6 +21,7 @@ import { RaceId } from '../types/race';
 import { ImageWithPlaceholder } from '../components/ImageWithPlaceholder';
 import { getCharacterImage, getCharacterBlurImage } from '../utils/imageUtils';
 import ImageUrlModal from '../components/ImageUrlModal';
+import { TABLES } from '../config/dbTables';
 
 type CreationStep = 'class' | 'race' | 'attributes' | 'skills';
 
@@ -111,22 +112,24 @@ export default function CharacterCreatePage() {
     if (!user || !campaignId) return;
     setSaving(true);
 
-    const { error: insertError } = await supabase.from('characters').insert({
-      name: characterName,
-      player_name: playerName || user.username,
-      class_id: selectedClassId,
-      race_id: selectedRaceId,
-      level,
-      attributes,
-      user_id: user.id,
-      campaign_id: campaignId,
-      image_url: imageUrl,
-      visible: true,
-      deleted: false,
-    });
+    const { error: insertError } = await supabase
+      .from(TABLES.CHARACTERS)
+      .insert({
+        name: characterName,
+        player_name: playerName || user.username,
+        class_id: selectedClassId,
+        race_id: selectedRaceId,
+        level,
+        attributes,
+        user_id: user.id,
+        campaign_id: campaignId,
+        image_url: imageUrl,
+        visible: true,
+        deleted: false,
+      });
 
     const { error: upsertError } = await supabase
-      .from('campaign_members')
+      .from(TABLES.CAMPAIGN_MEMBERS)
       .upsert([{ campaign_id: campaignId, user_id: user.id }], {
         onConflict: 'campaign_id, user_id',
       });

@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { CampaignInterface } from '../types/campaign';
 import { useCurrentUser } from './useCurrentUser';
+import { TABLES } from '../config/dbTables';
+import { USER_ROLES } from '../config/userRoles';
 
 export function useUserCampaigns() {
   const [campaigns, setCampaigns] = useState<CampaignInterface[]>([]);
@@ -17,18 +19,17 @@ export function useUserCampaigns() {
       setLoading(true);
 
       const { data, error } = await supabase
-        .from('dashboard_campaigns')
+        .from(TABLES.DASHBOARD_CAMPAIGNS)
         .select('*');
 
       if (error) {
         setError(error.message);
         setCampaigns([]);
       } else {
-        console.log(data);
         const filtered = (data as CampaignInterface[]).filter((c) => {
           const isOwner = c.owner_id === user.id;
           const isMember = c.members.some((m) => m.user_id === user.id);
-          const isAdmin = user.role === 'admin';
+          const isAdmin = user.role === USER_ROLES.ADMIN;
           const isDeleted = c.deleted;
 
           return isAdmin || isOwner || (isMember && !isDeleted);

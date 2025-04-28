@@ -1,13 +1,12 @@
-import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabaseClient';
+import { useState } from 'react';
 import { Button } from './ui/Button';
-import { CampaignData } from '../types/campaign';
+import { CampaignInterface } from '../types/campaign';
 
 interface EditCampaignModalProps {
   open: boolean;
-  campaign: CampaignData;
+  campaign: CampaignInterface;
   onClose: () => void;
-  onSave?: (updated: CampaignData) => void;
+  onSave?: (updated: Partial<CampaignInterface>) => void;
 }
 
 export default function EditCampaignModal({
@@ -16,46 +15,9 @@ export default function EditCampaignModal({
   onClose,
   onSave,
 }: EditCampaignModalProps) {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
-  const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    if (campaign) {
-      setName(campaign.name);
-      setDescription(campaign.description || '');
-      setImageUrl(campaign.image_url || '');
-    }
-  }, [campaign]);
-
-  const handleSave = async () => {
-    setSaving(true);
-    const { error } = await supabase
-      .from('campaigns')
-      .update({
-        name: name.trim(),
-        description: description.trim(),
-        image_url: imageUrl.trim(),
-      })
-      .eq('id', campaign.id);
-
-    setSaving(false);
-    if (error) {
-      alert('Failed to update campaign: ' + error.message);
-      return;
-    }
-
-    const updatedCampaign = {
-      ...campaign,
-      name: name.trim(),
-      description: description.trim(),
-      image_url: imageUrl.trim(),
-    };
-
-    onSave?.(updatedCampaign);
-    onClose();
-  };
+  const [name, setName] = useState(campaign.name);
+  const [description, setDescription] = useState(campaign.description);
+  const [imageUrl, setImageUrl] = useState(campaign.image_url);
 
   if (!open) return null;
 
@@ -96,11 +58,13 @@ export default function EditCampaignModal({
         </div>
 
         <div className="flex justify-end gap-2 pt-4">
-          <Button variant="outline" onClick={onClose} disabled={saving}>
+          <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button onClick={handleSave} disabled={saving || !name.trim()}>
-            {saving ? 'Saving...' : 'Save Changes'}
+          <Button
+            onClick={() => onSave?.({ name, description, image_url: imageUrl })}
+          >
+            Save
           </Button>
         </div>
       </div>
