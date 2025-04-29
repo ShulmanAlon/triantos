@@ -1,9 +1,9 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabaseClient';
-import { useCurrentUser } from '../hooks/useCurrentUser';
-import { TABLES } from '../config/dbTables';
-import { USER_ROLES } from '../config/userRoles';
+import { supabase } from '@/lib/supabaseClient';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { TABLES } from '@/config/dbTables';
+import { USER_ROLES } from '@/config/userRoles';
 
 export default function CampaignHandbookPage() {
   const campaignId = useParams<{ id: string }>().id;

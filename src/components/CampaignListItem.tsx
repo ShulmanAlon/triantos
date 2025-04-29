@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
-import { getCampaignImage, getCampaignBlurImage } from '../utils/imageUtils';
+import { getCampaignImage, getCampaignBlurImage } from '@/utils/imageUtils';
 import { ImageWithPlaceholder } from './ImageWithPlaceholder';
-import { CampaignInterface } from '../types/campaign';
+import { CampaignInterface } from '@/types/campaign';
 
 export function CampaignListItem({
   campaign,

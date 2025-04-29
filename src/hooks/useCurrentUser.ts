@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabaseClient';
-import type { UserRole } from '../types/users';
-import { TABLES } from '../config/dbTables';
+import { supabase } from '@/lib/supabaseClient';
+import type { UserRole } from '@/types/users';
+import { TABLES } from '@/config/dbTables';
 
 export function useCurrentUser() {
   const [user, setUser] = useState<{

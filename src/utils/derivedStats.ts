@@ -1,7 +1,7 @@
-import { GameClass } from '../types/gameClass';
-import { Attribute } from '../types/attributes';
-import { getModifier } from '../utils/modifier';
-import { XP_TABLE } from '../config/progression';
+import { GameClass } from '@/types/gameClass';
+import { Attribute } from '@/types/attributes';
+import { getModifier } from '@/utils/modifier';
+import { XP_TABLE } from '@/config/progression';
 import { getClassLevelDataById } from './classUtils';
 
 export interface DerivedStats {

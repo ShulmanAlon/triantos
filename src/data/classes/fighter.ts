@@ -1,4 +1,4 @@
-import { GameClass } from '../../types/gameClass';
+import { GameClass } from '@/types/gameClass';
 
 export const fighter: GameClass = {
   id: 'Fighter',

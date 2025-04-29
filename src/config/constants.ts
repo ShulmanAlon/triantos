@@ -1,4 +1,4 @@
-import { Attribute, AttributeMap } from '../types/attributes';
+import { Attribute, AttributeMap } from '@/types/attributes';
 
 export const TOTAL_STARTING_POINTS = 38;
 

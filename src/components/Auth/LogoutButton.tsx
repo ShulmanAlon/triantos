@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../../lib/supabaseClient';
+import { supabase } from '@/lib/supabaseClient';
 
 export const LogoutButton = () => {
   const navigate = useNavigate();

@@ -1,4 +1,4 @@
-import { SkillFamily } from '../../types/skills';
+import { SkillFamily } from '@/types/skills';
 
 export const skillFamilies: SkillFamily[] = [
   // Example (will be populated later)

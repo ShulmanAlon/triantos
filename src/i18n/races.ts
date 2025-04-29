@@ -1,5 +1,5 @@
-import { Language } from '../types/i18n';
-import { RaceId } from '../types/race';
+import { Language } from '@/types/i18n';
+import { RaceId } from '@/types/race';
 
 type LocalizedRaceInfo = {
   name: string;

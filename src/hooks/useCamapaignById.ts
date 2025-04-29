@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useCurrentUser } from './useCurrentUser';
-import { TABLES } from '../config/dbTables';
-import { supabase } from '../lib/supabaseClient';
-import { CampaignInterface } from '../types/campaign';
+import { TABLES } from '@/config/dbTables';
+import { supabase } from '@/lib/supabaseClient';
+import { CampaignInterface } from '@/types/campaign';
 
 export function useCampaignById(campaignId: string | undefined) {
   const user = useCurrentUser();
@@ -10,7 +10,7 @@ export function useCampaignById(campaignId: string | undefined) {
   const [error, setError] = useState<string | null>(null);
   const [campaign, setCampaign] = useState<CampaignInterface | null>(null);
 
-  const fetchCampaign = async () => {
+  const fetchCampaign = useCallback(async () => {
     setLoading(true);
 
     const { data, error } = await supabase
@@ -26,7 +26,7 @@ export function useCampaignById(campaignId: string | undefined) {
       setCampaign(data);
     }
     setLoading(false);
-  };
+  }, [campaignId]);
 
   const updateCampaign = async (updates: Partial<CampaignInterface>) => {
     if (!campaignId) return;
@@ -44,7 +44,7 @@ export function useCampaignById(campaignId: string | undefined) {
   useEffect(() => {
     if (!campaignId || !user) return;
     fetchCampaign();
-  }, [campaignId, user]);
+  }, [campaignId, user, fetchCampaign]);
 
   return {
     campaign,

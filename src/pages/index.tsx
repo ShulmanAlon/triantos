@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useRedirectIfLoggedIn } from '../hooks/useRedirectIfLoggedIn';
+import { useRedirectIfLoggedIn } from '@/hooks/useRedirectIfLoggedIn';
 
 export default function LandingPage() {
   const navigate = useNavigate();

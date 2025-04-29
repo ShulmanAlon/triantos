@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { supabase } from '../lib/supabaseClient';
-import { useRedirectIfLoggedIn } from '../hooks/useRedirectIfLoggedIn';
+import { supabase } from '@/lib/supabaseClient';
+import { useRedirectIfLoggedIn } from '@/hooks/useRedirectIfLoggedIn';
 import { useNavigate } from 'react-router-dom';
 
 export const LoginPage = () => {

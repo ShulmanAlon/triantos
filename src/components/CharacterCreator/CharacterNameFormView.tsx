@@ -1,6 +1,6 @@
 import React from 'react';
-import { useLanguage } from '../../context/LanguageContext';
-import { uiLabels } from '../../i18n/ui';
+import { useLanguage } from '@/context/LanguageContext';
+import { uiLabels } from '@/i18n/ui';
 import { LabeledInput } from '../ui/LabeledInput';
 
 interface CharacterNameFormProps {

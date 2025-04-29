@@ -1,4 +1,4 @@
-import { GameClass } from '../../types/gameClass';
+import { GameClass } from '@/types/gameClass';
 import { cleric } from './cleric';
 import { magicUser } from './magicUser';
 import { fighter } from './fighter';

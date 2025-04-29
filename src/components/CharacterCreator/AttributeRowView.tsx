@@ -1,12 +1,12 @@
-import { Attribute } from '../../types/attributes';
-import { getModifier } from '../../utils/modifier';
+import { Attribute } from '@/types/attributes';
+import { getModifier } from '@/utils/modifier';
 import {
   getAttributeEffectDescById,
   getAttributeNameById,
   getPointCostChange,
-} from '../../utils/attributeUtils';
-import { useLanguage } from '../../context/LanguageContext';
-import { uiLabels } from '../../i18n/ui';
+} from '@/utils/attributeUtils';
+import { useLanguage } from '@/context/LanguageContext';
+import { uiLabels } from '@/i18n/ui';
 import { Button } from '../ui/Button';
 
 interface AttributeRowProps {

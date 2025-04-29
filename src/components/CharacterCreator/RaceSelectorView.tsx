@@ -1,13 +1,13 @@
 import React from 'react';
-import { Race, RaceId } from '../../types/race';
-import { useLanguage } from '../../context/LanguageContext';
-import { uiLabels } from '../../i18n/ui';
+import { Race, RaceId } from '@/types/race';
+import { useLanguage } from '@/context/LanguageContext';
+import { uiLabels } from '@/i18n/ui';
 import {
   getRaceDescriptionById,
   getRaceNameById,
   getRaceRestrictionsById,
   getRaceSpecialAbilitiesById,
-} from '../../utils/raceUtils';
+} from '@/utils/raceUtils';
 
 interface RaceSelectorProps {
   raceOptions: Race[];

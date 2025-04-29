@@ -1,20 +1,20 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useCurrentUser } from '../hooks/useCurrentUser';
-import { Button } from '../components/ui/Button';
-import { ImageWithPlaceholder } from '../components/ImageWithPlaceholder';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { Button } from '@/components/ui/Button';
+import { ImageWithPlaceholder } from '@/components/ImageWithPlaceholder';
 import {
   getCampaignBlurImage,
   getCampaignImage,
   getCharacterBlurImage,
   getCharacterImage,
-} from '../utils/imageUtils';
-import type { ClassId } from '../types/gameClass';
-import EditCampaignModal from '../components/EditCampaignModal';
-import { USER_ROLES } from '../config/userRoles';
-import { useCampaignById } from '../hooks/useCamapaignById';
-import { useCharactersByCampaignId } from '../hooks/useCharactersByCampaignId';
-import { LoadingErrorWrapper } from '../components/LoadingErrorWrapper';
+} from '@/utils/imageUtils';
+import type { ClassId } from '@/types/gameClass';
+import EditCampaignModal from '@/components/EditCampaignModal';
+import { USER_ROLES } from '@/config/userRoles';
+import { useCampaignById } from '@/hooks/useCamapaignById';
+import { useCharactersByCampaignId } from '@/hooks/useCharactersByCampaignId';
+import { LoadingErrorWrapper } from '@/components/LoadingErrorWrapper';
 
 export default function CampaignPage() {
   const { id: campaignId } = useParams<{ id: string }>();

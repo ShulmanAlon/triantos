@@ -1,11 +1,11 @@
 import React from 'react';
-import { ClassId, GameClass } from '../../types/gameClass';
-import { getRaceNameById } from '../../utils/raceUtils';
-import { Attribute } from '../../types/attributes';
-import { useLanguage } from '../../context/LanguageContext';
-import { uiLabels } from '../../i18n/ui';
-import { attributeLabels } from '../../i18n/attributes';
-import { classDictionary } from '../../i18n/classes';
+import { ClassId, GameClass } from '@/types/gameClass';
+import { getRaceNameById } from '@/utils/raceUtils';
+import { Attribute } from '@/types/attributes';
+import { useLanguage } from '@/context/LanguageContext';
+import { uiLabels } from '@/i18n/ui';
+import { attributeLabels } from '@/i18n/attributes';
+import { classDictionary } from '@/i18n/classes';
 import {
   getAllowedRacesByClassId,
   getPrimaryAttributesByClassId,

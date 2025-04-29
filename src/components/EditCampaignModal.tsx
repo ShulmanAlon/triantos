@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from './ui/Button';
-import { CampaignInterface } from '../types/campaign';
+import { CampaignInterface } from '@/types/campaign';
 
 interface EditCampaignModalProps {
   open: boolean;

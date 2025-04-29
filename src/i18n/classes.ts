@@ -1,5 +1,5 @@
-import { ClassId } from '../types/gameClass';
-import { Language } from '../types/i18n';
+import { ClassId } from '@/types/gameClass';
+import { Language } from '@/types/i18n';
 
 type LocalizedClassInfo = {
   name: string;

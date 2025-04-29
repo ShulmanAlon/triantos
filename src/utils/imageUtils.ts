@@ -1,4 +1,4 @@
-import { ClassId } from '../types/gameClass';
+import { ClassId } from '@/types/gameClass';
 
 export function getCharacterImage(
   imageUrl?: string,

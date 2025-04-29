@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useCurrentUser } from './useCurrentUser';
-import { TABLES } from '../config/dbTables';
-import { supabase } from '../lib/supabaseClient';
-import { CharacterPreview, RawCharacter } from '../types/character';
+import { TABLES } from '@/config/dbTables';
+import { supabase } from '@/lib/supabaseClient';
+import { CharacterPreview, RawCharacter } from '@/types/character';
 
 export function useCharactersByCampaignId(campaignId: string | undefined) {
   const user = useCurrentUser();

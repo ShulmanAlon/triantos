@@ -1,17 +1,17 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './index.css';
-import { CharacterSheet } from './pages/CharacterSheetPage';
-import CharacterLevelUpPage from './pages/LevelUpPage';
-import { LoginPage } from './pages/LoginPage';
-import { RequireAuth } from './components/Auth/RequireAuth';
-import { Header } from './components/Layout/Header';
-import { LanguageProvider } from './context/LanguageContext';
-import LandingPage from './pages';
-import DashboardPage from './pages/DashboardPage';
-import CreateCampaign from './pages/CreateCampaignPage';
-import CampaignPage from './pages/CampaignPage';
-import CreateCharacter from './pages/CreateCharacterPage';
-import CampaignHandbookPage from './pages/CampaignHandbookPage';
+import { CharacterSheet } from '@/pages/CharacterSheetPage';
+import CharacterLevelUpPage from '@/pages/LevelUpPage';
+import { LoginPage } from '@/pages/LoginPage';
+import { RequireAuth } from '@/components/Auth/RequireAuth';
+import { Header } from '@/components/Layout/Header';
+import { LanguageProvider } from '@/context/LanguageContext';
+import LandingPage from '@/pages';
+import DashboardPage from '@/pages/DashboardPage';
+import CreateCampaign from '@/pages/CreateCampaignPage';
+import CampaignPage from '@/pages/CampaignPage';
+import CreateCharacter from '@/pages/CreateCharacterPage';
+import CampaignHandbookPage from '@/pages/CampaignHandbookPage';
 
 function App() {
   return (

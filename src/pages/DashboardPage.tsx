@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import { useUserCampaigns } from '../hooks/useUserCampaigns';
-import { CampaignListItem } from '../components/CampaignListItem';
-import { LoadingErrorWrapper } from '../components/LoadingErrorWrapper';
+import { useUserCampaigns } from '@/hooks/useUserCampaigns';
+import { CampaignListItem } from '@/components/CampaignListItem';
+import { LoadingErrorWrapper } from '@/components/LoadingErrorWrapper';
 
 export default function DashboardPage() {
   const { campaigns, loading: isLoading, error: hasError } = useUserCampaigns();

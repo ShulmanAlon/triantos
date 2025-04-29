@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from './ui/Button';
-import { CharacterPreview, CharacterWithCampaign } from '../types/character';
+import { CharacterPreview, CharacterWithCampaign } from '@/types/character';
 
 interface EditCharacterModalProps {
   open: boolean;

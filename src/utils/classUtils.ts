@@ -1,9 +1,9 @@
-import { classes } from '../data/classes';
-import { classDictionary } from '../i18n/classes';
-import { Attribute } from '../types/attributes';
-import { ClassId, ClassLevel, GameClass } from '../types/gameClass';
-import { Language } from '../types/i18n';
-import { RaceId } from '../types/race';
+import { classes } from '@/data/classes';
+import { classDictionary } from '@/i18n/classes';
+import { Attribute } from '@/types/attributes';
+import { ClassId, ClassLevel, GameClass } from '@/types/gameClass';
+import { Language } from '@/types/i18n';
+import { RaceId } from '@/types/race';
 
 export const getClassById = (
   classId: ClassId | undefined

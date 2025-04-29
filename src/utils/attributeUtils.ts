@@ -1,6 +1,6 @@
-import { attributeEffectDesc, attributeLabels } from '../i18n/attributes';
-import { Attribute } from '../types/attributes';
-import { Language } from '../types/i18n';
+import { attributeEffectDesc, attributeLabels } from '@/i18n/attributes';
+import { Attribute } from '@/types/attributes';
+import { Language } from '@/types/i18n';
 
 function getPoolPointCostAtOffset(offsetFromBaseline: number): number {
   if (offsetFromBaseline < 2) return 1;

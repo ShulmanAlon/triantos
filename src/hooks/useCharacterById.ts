@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useCurrentUser } from './useCurrentUser';
-import { TABLES } from '../config/dbTables';
-import { supabase } from '../lib/supabaseClient';
+import { TABLES } from '@/config/dbTables';
+import { supabase } from '@/lib/supabaseClient';
 import {
   CharacterWithCampaign,
   RawCharacterWithCampaign,
-} from '../types/character';
+} from '@/types/character';
 
 export function useCharacterById(characterId: string | undefined) {
   const user = useCurrentUser();
@@ -15,7 +15,7 @@ export function useCharacterById(characterId: string | undefined) {
     null
   );
 
-  const fetchCharacter = async () => {
+  const fetchCharacter = useCallback(async () => {
     setLoading(true);
     setError(null);
 
@@ -83,7 +83,7 @@ export function useCharacterById(characterId: string | undefined) {
     }
 
     setLoading(false);
-  };
+  }, [characterId]);
 
   const updateCharacter = async (updates: Partial<CharacterWithCampaign>) => {
     if (!characterId) return;
@@ -101,7 +101,7 @@ export function useCharacterById(characterId: string | undefined) {
   useEffect(() => {
     if (!characterId || !user) return;
     fetchCharacter();
-  }, [characterId, user]);
+  }, [characterId, user, fetchCharacter]);
 
   return { character, loading, error, updateCharacter };
 }

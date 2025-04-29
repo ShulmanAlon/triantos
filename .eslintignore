@@ -1,0 +1,3 @@
+test/*
+vite-path-test.ts
+vitest.config.ts

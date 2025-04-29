@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabaseClient';
-import { CampaignInterface } from '../types/campaign';
+import { supabase } from '@/lib/supabaseClient';
+import { CampaignInterface } from '@/types/campaign';
 import { useCurrentUser } from './useCurrentUser';
-import { TABLES } from '../config/dbTables';
-import { USER_ROLES } from '../config/userRoles';
+import { TABLES } from '@/config/dbTables';
+import { USER_ROLES } from '@/config/userRoles';
 
 export function useUserCampaigns() {
   const [campaigns, setCampaigns] = useState<CampaignInterface[]>([]);

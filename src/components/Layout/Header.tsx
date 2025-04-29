@@ -1,7 +1,7 @@
-import { useSession } from '../../hooks/useSession';
+import { useSession } from '@/hooks/useSession';
 import { LanguageSelector } from '../LanguageSelector';
 import { LogoutButton } from '../Auth/LogoutButton';
-import { useCurrentUser } from '../../hooks/useCurrentUser';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 export const Header = () => {
   const { session } = useSession();

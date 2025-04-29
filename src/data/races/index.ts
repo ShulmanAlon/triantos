@@ -1,4 +1,4 @@
-import { Race } from '../../types/race';
+import { Race } from '@/types/race';
 import { dwarf } from './dwarf';
 import { elf } from './elf';
 import { halfling } from './halfling';

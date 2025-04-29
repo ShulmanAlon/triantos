@@ -1,5 +1,5 @@
-import { useLanguage } from '../context/LanguageContext';
-import { SUPPORTED_LANGUAGES } from '../types/i18n';
+import { useLanguage } from '@/context/LanguageContext';
+import { SUPPORTED_LANGUAGES } from '@/types/i18n';
 
 const languageLabels: Record<string, string> = {
   en: 'English',

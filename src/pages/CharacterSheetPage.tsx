@@ -1,15 +1,15 @@
 import { useState } from 'react';
-import { CharacterSheetView } from '../components/CharacterSheet/CharacterSheetView';
-import { ClassId, GameClass } from '../types/gameClass';
-import { getClassById } from '../utils/classUtils';
-import { calculateDerivedStats } from '../utils/derivedStats';
-import { Button } from '../components/ui/Button';
-import EditCharacterModal from '../components/EditCharacterModal';
+import { CharacterSheetView } from '@/components/CharacterSheet/CharacterSheetView';
+import { ClassId, GameClass } from '@/types/gameClass';
+import { getClassById } from '@/utils/classUtils';
+import { calculateDerivedStats } from '@/utils/derivedStats';
+import { Button } from '@/components/ui/Button';
+import EditCharacterModal from '@/components/EditCharacterModal';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useCurrentUser } from '../hooks/useCurrentUser';
-import { USER_ROLES } from '../config/userRoles';
-import { useCharacterById } from '../hooks/useCharacterById';
-import { LoadingErrorWrapper } from '../components/LoadingErrorWrapper';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { USER_ROLES } from '@/config/userRoles';
+import { useCharacterById } from '@/hooks/useCharacterById';
+import { LoadingErrorWrapper } from '@/components/LoadingErrorWrapper';
 
 export const CharacterSheet = () => {
   const { id: characterId } = useParams<{ id: string }>();

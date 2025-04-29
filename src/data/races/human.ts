@@ -1,4 +1,4 @@
-import { Race } from '../../types/race';
+import { Race } from '@/types/race';
 
 export const human: Race = {
   id: 'Human',

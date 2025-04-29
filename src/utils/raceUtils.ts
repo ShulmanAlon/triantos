@@ -1,8 +1,8 @@
-import { races } from '../data/races';
-import { raceDictionary } from '../i18n/races';
-import { AttributeMap } from '../types/attributes';
-import { Language } from '../types/i18n';
-import { Race, RaceId } from '../types/race';
+import { races } from '@/data/races';
+import { raceDictionary } from '@/i18n/races';
+import { AttributeMap } from '@/types/attributes';
+import { Language } from '@/types/i18n';
+import { Race, RaceId } from '@/types/race';
 
 export const getRaceNameById = (
   raceId: RaceId | undefined,

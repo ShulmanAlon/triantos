@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../lib/supabaseClient';
-import { useCurrentUser } from '../hooks/useCurrentUser';
-import { ImageWithPlaceholder } from '../components/ImageWithPlaceholder';
-import { getCampaignBlurImage, getCampaignImage } from '../utils/imageUtils';
-import ImageUrlModal from '../components/ImageUrlModal';
-import { TABLES } from '../config/dbTables';
+import { supabase } from '@/lib/supabaseClient';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { ImageWithPlaceholder } from '@/components/ImageWithPlaceholder';
+import { getCampaignBlurImage, getCampaignImage } from '@/utils/imageUtils';
+import ImageUrlModal from '@/components/ImageUrlModal';
+import { TABLES } from '@/config/dbTables';
 
 export default function CreateCampaign() {
   const user = useCurrentUser();
