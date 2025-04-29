@@ -33,7 +33,7 @@ export default function CampaignPage() {
     characters,
     loading: charactersLoading,
     error: charactersError,
-  } = useCharactersByCampaignId(campaignId);
+  } = useCharactersByCampaignId(campaign?.campaign_id);
 
   const canEditCampaign =
     user !== null &&
