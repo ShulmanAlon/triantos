@@ -2,7 +2,6 @@ import React from 'react';
 import { Attribute } from '@/types/attributes';
 import { getModifier } from '@/utils/modifier';
 import { XP_TABLE } from '@/config/progression';
-import { DerivedStats } from '@/utils/derivedStats';
 import { ClassId } from '@/types/gameClass';
 import { getClassNameById } from '@/utils/classUtils';
 import { RaceId } from '@/types/race';
@@ -11,6 +10,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { uiLabels } from '@/i18n/ui';
 import { getAttributeNameById } from '@/utils/attributeUtils';
 import { ATTRIBUTE_ORDER } from '@/config/constants';
+import { DerivedStats } from '@/types/characters';
 
 interface CharacterSheetProps {
   characterName: string;

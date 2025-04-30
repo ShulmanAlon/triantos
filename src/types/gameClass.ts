@@ -14,8 +14,12 @@ type SpellSlots = Record<number, number>; // e.g., { 1: 2, 2: 1 }
 
 export interface ClassLevel {
   level: number;
-  skill?: string;
-  abilityPoint?: boolean;
+  skill?: {
+    skillPoints: number;
+    onlyForClass?: ClassId;
+    onlyForRace?: RaceId;
+  }[];
+  abilityPoint?: number;
   attackBonus?: number;
   feature?: string;
   spells?: SpellSlots;

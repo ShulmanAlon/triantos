@@ -9,7 +9,7 @@ export const shieldFortress: SkillEntity = {
   tiers: [
     {
       tier: 1,
-      name: 'Basic',
+      name: 'Advanced',
       description: '+1 AC when using a shield.',
       prerequisites: [
         { type: 'level', minimum: 4 },
@@ -27,7 +27,7 @@ export const shieldFortress: SkillEntity = {
     },
     {
       tier: 2,
-      name: 'Advanced',
+      name: 'Expert',
       description: 'Additional +1 AC with shield (+2 total).',
       prerequisites: [
         { type: 'level', minimum: 10 },

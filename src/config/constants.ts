@@ -19,3 +19,7 @@ export const ATTRIBUTE_ORDER: Attribute[] = [
   'con',
   'cha',
 ];
+
+export const BASE_AC = 10;
+
+export const NAME_LEVEL = 9;

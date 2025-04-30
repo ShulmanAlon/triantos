@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabaseClient';
 import {
   CharacterWithCampaign,
   RawCharacterWithCampaign,
-} from '@/types/character';
+} from '@/types/characters';
 
 export function useCharacterById(characterId: string | undefined) {
   const user = useCurrentUser();

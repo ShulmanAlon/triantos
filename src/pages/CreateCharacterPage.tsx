@@ -14,7 +14,7 @@ import { uiLabels } from '@/i18n/ui';
 import { supabase } from '@/lib/supabaseClient';
 import { AttributeMap, Attribute } from '@/types/attributes';
 import { getClassById, getClassLevelDataById } from '@/utils/classUtils';
-import { calculateDerivedStats } from '@/utils/derivedStats';
+import { getBaseDerivedStats } from '@/utils/derived/getBasederivedStats';
 import { getRaceById, getBaseAttributesByRaceId } from '@/utils/raceUtils';
 import { ClassId } from '@/types/gameClass';
 import { RaceId } from '@/types/race';
@@ -56,7 +56,7 @@ export default function CharacterCreatePage() {
   const allowedRacesId =
     selectedClassData?.allowedRaces ?? races.map((r) => r.id);
   const derivedStats = selectedClassData
-    ? calculateDerivedStats(selectedClassData, attributes, level)
+    ? getBaseDerivedStats(selectedClassData, attributes, level)
     : null;
 
   const handleAttributeChange = (

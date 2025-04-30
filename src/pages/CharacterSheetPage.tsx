@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { CharacterSheetView } from '@/components/CharacterSheet/CharacterSheetView';
 import { ClassId, GameClass } from '@/types/gameClass';
 import { getClassById } from '@/utils/classUtils';
-import { calculateDerivedStats } from '@/utils/derivedStats';
+import { getBaseDerivedStats } from '@/utils/derived/getBasederivedStats';
 import { Button } from '@/components/ui/Button';
 import EditCharacterModal from '@/components/EditCharacterModal';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -71,7 +71,7 @@ export const CharacterSheet = () => {
             selectedRaceId={character.race_id}
             level={character.level}
             attributes={character.attributes}
-            derived={calculateDerivedStats(
+            derived={getBaseDerivedStats(
               getClassById(character.class_id as ClassId) as GameClass,
               character.attributes,
               character.level

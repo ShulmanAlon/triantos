@@ -22,12 +22,22 @@ export type TierData = {
   name: TierName; // 'Basic', 'Advanced', etc.
   description?: string;
   prerequisites?: TierPrerequisite[]; // See below
+  freeForClasses?: {
+    classId: ClassId;
+    atLevel: number;
+  }[];
   effects: EffectType[];
 };
 
 // --- Enum / Constants ---
 
-export type TierName = 'Initial' | 'Basic' | 'Advanced' | 'Expert' | 'Master';
+export type TierName =
+  | 'Initial'
+  | 'Proficient'
+  | 'Basic'
+  | 'Advanced'
+  | 'Expert'
+  | 'Master';
 
 // --- Tier Unlock Logic (unified) ---
 

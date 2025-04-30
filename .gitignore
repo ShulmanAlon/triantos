@@ -34,3 +34,6 @@ dist/
 # IDEs and tools
 .vscode/
 .DS_Store
+
+# Internal tests
+/src/data/mockDataTests.ts

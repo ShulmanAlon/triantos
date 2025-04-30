@@ -9,19 +9,33 @@ export const fighter: GameClass = {
   progression: [
     {
       level: 1,
-      skill: '+3',
+      skill: [{ onlyForRace: 'Human', skillPoints: 1 }, { skillPoints: 3 }],
       attackBonus: 2,
     },
     {
       level: 2,
-      skill: 'human +1',
+      skill: [{ onlyForRace: 'Human', skillPoints: 1 }],
       attackBonus: 2,
     },
     {
       level: 3,
-      skill: '+1',
+      skill: [{ skillPoints: 1 }],
       attackBonus: 3,
-      abilityPoint: true,
+    },
+    {
+      level: 4,
+      attackBonus: 3,
+      abilityPoint: 1,
+    },
+    {
+      level: 5,
+      skill: [{ onlyForRace: 'Human', skillPoints: 1 }],
+      attackBonus: 4,
+    },
+    {
+      level: 6,
+      skill: [{ skillPoints: 1 }],
+      attackBonus: 4,
     },
     // TODO: ... continue through level 18
   ],
