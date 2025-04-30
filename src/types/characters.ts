@@ -3,7 +3,7 @@ import { ClassId } from './gameClass';
 import { RaceId } from './race';
 import { ActiveAbilityEffect } from './skills';
 
-export interface CharacterPreview {
+interface CharacterBase {
   id: string;
   name: string;
   player_name: string;
@@ -15,39 +15,20 @@ export interface CharacterPreview {
   attributes: Record<Attribute, number>;
   user_id: string;
   campaign_id: string;
+}
+
+export interface CharacterPreview extends CharacterBase {
   owner_username?: string;
 }
 
-export interface CharacterWithCampaign {
-  id: string;
-  name: string;
-  player_name: string;
-  image_url?: string;
-  class_id: ClassId;
-  race_id: RaceId;
-  level: number;
-  visible: boolean;
+export interface CharacterWithCampaign extends CharacterBase {
   deleted: boolean;
-  attributes: Record<Attribute, number>;
-  user_id: string;
-  campaign_id: string;
   campaign_owner_id: string;
   owner_username?: string;
 }
 
-export interface RawCharacterWithCampaign {
-  id: string;
-  name: string;
-  player_name: string;
-  image_url?: string;
-  class_id: ClassId;
-  race_id: RaceId;
-  level: number;
-  visible: boolean;
+export interface RawCharacterWithCampaign extends CharacterBase {
   deleted: boolean;
-  attributes: Record<Attribute, number>;
-  user_id: string;
-  campaign_id: string;
   users: { username: string }[] | { username: string } | null;
   campaigns: { owner_id: string }[] | { owner_id: string } | null;
 }
