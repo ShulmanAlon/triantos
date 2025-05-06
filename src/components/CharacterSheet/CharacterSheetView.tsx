@@ -96,7 +96,7 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
           {ui.hp}: {derived.hp}
         </p>
         <p>
-          {ui.baseAttackBonus}: {derived.attackBonus ?? '—'}
+          {ui.baseAttackBonus}: {derived.baseAttackBonus ?? '—'}
         </p>
 
         {derived.spellSlots && (

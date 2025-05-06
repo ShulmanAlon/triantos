@@ -20,7 +20,7 @@ export interface ClassLevel {
     onlyForRace?: RaceId;
   }[];
   abilityPoint?: number;
-  attackBonus?: number;
+  baseAttackBonus?: number;
   feature?: string;
   spells?: SpellSlots;
 }

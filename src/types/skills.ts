@@ -2,6 +2,7 @@
 
 import { Attribute } from './attributes';
 import { ClassId } from './gameClass';
+import { StatModifier } from './modifiers';
 import { RaceId } from './race';
 
 export type SkillEntity = {
@@ -26,7 +27,7 @@ export type TierData = {
     classId: ClassId;
     atLevel: number;
   }[];
-  effects: EffectType[];
+  effects: StatModifier[];
 };
 
 // --- Enum / Constants ---

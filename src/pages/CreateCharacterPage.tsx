@@ -241,7 +241,7 @@ export default function CharacterCreatePage() {
             <strong>HP:</strong> {derivedStats?.hp}
           </p>
           <p>
-            <strong>Base Attack Bonus:</strong> {derivedStats?.attackBonus}
+            <strong>Base Attack Bonus:</strong> {derivedStats?.baseAttackBonus}
           </p>
           <p>
             <strong>Spells:</strong>{' '}

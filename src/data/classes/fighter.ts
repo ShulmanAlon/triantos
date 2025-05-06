@@ -10,32 +10,32 @@ export const fighter: GameClass = {
     {
       level: 1,
       skill: [{ onlyForRace: 'Human', skillPoints: 1 }, { skillPoints: 3 }],
-      attackBonus: 2,
+      baseAttackBonus: 2,
     },
     {
       level: 2,
       skill: [{ onlyForRace: 'Human', skillPoints: 1 }],
-      attackBonus: 2,
+      baseAttackBonus: 2,
     },
     {
       level: 3,
       skill: [{ skillPoints: 1 }],
-      attackBonus: 3,
+      baseAttackBonus: 3,
     },
     {
       level: 4,
-      attackBonus: 3,
+      baseAttackBonus: 3,
       abilityPoint: 1,
     },
     {
       level: 5,
       skill: [{ onlyForRace: 'Human', skillPoints: 1 }],
-      attackBonus: 4,
+      baseAttackBonus: 4,
     },
     {
       level: 6,
       skill: [{ skillPoints: 1 }],
-      attackBonus: 4,
+      baseAttackBonus: 4,
     },
     // TODO: ... continue through level 18
   ],

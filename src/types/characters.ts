@@ -46,7 +46,7 @@ export type CharacterSkillSelection = {
 export interface DerivedStats {
   hp: number;
   spellSlots?: Record<number, number>;
-  attackBonus?: number;
+  baseAttackBonus: number;
 }
 
 export type CharacterDerivedStats = {
@@ -59,8 +59,9 @@ export type FinalCharacterStats = {
   base: DerivedStats;
   derived: CharacterDerivedStats;
   final: {
-    hp: number;
-    attackBonus: number;
+    hpBreakdown: StatBlock<number>;
+    hpTemp: StatBlock<number>;
+    meleeAttack: StatBlock<number>;
     spellSlots?: Record<number, number>;
     ac: StatBlock;
   };
