@@ -1,6 +1,6 @@
 import { GameItem } from '@/types/items';
 
-export const PlateArmor: GameItem = {
+export const plateArmor: GameItem = {
   id: 'plateArmor',
   name: 'Plate Armor',
   type: 'armor',
@@ -9,7 +9,7 @@ export const PlateArmor: GameItem = {
   requiresProficiency: ['heavyArmor'],
 };
 
-export const PlateArmorPlusOneFireResist: GameItem = {
+export const plateArmorPlusOneFireResist: GameItem = {
   id: 'plateArmorPlusOneFireResist',
   name: 'Plate Armor +1, fire resistance',
   type: 'armor',

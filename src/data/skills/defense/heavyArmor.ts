@@ -4,14 +4,14 @@ export const heavyArmor: SkillEntity = {
   id: 'heavyArmor',
   name: 'Proficiency - Heavy Armor',
   family: 'defense',
-  description: 'Allows and improves the use of heavy armor',
+  description:
+    'Allows and improves the use of heavy armor, including: Chain Mail, Plate Armor, Ultron Nano Armor, Large Shield',
   forbiddenClasses: ['MagicUser'],
   tiers: [
     {
       tier: 1,
       name: 'Proficient',
-      description: `Allows the use of:
-    Chain Mail, Plate Armor, Ultron Nano Armor, Large Shield`,
+      description: `Allows the use of heavy armor`,
       prerequisites: [{ type: 'attribute', attribute: 'str', minimum: 13 }],
       freeForClasses: [{ classId: 'Fighter', atLevel: 1 }],
       effects: [

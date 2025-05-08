@@ -17,19 +17,26 @@ export const plasmaCutter: GameItem = {
   ammoConsumption: 2,
 };
 
+export const plasmaCutterPlusOne: GameItem = {
+  ...plasmaCutter,
+  id: 'plasmaCutterPlusOne',
+  name: '+1 Plasma Cutter',
+  modifiers: [
+    { target: 'attack_bonus_flat', operation: 'add', value: 1 },
+    {
+      target: 'damage.magic',
+      operation: 'add',
+      value: 1,
+    },
+  ],
+};
+
 export const plasmaCutterPlusTwoFiery: GameItem = {
-  // a +2 plasmaCutter with fire enchantment
+  ...plasmaCutter,
   id: 'plasmaCutterPlusTwoFiery',
   name: 'Fiery +2 Plasma Cutter',
-  type: 'weapon',
-  tags: ['melee', 'energy', '2h', 'medium'],
   modifiers: [
-    {
-      target: 'damage.energy',
-      operation: 'add',
-      value: { diceRoll: 2, diceType: 8 },
-    },
-    { target: 'attack_bonus', operation: 'add', value: 2 },
+    { target: 'attack_bonus_flat', operation: 'add', value: 2 },
     {
       target: 'damage.magic',
       operation: 'add',
@@ -41,7 +48,4 @@ export const plasmaCutterPlusTwoFiery: GameItem = {
       value: { diceRoll: 1, diceType: 6 },
     },
   ],
-  requiresProficiency: ['meleeEnergyWeapons'],
-  ammo: 'energy',
-  ammoConsumption: 2,
 };

@@ -1,10 +1,11 @@
 import { CharacterSkillSelection } from '@/types/characters';
-import { SkillEntity, EffectType } from '@/types/skills';
+import { StatModifier } from '@/types/modifiers';
+import { SkillEntity } from '@/types/skills';
 
 export function getCharacterEffects(
   skillSelections: CharacterSkillSelection[],
   skillEntities: SkillEntity[]
-): EffectType[] {
+): StatModifier[] {
   return skillSelections
     .map(({ skillId, tier }) => {
       const skill = skillEntities.find((s) => s.id === skillId);

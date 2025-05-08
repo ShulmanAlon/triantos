@@ -1,7 +1,10 @@
 import { CharacterDerivedStats } from '@/types/characters';
-import { EffectType } from '@/types/skills';
+import { StatModifier } from '@/types/modifiers';
+import { ActiveAbilityEffect } from '@/types/skills';
 
-export function interpretEffects(effects: EffectType[]): CharacterDerivedStats {
+export function interpretEffects(
+  effects: StatModifier[]
+): CharacterDerivedStats {
   const derived: CharacterDerivedStats = {
     modifiers: {},
     toggles: {},
@@ -31,8 +34,14 @@ export function interpretEffects(effects: EffectType[]): CharacterDerivedStats {
         break;
 
       case 'grantActive':
-        if (typeof value === 'object') {
-          derived.activeAbilities.push(value);
+        if (
+          typeof value === 'object' &&
+          value !== null &&
+          'abilityName' in value &&
+          'usageLimit' in value &&
+          'actionType' in value
+        ) {
+          derived.activeAbilities.push(value as ActiveAbilityEffect);
         }
         break;
 

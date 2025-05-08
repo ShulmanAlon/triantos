@@ -39,11 +39,7 @@ export const DAMAGE_TYPES = [
   'cold',
   'electric',
   'acid',
-  'radiation',
-  'psychic',
-  'force',
   'poison',
-  'necrotic',
 ] as const;
 
 type DamageType = (typeof DAMAGE_TYPES)[number];
@@ -54,7 +50,12 @@ export const STAT_TARGETS = [
   // 'hp',
   'hp_temp',
   'hp_flat',
-  'attack_bonus',
+  'attack_bonus_flat',
+  'attack_bonus_basic',
+  'attack_bonus_ranged_advanced',
+  'attack_bonus_ranged_heavy',
+  'attack_bonus_melee_2h',
+  'attack_bonus_melee_energy',
   'ac_with_lightArmor',
   'ac_with_heavyArmor',
   'ac_with_powerArmor',
@@ -69,4 +70,15 @@ export const STAT_TARGETS = [
 export type StatTarget =
   | (typeof STAT_TARGETS)[number]
   | ResistTarget
-  | DamageTarget;
+  | DamageTarget
+  | WeaponProficiencyTarget;
+
+const WEAPON_PROFICIENCY_IDS = [
+  'basicWeapons',
+  'rangedAdvancedWeapons',
+  'rangedHeavyWeapons',
+  'melee2hWeapons',
+  'meleeEnergyWeapons',
+] as const;
+type WeaponProficiencyId = (typeof WEAPON_PROFICIENCY_IDS)[number];
+export type WeaponProficiencyTarget = `proficiency.${WeaponProficiencyId}`;

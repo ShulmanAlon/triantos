@@ -1,5 +1,4 @@
-import { StatTarget } from '@/config/constants';
-import { DiceRoll, StatModifier } from './modifiers';
+import { StatModifier } from './modifiers';
 
 export interface GameItem {
   id: string;
@@ -13,13 +12,6 @@ export interface GameItem {
   requiresProficiency?: string[]; // proficiency id needed
   activeAbilities?: string[]; // Optional references to active skills granted
   notes?: string; // Optional DM-written description or context
-}
-
-export interface ItemModifier {
-  target: StatTarget; // e.g., 'ac_with_lightArmor', 'hp', 'attack_bonus.melee'
-  operation: 'add' | 'multiply' | 'enable';
-  value: number | boolean | DiceRoll;
-  source?: string; // Optional label for UI (e.g., 'Gloves of the Ox')
 }
 
 export type AmmoType = 'arrow' | 'energy' | 'self';

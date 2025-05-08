@@ -8,7 +8,7 @@ import { RaceId } from './race';
 export type SkillEntity = {
   id: string; // SkillId
   name: string;
-  family: string; // SkillFamilyId
+  family: SkillFamilyId; // SkillFamilyId
   description: string;
   abilityModifier?: Attribute;
   forbiddenClasses?: ClassId[];
@@ -47,17 +47,6 @@ export type TierPrerequisite =
   | { type: 'attribute'; attribute: Attribute; minimum: number }
   | { type: 'skill'; skillId: string; tier: number };
 
-// --- Effect Types ---
-
-export type EffectType = {
-  target: string;
-  operation: 'add' | 'multiply' | 'override' | 'enable' | 'grantActive';
-  value: number | boolean | ActiveAbilityEffect;
-  conditions?: ConditionType[];
-  sourceSkill: string;
-  tier: number;
-};
-
 export type ActiveAbilityEffect = {
   abilityName: string;
   usageLimit: UsageLimit;
@@ -80,3 +69,10 @@ export type ConditionType = {
   type: 'equipment' | 'status' | 'environment';
   value: string;
 };
+
+export type SkillFamilyId =
+  | 'attack'
+  | 'defense'
+  | 'magic'
+  | 'piloting'
+  | 'utility';
