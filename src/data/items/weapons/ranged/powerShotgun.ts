@@ -16,3 +16,17 @@ export const powerShotgun: GameItem = {
   ammo: 'energy',
   ammoConsumption: 3,
 };
+
+export const powerShotgunPlus2: GameItem = {
+  ...powerShotgun,
+  id: 'powerShotgunPlus2',
+  name: '+2 Power Shotgun',
+  modifiers: [
+    { target: 'attack_bonus_flat', operation: 'add', value: 2 },
+    {
+      target: 'damage.magic',
+      operation: 'add',
+      value: 2,
+    },
+  ],
+};
