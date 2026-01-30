@@ -54,6 +54,7 @@ export const STAT_TARGETS = [
   'attack_bonus_basic',
   'attack_bonus_ranged_advanced',
   'attack_bonus_ranged_heavy',
+  'attack_bonus_mounted',
   'attack_bonus_melee_2h',
   'attack_bonus_melee_energy',
   'ac_with_lightArmor',
@@ -77,6 +78,7 @@ const WEAPON_PROFICIENCY_IDS = [
   'basicWeapons',
   'rangedAdvancedWeapons',
   'rangedHeavyWeapons',
+  'rangedMounted',
   'melee2hWeapons',
   'meleeEnergyWeapons',
 ] as const;

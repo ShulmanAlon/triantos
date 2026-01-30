@@ -38,7 +38,7 @@ export const basicWeapons: SkillEntity = {
     {
       tier: 3,
       name: 'Master',
-      description: '+2 attack with basic weapons (+2 total)',
+      description: '+1 attack with basic weapons (+2 total)',
       prerequisites: [
         { type: 'skill', skillId: 'basicWeapons', tier: 2 },
         { type: 'level', minimum: 8 },
