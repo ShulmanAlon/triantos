@@ -9,8 +9,7 @@ export const unarmored: SkillEntity = {
     {
       tier: 1,
       name: 'Proficient',
-      description: `Allows the use of:
-    Chain Mail, Plate Armor, Ultron Nano Armor, Large Shield`,
+      description: `Basic clothing, no armor`,
       prerequisites: [{ type: 'attribute', attribute: 'str', minimum: 13 }],
       freeForClasses: [
         { classId: 'Fighter', atLevel: 1 },
@@ -31,7 +30,10 @@ export const unarmored: SkillEntity = {
       tier: 2,
       name: 'Expert',
       description: `+1 AC when not using armor`,
-      prerequisites: [{ type: 'level', minimum: 3 }],
+      prerequisites: [
+        { type: 'skill', skillId: 'unarmored', tier: 1 },
+        { type: 'level', minimum: 3 },
+      ],
       effects: [
         {
           target: 'ac_with_unarmored',
@@ -45,13 +47,16 @@ export const unarmored: SkillEntity = {
     {
       tier: 3,
       name: 'Master',
-      description: `+2 AC when when not using armor (+2 total)`,
-      prerequisites: [{ type: 'level', minimum: 6 }],
+      description: `+1 AC when when not using armor (+2 total)`,
+      prerequisites: [
+        { type: 'skill', skillId: 'unarmored', tier: 2 },
+        { type: 'level', minimum: 6 },
+      ],
       effects: [
         {
           target: 'ac_with_unarmored',
           operation: 'add',
-          value: 2,
+          value: 1,
           sourceSkill: 'unarmored',
           tier: 3,
         },

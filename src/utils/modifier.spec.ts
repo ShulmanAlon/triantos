@@ -18,12 +18,16 @@ describe('getModifier', () => {
     expect(getModifier(18)).toBe(4);
   });
 
-  it('returns -3 for 3', () => {
-    expect(getModifier(3)).toBe(-3);
+  it('returns +3 for 17', () => {
+    expect(getModifier(17)).toBe(3);
+  });
+
+  it('returns -4 for 3', () => {
+    expect(getModifier(3)).toBe(-4);
   });
 
   it('handles 1 correctly', () => {
-    expect(getModifier(1)).toBe(-4);
+    expect(getModifier(1)).toBe(-5);
   });
 
   it('handles 20 correctly', () => {

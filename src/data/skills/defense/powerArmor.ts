@@ -30,7 +30,10 @@ export const powerArmor: SkillEntity = {
       tier: 2,
       name: 'Expert',
       description: `+2 AC when using Power-Armor`,
-      prerequisites: [{ type: 'level', minimum: 14 }],
+      prerequisites: [
+        { type: 'skill', skillId: 'powerArmor', tier: 1 },
+        { type: 'level', minimum: 14 },
+      ],
       effects: [
         {
           target: 'ac_with_powerArmor',

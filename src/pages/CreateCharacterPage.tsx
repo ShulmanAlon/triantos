@@ -14,7 +14,7 @@ import { uiLabels } from '@/i18n/ui';
 import { supabase } from '@/lib/supabaseClient';
 import { AttributeMap, Attribute } from '@/types/attributes';
 import { getClassById, getClassLevelDataById } from '@/utils/classUtils';
-import { getBaseDerivedStats } from '@/utils/derived/getBasederivedStats';
+import { getBaseDerivedStats } from '@/utils/derived/getBaseDerivedStats';
 import { getRaceById, getBaseAttributesByRaceId } from '@/utils/raceUtils';
 import { ClassId } from '@/types/gameClass';
 import { RaceId } from '@/types/race';
@@ -62,7 +62,7 @@ export default function CharacterCreatePage() {
   const handleAttributeChange = (
     attr: Attribute,
     newValue: number,
-    poolDelta: number
+    poolDelta: number,
   ) => {
     setAttributes((prev) => ({ ...prev, [attr]: newValue }));
     if (hasAbilityPointThisLevel && poolDelta > 0) {
@@ -97,7 +97,7 @@ export default function CharacterCreatePage() {
   const spentAllPoints = pool === 0;
   const meetsRequirements = selectedClassData?.primaryAttributes
     ? Object.entries(selectedClassData.primaryAttributes).every(
-        ([attr, min]) => attributes[attr as Attribute] >= min
+        ([attr, min]) => attributes[attr as Attribute] >= min,
       )
     : true;
 
@@ -136,7 +136,7 @@ export default function CharacterCreatePage() {
 
     if (insertError || upsertError) {
       setError(
-        (insertError?.message ?? null) || (upsertError?.message ?? null)
+        (insertError?.message ?? null) || (upsertError?.message ?? null),
       );
       setSaving(false);
       return;

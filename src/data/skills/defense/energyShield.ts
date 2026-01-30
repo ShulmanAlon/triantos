@@ -10,14 +10,14 @@ export const energyShield: SkillEntity = {
     {
       tier: 1,
       name: 'Proficient',
-      description: 'Energy Shield grants 10 temporary HP',
+      description: 'Enables using energy shield',
       prerequisites: [{ type: 'level', minimum: 6 }],
       effects: [
         {
           target: 'hp_temp',
-          operation: 'add',
-          value: 10,
-          sourceSkill: 'hp_temp',
+          operation: 'enable',
+          value: true,
+          sourceSkill: 'energyShield',
           tier: 1,
         },
       ],
@@ -25,14 +25,17 @@ export const energyShield: SkillEntity = {
     {
       tier: 2,
       name: 'Advanced',
-      description: 'Energy Shield grants 20 temporary HP',
-      prerequisites: [{ type: 'level', minimum: 10 }],
+      description: 'Energy Shield grants +10 temporary HP',
+      prerequisites: [
+        { type: 'skill', skillId: 'energyShield', tier: 1 },
+        { type: 'level', minimum: 10 },
+      ],
       effects: [
         {
           target: 'hp_temp',
           operation: 'add',
-          value: 20,
-          sourceSkill: 'strong_vitality',
+          value: 10,
+          sourceSkill: 'energy_shield',
           tier: 2,
         },
       ],
@@ -40,14 +43,17 @@ export const energyShield: SkillEntity = {
     {
       tier: 3,
       name: 'Expert',
-      description: 'Energy Shield grants 30 temporary HP',
-      prerequisites: [{ type: 'level', minimum: 14 }],
+      description: 'Energy Shield grants +20 temporary HP',
+      prerequisites: [
+        { type: 'skill', skillId: 'energyShield', tier: 2 },
+        { type: 'level', minimum: 14 },
+      ],
       effects: [
         {
           target: 'hp_temp',
           operation: 'add',
-          value: 30,
-          sourceSkill: 'strong_vitality',
+          value: 10,
+          sourceSkill: 'energy_shield',
           tier: 3,
         },
       ],

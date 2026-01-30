@@ -30,6 +30,7 @@ export const shieldFortress: SkillEntity = {
       name: 'Expert',
       description: 'Additional +1 AC with shield (+2 total).',
       prerequisites: [
+        { type: 'skill', skillId: 'shieldFortress', tier: 1 },
         { type: 'level', minimum: 10 },
         { type: 'attribute', attribute: 'con', minimum: 15 },
       ],
@@ -37,7 +38,7 @@ export const shieldFortress: SkillEntity = {
         {
           target: 'ac_with_shield',
           operation: 'add',
-          value: 2,
+          value: 1,
           sourceSkill: 'shieldFortress',
           tier: 2,
         },
@@ -48,6 +49,7 @@ export const shieldFortress: SkillEntity = {
       name: 'Master',
       description: 'Additional +1 AC with shield (+3 total).',
       prerequisites: [
+        { type: 'skill', skillId: 'shieldFortress', tier: 2 },
         { type: 'level', minimum: 16 },
         { type: 'attribute', attribute: 'con', minimum: 17 },
       ],
@@ -55,7 +57,7 @@ export const shieldFortress: SkillEntity = {
         {
           target: 'ac_with_shield',
           operation: 'add',
-          value: 3,
+          value: 1,
           sourceSkill: 'shieldFortress',
           tier: 3,
         },

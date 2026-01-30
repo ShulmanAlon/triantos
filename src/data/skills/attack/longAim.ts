@@ -28,12 +28,15 @@ export const longAim: SkillEntity = {
       tier: 2,
       name: 'Expert',
       description: '+10% additional range (+20% total).',
-      prerequisites: [{ type: 'level', minimum: 8 }],
+      prerequisites: [
+        { type: 'skill', skillId: 'longAim', tier: 1 },
+        { type: 'level', minimum: 8 },
+      ],
       effects: [
         {
           target: 'ranged_attack_range',
           operation: 'add',
-          value: 0.2,
+          value: 0.1,
           sourceSkill: 'longAim',
           tier: 2,
         },

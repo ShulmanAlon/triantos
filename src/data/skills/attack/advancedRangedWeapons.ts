@@ -24,30 +24,24 @@ export const advancedRangedWeapons: SkillEntity = {
       tier: 2,
       name: 'Expert',
       description: '+1 attack with advanced ranged weapons',
-      prerequisites: [{ type: 'level', minimum: 4 }],
+      prerequisites: [
+        { type: 'skill', skillId: 'advancedRangedWeapons', tier: 1 },
+        { type: 'level', minimum: 4 },
+      ],
       effects: [
-        {
-          target: 'proficiency.rangedAdvancedWeapons',
-          operation: 'enable',
-          value: true,
-          sourceSkill: 'advancedRangedWeapons',
-        },
         { target: 'attack_bonus_ranged_advanced', operation: 'add', value: 1 },
       ],
     },
     {
       tier: 3,
       name: 'Master',
-      description: '+2 attack with advanced ranged weapons (+2 total)',
-      prerequisites: [{ type: 'level', minimum: 8 }],
+      description: '+1 attack with advanced ranged weapons (+2 total)',
+      prerequisites: [
+        { type: 'skill', skillId: 'advancedRangedWeapons', tier: 2 },
+        { type: 'level', minimum: 8 },
+      ],
       effects: [
-        {
-          target: 'proficiency.rangedAdvancedWeapons',
-          operation: 'enable',
-          value: true,
-          sourceSkill: 'advancedRangedWeapons',
-        },
-        { target: 'attack_bonus_ranged_advanced', operation: 'add', value: 2 },
+        { target: 'attack_bonus_ranged_advanced', operation: 'add', value: 1 },
       ],
     },
   ],

@@ -9,8 +9,10 @@ export function getCharacterEffects(
   return skillSelections
     .map(({ skillId, tier }) => {
       const skill = skillEntities.find((s) => s.id === skillId);
-      const tierData = skill?.tiers.find((t) => t.tier === tier);
-      return tierData?.effects ?? [];
+      if (!skill) return [];
+      return skill.tiers
+        .filter((t) => t.tier <= tier)
+        .flatMap((t) => t.effects ?? []);
     })
     .flat();
 }

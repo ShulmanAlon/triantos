@@ -10,6 +10,7 @@ export function interpretEffects(
     toggles: {},
     activeAbilities: [],
   };
+  const activeByName = new Map<string, ActiveAbilityEffect>();
 
   for (const effect of effects) {
     const { target, operation, value } = effect;
@@ -41,12 +42,20 @@ export function interpretEffects(
           'usageLimit' in value &&
           'actionType' in value
         ) {
-          derived.activeAbilities.push(value as ActiveAbilityEffect);
+          const active = value as ActiveAbilityEffect;
+          if (activeByName.has(active.abilityName)) {
+            activeByName.delete(active.abilityName);
+          }
+          activeByName.set(active.abilityName, active);
         }
         break;
 
       // You can handle 'multiply' or others later
     }
+  }
+
+  if (activeByName.size > 0) {
+    derived.activeAbilities = Array.from(activeByName.values());
   }
 
   return derived;

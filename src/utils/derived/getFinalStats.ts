@@ -7,7 +7,7 @@ import { GameClass } from '@/types/gameClass';
 import { SkillEntity } from '@/types/skills';
 import { getCharacterEffects } from '@/utils/skills/getCharacterEffects';
 import { interpretEffects } from '@/utils/skills/interpretEffects';
-import { getBaseDerivedStats } from './getBasederivedStats';
+import { getBaseDerivedStats } from './getBaseDerivedStats';
 import { buildACStatBlock } from './buildACStatBlock';
 import { buildHPStatBlock } from './buildHPStatBlock';
 import { buildTempHPStatBlock } from './buildTempHPStatBlock';
@@ -18,7 +18,7 @@ export function getFinalStats(
   attributes: Record<Attribute, number>,
   level: number,
   skillSelections: CharacterSkillSelection[],
-  skillEntities: SkillEntity[]
+  skillEntities: SkillEntity[],
 ): FinalCharacterStats {
   const base = getBaseDerivedStats(gameClass, attributes, level);
 
@@ -30,7 +30,7 @@ export function getFinalStats(
   const meleeAttackBlock = buildMeleeAttackStatBlock(
     attributes,
     derived,
-    base.baseAttackBonus
+    base.baseAttackBonus,
   );
 
   // const hp = derived.modifiers['hp'] ?? 0;

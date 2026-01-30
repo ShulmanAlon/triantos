@@ -26,6 +26,7 @@ export const strongVitality: SkillEntity = {
       name: 'Expert',
       description: 'Gain 10 more additional HP (+15 total)',
       prerequisites: [
+        { type: 'skill', skillId: 'strongVitality', tier: 1 },
         { type: 'level', minimum: 6 },
         { type: 'attribute', attribute: 'con', minimum: 13 },
       ],
@@ -33,7 +34,7 @@ export const strongVitality: SkillEntity = {
         {
           target: 'hp_flat',
           operation: 'add',
-          value: 15,
+          value: 10,
           sourceSkill: 'strong_vitality',
           tier: 2,
         },

@@ -10,7 +10,7 @@ export const basicWeapons: SkillEntity = {
     {
       tier: 1,
       name: 'Proficient',
-      description: 'Allows the use of basic weapons',
+      description: 'Proficient with basic weapons (no -4 penalty)',
       effects: [
         {
           target: 'proficiency.basicWeapons',
@@ -29,31 +29,21 @@ export const basicWeapons: SkillEntity = {
       tier: 2,
       name: 'Expert',
       description: '+1 attack with basic weapons',
-      prerequisites: [{ type: 'level', minimum: 4 }],
-      effects: [
-        {
-          target: 'proficiency.basicWeapons',
-          operation: 'enable',
-          value: true,
-          sourceSkill: 'basicWeapons',
-        },
-        { target: 'attack_bonus_basic', operation: 'add', value: 1 },
+      prerequisites: [
+        { type: 'skill', skillId: 'basicWeapons', tier: 1 },
+        { type: 'level', minimum: 4 },
       ],
+      effects: [{ target: 'attack_bonus_basic', operation: 'add', value: 1 }],
     },
     {
       tier: 3,
       name: 'Master',
       description: '+2 attack with basic weapons (+2 total)',
-      prerequisites: [{ type: 'level', minimum: 8 }],
-      effects: [
-        {
-          target: 'proficiency.basicWeapons',
-          operation: 'enable',
-          value: true,
-          sourceSkill: 'basicWeapons',
-        },
-        { target: 'attack_bonus_basic', operation: 'add', value: 2 },
+      prerequisites: [
+        { type: 'skill', skillId: 'basicWeapons', tier: 2 },
+        { type: 'level', minimum: 8 },
       ],
+      effects: [{ target: 'attack_bonus_basic', operation: 'add', value: 1 }],
     },
   ],
 };

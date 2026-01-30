@@ -5,13 +5,18 @@ export const piloting: SkillEntity = {
   name: 'Piloting',
   family: 'piloting',
   description:
-    'Allows driving wheeled vehicles. Other vehicle types require specific proficiencies.',
+    'Piloting skill check, proficiencies for different vehicle types is required.',
   abilityModifier: 'dex',
   tiers: [
     {
       tier: 1,
       name: 'Initial',
       description: 'Can pilot wheeled vehicles at -4 penalty.',
+      freeForClasses: [
+        { classId: 'Fighter', atLevel: 1 },
+        { classId: 'Cleric', atLevel: 1 },
+        { classId: 'MagicUser', atLevel: 1 },
+      ],
       effects: [
         {
           target: 'piloting_check',
@@ -27,6 +32,7 @@ export const piloting: SkillEntity = {
       name: 'Basic',
       description: 'No penalty to piloting checks.',
       prerequisites: [
+        { type: 'skill', skillId: 'piloting', tier: 1 },
         { type: 'attribute', attribute: 'int', minimum: 9 },
         { type: 'attribute', attribute: 'wis', minimum: 9 },
       ],
@@ -45,6 +51,7 @@ export const piloting: SkillEntity = {
       name: 'Advanced',
       description: '+3 to piloting checks.',
       prerequisites: [
+        { type: 'skill', skillId: 'piloting', tier: 2 },
         { type: 'level', minimum: 4 },
         { type: 'attribute', attribute: 'wis', minimum: 11 },
       ],
@@ -63,6 +70,7 @@ export const piloting: SkillEntity = {
       name: 'Expert',
       description: '+3 more to piloting (+6 total).',
       prerequisites: [
+        { type: 'skill', skillId: 'piloting', tier: 3 },
         { type: 'level', minimum: 8 },
         { type: 'attribute', attribute: 'dex', minimum: 15 },
       ],
@@ -70,7 +78,7 @@ export const piloting: SkillEntity = {
         {
           target: 'piloting_check',
           operation: 'add',
-          value: 6,
+          value: 3,
           sourceSkill: 'piloting',
           tier: 4,
         },
@@ -81,6 +89,7 @@ export const piloting: SkillEntity = {
       name: 'Master',
       description: '+3 more to piloting (+9 total).',
       prerequisites: [
+        { type: 'skill', skillId: 'piloting', tier: 4 },
         { type: 'level', minimum: 12 },
         { type: 'attribute', attribute: 'dex', minimum: 17 },
         { type: 'attribute', attribute: 'wis', minimum: 13 },
@@ -89,7 +98,7 @@ export const piloting: SkillEntity = {
         {
           target: 'piloting_check',
           operation: 'add',
-          value: 9,
+          value: 3,
           sourceSkill: 'piloting',
           tier: 5,
         },

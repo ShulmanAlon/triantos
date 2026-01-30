@@ -28,7 +28,10 @@ export const heavyArmor: SkillEntity = {
       tier: 2,
       name: 'Expert',
       description: `+1 AC when using heavy armor`,
-      prerequisites: [{ type: 'level', minimum: 3 }],
+      prerequisites: [
+        { type: 'skill', skillId: 'heavyArmor', tier: 1 },
+        { type: 'level', minimum: 3 },
+      ],
       effects: [
         {
           target: 'ac_with_heavyArmor',
@@ -42,13 +45,16 @@ export const heavyArmor: SkillEntity = {
     {
       tier: 3,
       name: 'Master',
-      description: `+2 AC when using heavy armor (+2 total)`,
-      prerequisites: [{ type: 'level', minimum: 6 }],
+      description: `+1 AC when using heavy armor (+2 total)`,
+      prerequisites: [
+        { type: 'skill', skillId: 'heavyArmor', tier: 2 },
+        { type: 'level', minimum: 6 },
+      ],
       effects: [
         {
           target: 'ac_with_heavyArmor',
           operation: 'add',
-          value: 2,
+          value: 1,
           sourceSkill: 'heavyArmor',
           tier: 3,
         },
