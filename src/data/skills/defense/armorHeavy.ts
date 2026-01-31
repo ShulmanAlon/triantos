@@ -1,7 +1,7 @@
 import { SkillEntity } from '@/types/skills';
 
-export const heavyArmor: SkillEntity = {
-  id: 'heavyArmor',
+export const armorHeavy: SkillEntity = {
+  id: 'armorHeavy',
   name: 'Proficiency - Heavy Armor',
   family: 'defense',
   description:
@@ -19,7 +19,7 @@ export const heavyArmor: SkillEntity = {
           target: 'ac_with_heavyArmor',
           operation: 'enable',
           value: true,
-          sourceSkill: 'heavyArmor',
+          sourceSkill: 'armorHeavy',
           tier: 1,
         },
       ],
@@ -29,7 +29,7 @@ export const heavyArmor: SkillEntity = {
       name: 'Expert',
       description: `+1 AC when using heavy armor`,
       prerequisites: [
-        { type: 'skill', skillId: 'heavyArmor', tier: 1 },
+        { type: 'skill', skillId: 'armorHeavy', tier: 1 },
         { type: 'level', minimum: 3 },
       ],
       effects: [
@@ -37,7 +37,7 @@ export const heavyArmor: SkillEntity = {
           target: 'ac_with_heavyArmor',
           operation: 'add',
           value: 1,
-          sourceSkill: 'heavyArmor',
+          sourceSkill: 'armorHeavy',
           tier: 2,
         },
       ],
@@ -47,7 +47,7 @@ export const heavyArmor: SkillEntity = {
       name: 'Master',
       description: `+1 AC when using heavy armor (+2 total)`,
       prerequisites: [
-        { type: 'skill', skillId: 'heavyArmor', tier: 2 },
+        { type: 'skill', skillId: 'armorHeavy', tier: 2 },
         { type: 'level', minimum: 6 },
       ],
       effects: [
@@ -55,7 +55,7 @@ export const heavyArmor: SkillEntity = {
           target: 'ac_with_heavyArmor',
           operation: 'add',
           value: 1,
-          sourceSkill: 'heavyArmor',
+          sourceSkill: 'armorHeavy',
           tier: 3,
         },
       ],

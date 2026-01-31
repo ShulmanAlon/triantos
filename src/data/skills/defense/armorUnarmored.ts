@@ -1,7 +1,7 @@
 import { SkillEntity } from '@/types/skills';
 
-export const unarmored: SkillEntity = {
-  id: 'unarmored',
+export const armorUnarmored: SkillEntity = {
+  id: 'armorUnarmored',
   name: 'Proficiency - Unarmored',
   family: 'defense',
   description: 'Clothes and robes, no armor.',
@@ -21,7 +21,7 @@ export const unarmored: SkillEntity = {
           target: 'ac_with_unarmored',
           operation: 'enable',
           value: true,
-          sourceSkill: 'unarmored',
+          sourceSkill: 'armorUnarmored',
           tier: 1,
         },
       ],
@@ -31,7 +31,7 @@ export const unarmored: SkillEntity = {
       name: 'Expert',
       description: `+1 AC when not using armor`,
       prerequisites: [
-        { type: 'skill', skillId: 'unarmored', tier: 1 },
+        { type: 'skill', skillId: 'armorUnarmored', tier: 1 },
         { type: 'level', minimum: 3 },
       ],
       effects: [
@@ -39,7 +39,7 @@ export const unarmored: SkillEntity = {
           target: 'ac_with_unarmored',
           operation: 'add',
           value: 1,
-          sourceSkill: 'unarmored',
+          sourceSkill: 'armorUnarmored',
           tier: 2,
         },
       ],
@@ -49,7 +49,7 @@ export const unarmored: SkillEntity = {
       name: 'Master',
       description: `+1 AC when when not using armor (+2 total)`,
       prerequisites: [
-        { type: 'skill', skillId: 'unarmored', tier: 2 },
+        { type: 'skill', skillId: 'armorUnarmored', tier: 2 },
         { type: 'level', minimum: 6 },
       ],
       effects: [
@@ -57,7 +57,7 @@ export const unarmored: SkillEntity = {
           target: 'ac_with_unarmored',
           operation: 'add',
           value: 1,
-          sourceSkill: 'unarmored',
+          sourceSkill: 'armorUnarmored',
           tier: 3,
         },
       ],

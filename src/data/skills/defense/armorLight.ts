@@ -1,7 +1,7 @@
 import { SkillEntity } from '@/types/skills';
 
-export const lightArmor: SkillEntity = {
-  id: 'lightArmor',
+export const armorLight: SkillEntity = {
+  id: 'armorLight',
   name: 'Proficiency - Light Armor',
   family: 'defense',
   description: 'Allows and improves the use of light armor',
@@ -21,7 +21,7 @@ export const lightArmor: SkillEntity = {
           target: 'ac_with_lightArmor',
           operation: 'enable',
           value: true,
-          sourceSkill: 'lightArmor',
+          sourceSkill: 'armorLight',
           tier: 1,
         },
       ],
@@ -31,7 +31,7 @@ export const lightArmor: SkillEntity = {
       name: 'Expert',
       description: `+1 AC when using light armor`,
       prerequisites: [
-        { type: 'skill', skillId: 'lightArmor', tier: 1 },
+        { type: 'skill', skillId: 'armorLight', tier: 1 },
         { type: 'level', minimum: 3 },
       ],
       effects: [
@@ -39,7 +39,7 @@ export const lightArmor: SkillEntity = {
           target: 'ac_with_lightArmor',
           operation: 'add',
           value: 1,
-          sourceSkill: 'lightArmor',
+          sourceSkill: 'armorLight',
           tier: 2,
         },
       ],
@@ -49,7 +49,7 @@ export const lightArmor: SkillEntity = {
       name: 'Master',
       description: `+1 AC when using light armor (+2 total)`,
       prerequisites: [
-        { type: 'skill', skillId: 'lightArmor', tier: 2 },
+        { type: 'skill', skillId: 'armorLight', tier: 2 },
         { type: 'level', minimum: 6 },
       ],
       effects: [
@@ -57,7 +57,7 @@ export const lightArmor: SkillEntity = {
           target: 'ac_with_lightArmor',
           operation: 'add',
           value: 1,
-          sourceSkill: 'lightArmor',
+          sourceSkill: 'armorLight',
           tier: 3,
         },
       ],

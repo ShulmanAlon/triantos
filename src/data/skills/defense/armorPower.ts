@@ -1,7 +1,7 @@
 import { SkillEntity } from '@/types/skills';
 
-export const powerArmor: SkillEntity = {
-  id: 'powerArmor',
+export const armorPower: SkillEntity = {
+  id: 'armorPower',
   name: 'Proficiency - Power Armor',
   family: 'defense',
   description: 'Allows and improves the use of Power-Armor',
@@ -21,7 +21,7 @@ export const powerArmor: SkillEntity = {
           target: 'ac_with_powerArmor',
           operation: 'enable',
           value: true,
-          sourceSkill: 'powerArmor',
+          sourceSkill: 'armorPower',
           tier: 1,
         },
       ],
@@ -31,7 +31,7 @@ export const powerArmor: SkillEntity = {
       name: 'Expert',
       description: `+2 AC when using Power-Armor`,
       prerequisites: [
-        { type: 'skill', skillId: 'powerArmor', tier: 1 },
+        { type: 'skill', skillId: 'armorPower', tier: 1 },
         { type: 'level', minimum: 14 },
       ],
       effects: [
@@ -39,7 +39,7 @@ export const powerArmor: SkillEntity = {
           target: 'ac_with_powerArmor',
           operation: 'add',
           value: 2,
-          sourceSkill: 'powerArmor',
+          sourceSkill: 'armorPower',
           tier: 2,
         },
       ],

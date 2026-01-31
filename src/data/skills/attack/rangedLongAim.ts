@@ -1,7 +1,7 @@
 import { SkillEntity } from '@/types/skills';
 
-export const longAim: SkillEntity = {
-  id: 'longAim',
+export const rangedLongAim: SkillEntity = {
+  id: 'rangedLongAim',
   name: 'Long Aim',
   family: 'attack',
   description: 'Gain additional range for handheld ranged weapons.',
@@ -19,7 +19,7 @@ export const longAim: SkillEntity = {
           target: 'ranged_attack_range',
           operation: 'add',
           value: 0.1,
-          sourceSkill: 'longAim',
+          sourceSkill: 'rangedLongAim',
           tier: 1,
         },
       ],
@@ -29,7 +29,7 @@ export const longAim: SkillEntity = {
       name: 'Expert',
       description: '+10% additional range (+20% total).',
       prerequisites: [
-        { type: 'skill', skillId: 'longAim', tier: 1 },
+        { type: 'skill', skillId: 'rangedLongAim', tier: 1 },
         { type: 'level', minimum: 8 },
       ],
       effects: [
@@ -37,7 +37,7 @@ export const longAim: SkillEntity = {
           target: 'ranged_attack_range',
           operation: 'add',
           value: 0.1,
-          sourceSkill: 'longAim',
+          sourceSkill: 'rangedLongAim',
           tier: 2,
         },
       ],
