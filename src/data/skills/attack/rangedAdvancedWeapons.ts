@@ -1,7 +1,7 @@
 import { SkillEntity } from '@/types/skills';
 
-export const advancedRangedWeapons: SkillEntity = {
-  id: 'advancedRangedWeapons',
+export const rangedAdvancedWeapons: SkillEntity = {
+  id: 'rangedAdvancedWeapons',
   name: 'Proficiency - Advanced Ranged Weapons',
   family: 'attack',
   description:
@@ -16,7 +16,7 @@ export const advancedRangedWeapons: SkillEntity = {
           target: 'proficiency.rangedAdvancedWeapons',
           operation: 'enable',
           value: true,
-          sourceSkill: 'advancedRangedWeapons',
+          sourceSkill: 'rangedAdvancedWeapons',
         },
       ],
     },
@@ -25,7 +25,7 @@ export const advancedRangedWeapons: SkillEntity = {
       name: 'Expert',
       description: '+1 attack with advanced ranged weapons',
       prerequisites: [
-        { type: 'skill', skillId: 'advancedRangedWeapons', tier: 1 },
+        { type: 'skill', skillId: 'rangedAdvancedWeapons', tier: 1 },
         { type: 'level', minimum: 4 },
       ],
       effects: [
@@ -37,7 +37,7 @@ export const advancedRangedWeapons: SkillEntity = {
       name: 'Master',
       description: '+1 attack with advanced ranged weapons (+2 total)',
       prerequisites: [
-        { type: 'skill', skillId: 'advancedRangedWeapons', tier: 2 },
+        { type: 'skill', skillId: 'rangedAdvancedWeapons', tier: 2 },
         { type: 'level', minimum: 8 },
       ],
       effects: [

@@ -24,12 +24,8 @@ export const BASE_AC = 10;
 
 export const NAME_LEVEL = 9;
 
-export const MELEE_TYPES: string[] = [
-  'slash',
-  'pierce',
-  'blunt',
-  'energy',
-] as const;
+export const MELEE_TYPES = ['slash', 'pierce', 'blunt', 'energy'] as const;
+export type MeleeTypes = (typeof MELEE_TYPES)[number];
 
 export const DAMAGE_TYPES = [
   'physical',
@@ -68,11 +64,16 @@ export const STAT_TARGETS = [
   'piloting_dodge',
 ] as const;
 
+const FLAG_IDS = ['meleeArmorPiercer'] as const;
+type FlagId = (typeof FLAG_IDS)[number];
+export type FlagTarget = `flag.${FlagId}`;
+
 export type StatTarget =
   | (typeof STAT_TARGETS)[number]
   | ResistTarget
   | DamageTarget
-  | WeaponProficiencyTarget;
+  | WeaponProficiencyTarget
+  | FlagTarget;
 
 const WEAPON_PROFICIENCY_IDS = [
   'basicWeapons',
