@@ -5,7 +5,7 @@ import { ClassId } from './gameClass';
 import { StatModifier } from './modifiers';
 import { RaceId } from './race';
 
-export type SkillPointType = 'core' | 'utility';
+export type SkillPointType = 'core' | 'utility' | 'human';
 
 export type SkillEntity = {
   id: string; // SkillId

@@ -1,5 +1,6 @@
 import { Attribute } from './attributes';
 import { RaceId } from './race';
+import { SkillPointType } from './skills';
 
 export interface GameClass {
   id: ClassId;
@@ -16,6 +17,7 @@ export interface ClassLevel {
   level: number;
   skill?: {
     skillPoints: number;
+    skillPointType: SkillPointType;
     onlyForClass?: ClassId;
     onlyForRace?: RaceId;
   }[];

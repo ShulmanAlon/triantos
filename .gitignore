@@ -37,3 +37,6 @@ dist/
 
 # Internal tests
 /src/data/mockDataTests.ts
+
+# Temp files
+/temp files/
