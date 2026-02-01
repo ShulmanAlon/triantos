@@ -4,6 +4,7 @@ export const piloting: SkillEntity = {
   id: 'piloting',
   name: 'Piloting',
   family: 'piloting',
+  skillPointType: 'utility',
   description:
     'Piloting skill check, proficiencies for different vehicle types is required.',
   abilityModifier: 'dex',

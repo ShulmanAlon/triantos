@@ -5,10 +5,13 @@ import { ClassId } from './gameClass';
 import { StatModifier } from './modifiers';
 import { RaceId } from './race';
 
+export type SkillPointType = 'core' | 'utility';
+
 export type SkillEntity = {
   id: string; // SkillId
   name: string;
   family: SkillFamilyId; // SkillFamilyId
+  skillPointType: SkillPointType;
   description: string;
   abilityModifier?: Attribute;
   forbiddenClasses?: ClassId[];

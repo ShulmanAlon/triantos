@@ -4,6 +4,7 @@ export const rangedAdvancedWeapons: SkillEntity = {
   id: 'rangedAdvancedWeapons',
   name: 'Proficiency - Advanced Ranged Weapons',
   family: 'attack',
+  skillPointType: 'core',
   description:
     'Allows and improves the use of advanced ranged weapons, including: Power Shotgun, Assault Rifle, Huntsman Rifle, Sniper Rifle',
   tiers: [

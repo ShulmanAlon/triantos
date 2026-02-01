@@ -4,6 +4,7 @@ export const pilotingDodge: SkillEntity = {
   id: 'pilotingDodge',
   name: 'Piloting Dodge',
   family: 'piloting',
+  skillPointType: 'utility',
   description:
     'Perform a piloting-based dodge maneuver against incoming vehicle attacks.',
   tiers: [

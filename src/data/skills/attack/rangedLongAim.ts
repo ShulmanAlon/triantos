@@ -4,6 +4,7 @@ export const rangedLongAim: SkillEntity = {
   id: 'rangedLongAim',
   name: 'Long Aim',
   family: 'attack',
+  skillPointType: 'core',
   description: 'Gain additional range for handheld ranged weapons.',
   tiers: [
     {

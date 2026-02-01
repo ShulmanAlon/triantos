@@ -4,6 +4,7 @@ export const shieldFortress: SkillEntity = {
   id: 'shieldFortress',
   name: 'Shield Fortress',
   family: 'defense',
+  skillPointType: 'core',
   forbiddenClasses: ['MagicUser'],
   description: 'Increase AC when using a shield.',
   tiers: [

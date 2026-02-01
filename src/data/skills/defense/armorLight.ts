@@ -4,6 +4,7 @@ export const armorLight: SkillEntity = {
   id: 'armorLight',
   name: 'Proficiency - Light Armor',
   family: 'defense',
+  skillPointType: 'core',
   description: 'Allows and improves the use of light armor',
   forbiddenClasses: ['MagicUser'],
   tiers: [

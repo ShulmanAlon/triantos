@@ -4,6 +4,7 @@ export const strongVitality: SkillEntity = {
   id: 'strongVitality',
   name: 'Strong Vitality',
   family: 'defense',
+  skillPointType: 'core',
   description: 'Tough to take down, gain HP',
   tiers: [
     {

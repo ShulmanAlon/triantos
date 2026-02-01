@@ -4,6 +4,7 @@ export const energyShield: SkillEntity = {
   id: 'energyShield',
   name: 'Energy Shield',
   family: 'defense',
+  skillPointType: 'core',
   description:
     'Allows the use of Energy Shield, must be equipped and powered, creates a thin energy shield around the user, granting temporary HP',
   tiers: [

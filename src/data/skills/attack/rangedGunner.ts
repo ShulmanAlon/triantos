@@ -4,6 +4,7 @@ export const rangedGunner: SkillEntity = {
   id: 'rangedGunner',
   name: 'Proficiency - Mounted Weapons',
   family: 'attack',
+  skillPointType: 'core',
   description:
     'Allows proficient use of static mounted weapons, such as on bases, vehicles etc..',
   tiers: [

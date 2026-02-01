@@ -4,6 +4,7 @@ export const melee2hWeapons: SkillEntity = {
   id: 'melee2hWeapons',
   name: 'Proficiency - 2-Handed Melee Weapons',
   family: 'attack',
+  skillPointType: 'core',
   description: 'Allows proficient use of: Battleaxe, Longsword, Greatsword',
   tiers: [
     {

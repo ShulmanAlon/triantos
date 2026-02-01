@@ -4,6 +4,7 @@ export const armorUnarmored: SkillEntity = {
   id: 'armorUnarmored',
   name: 'Proficiency - Unarmored',
   family: 'defense',
+  skillPointType: 'core',
   description: 'Clothes and robes, no armor.',
   tiers: [
     {

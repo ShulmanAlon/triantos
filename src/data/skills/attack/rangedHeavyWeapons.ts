@@ -4,6 +4,7 @@ export const rangedHeavyWeapons: SkillEntity = {
   id: 'rangedHeavyWeapons',
   name: 'Proficiency - Heavy Ranged Weapons',
   family: 'attack',
+  skillPointType: 'core',
   description:
     'Allows proficient use of: Minigun, HVRL, Heavy Blaster Repeater',
   tiers: [

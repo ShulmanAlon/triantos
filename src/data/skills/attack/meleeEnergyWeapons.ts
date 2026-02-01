@@ -4,6 +4,7 @@ export const meleeEnergyWeapons: SkillEntity = {
   id: 'meleeEnergyWeapons',
   name: 'Proficiency - Energy Melee Weapons',
   family: 'attack',
+  skillPointType: 'core',
   description: 'Allows proficient use of: Power Fist, Plasma Cutter',
   tiers: [
     {

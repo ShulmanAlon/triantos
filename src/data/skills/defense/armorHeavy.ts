@@ -4,6 +4,7 @@ export const armorHeavy: SkillEntity = {
   id: 'armorHeavy',
   name: 'Proficiency - Heavy Armor',
   family: 'defense',
+  skillPointType: 'core',
   description:
     'Allows and improves the use of heavy armor, including: Chain Mail, Plate Armor, Ultron Nano Armor, Large Shield',
   forbiddenClasses: ['MagicUser'],
