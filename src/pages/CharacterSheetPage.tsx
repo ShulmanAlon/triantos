@@ -10,6 +10,8 @@ import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { USER_ROLES } from '@/config/userRoles';
 import { useCharacterById } from '@/hooks/useCharacterById';
 import { LoadingErrorWrapper } from '@/components/LoadingErrorWrapper';
+import { allSkills } from '@/data/skills/allSkills';
+import { getAcquiredSkillSelectionsUpToLevel } from '@/utils/skills/skillProgression';
 
 export const CharacterSheet = () => {
   const { id: characterId } = useParams<{ id: string }>();
@@ -32,6 +34,42 @@ export const CharacterSheet = () => {
     (character.user_id === user.id ||
       character.campaign_owner_id === user.id ||
       user.role === USER_ROLES.ADMIN);
+
+  const progressionBuckets = (() => {
+    if (!character?.progression) return [];
+    if (typeof character.progression === 'string') {
+      try {
+        const parsed = JSON.parse(character.progression);
+        return parsed?.buckets ?? [];
+      } catch {
+        return [];
+      }
+    }
+    return character.progression.buckets ?? [];
+  })();
+
+  const skillSelections =
+    character && progressionBuckets.length > 0
+      ? getAcquiredSkillSelectionsUpToLevel(
+          progressionBuckets,
+          allSkills,
+          character.class_id,
+          character.race_id,
+          character.level,
+        )
+      : [];
+  const skillNameById = new Map(allSkills.map((skill) => [skill.id, skill.name]));
+  const skillSummary = skillSelections.map((selection) => ({
+    name: skillNameById.get(selection.skillId) ?? selection.skillId,
+    tier: selection.tier,
+    source: selection.source,
+  }));
+  const debugBuckets =
+    typeof character?.progression === 'string'
+      ? character.progression
+      : JSON.stringify(character?.progression ?? {});
+  const debugSummary = `buckets:${progressionBuckets.length} selections:${skillSelections.length}`;
+  const debugMeta = `progressionType:${typeof character?.progression} keys:${Object.keys(character ?? {}).join(',')}`;
 
   return (
     <LoadingErrorWrapper loading={isLoading} error={hasError}>
@@ -71,12 +109,20 @@ export const CharacterSheet = () => {
             selectedRaceId={character.race_id}
             level={character.level}
             attributes={character.attributes}
+            skills={skillSummary}
             derived={getBaseDerivedStats(
               getClassById(character.class_id as ClassId) as GameClass,
               character.attributes,
               character.level,
             )}
           />
+          <div className="text-xs text-gray-500 mt-2">
+            Debug skills: {debugSummary}
+          </div>
+          <div className="text-xs text-gray-500 mt-1">{debugMeta}</div>
+          <pre className="text-xs text-gray-400 whitespace-pre-wrap mt-1">
+            {debugBuckets}
+          </pre>
           {canEditCharacter && (
             <Button
               variant="destructive"

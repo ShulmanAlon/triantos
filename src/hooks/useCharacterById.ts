@@ -23,7 +23,7 @@ export function useCharacterById(characterId: string | undefined) {
       .from(TABLES.CHARACTERS)
       .select(
         `
-          id, name, player_name, image_url, class_id, race_id, level, visible, deleted, attributes, user_id, campaign_id,
+          id, name, player_name, image_url, class_id, race_id, level, visible, deleted, attributes, progression, user_id, campaign_id,
           users ( username ),
           campaigns ( owner_id )
         `
@@ -48,6 +48,7 @@ export function useCharacterById(characterId: string | undefined) {
           visible,
           deleted,
           attributes,
+          progression,
           user_id,
           campaign_id,
           users,
@@ -65,6 +66,7 @@ export function useCharacterById(characterId: string | undefined) {
           visible,
           deleted,
           attributes,
+          progression,
           user_id,
           campaign_id,
           owner_username: users

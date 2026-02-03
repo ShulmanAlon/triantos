@@ -20,7 +20,7 @@ export function useCharactersByCampaignId(campaignId: string | undefined) {
       const { data, error } = await supabase
         .from(TABLES.CHARACTERS)
         .select(
-          'id, name, player_name, image_url, class_id, race_id, level, visible, users(username)'
+          'id, name, player_name, image_url, class_id, race_id, level, visible, progression, users(username)'
         )
         .eq('campaign_id', campaignId)
         .eq('deleted', false);

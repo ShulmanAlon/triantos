@@ -30,7 +30,11 @@ import {
   getSkillTierAvailability,
   validateLevelSkillSelections,
 } from '@/utils/skills/skillProgression';
-import { LevelUpBucket, SkillSelectionEntry } from '@/types/characters';
+import {
+  CharacterProgression,
+  LevelUpBucket,
+  SkillSelectionEntry,
+} from '@/types/characters';
 import { SkillPointType } from '@/types/skills';
 import { attributeLabels } from '@/i18n/attributes';
 
@@ -150,6 +154,7 @@ export default function CharacterCreatePage() {
   const handleCreate = async () => {
     if (!user || !campaignId) return;
     setSaving(true);
+    const progression: CharacterProgression = { buckets: skillBuckets };
 
     const { error: insertError } = await supabase
       .from(TABLES.CHARACTERS)
@@ -160,6 +165,7 @@ export default function CharacterCreatePage() {
         race_id: selectedRaceId,
         level,
         attributes,
+        progression,
         user_id: user.id,
         campaign_id: campaignId,
         image_url: imageUrl,

@@ -16,6 +16,7 @@ interface CharacterBase {
   attributes: Record<Attribute, number>;
   user_id: string;
   campaign_id: string;
+  progression?: CharacterProgression;
 }
 
 export interface CharacterPreview extends CharacterBase {
