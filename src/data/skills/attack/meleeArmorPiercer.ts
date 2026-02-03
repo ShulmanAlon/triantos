@@ -11,6 +11,11 @@ export const meleeArmorPiercer: SkillEntity = {
     {
       tier: 1,
       name: 'Proficient',
+      prerequisites: [
+        { type: 'level', minimum: 6 },
+        { type: 'attribute', attribute: 'str', minimum: 11 },
+        { type: 'attribute', attribute: 'dex', minimum: 13 },
+      ],
       effects: [
         {
           target: 'flag.meleeArmorPiercer',
