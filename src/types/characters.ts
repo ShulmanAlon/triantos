@@ -2,6 +2,7 @@ import { Attribute } from './attributes';
 import { ClassId } from './gameClass';
 import { RaceId } from './race';
 import { ActiveAbilityEffect } from './skills';
+import { SkillPointType } from './skills';
 
 interface CharacterBase {
   id: string;
@@ -41,6 +42,30 @@ export type CharacterSkillSelection = {
   skillId: string;
   tier: number;
   acquiredAtLevel: number;
+  source?: 'selected' | 'class' | 'race';
+  spendType?: SkillPointType;
+};
+
+export type SkillPointPool = {
+  core: number;
+  utility: number;
+  human: number;
+};
+
+export type SkillSelectionEntry = {
+  skillId: string;
+  tier: number;
+  spendType: SkillPointType;
+};
+
+export type LevelUpBucket = {
+  level: number;
+  attributeIncreases?: Partial<Record<Attribute, number>>;
+  skillSelections?: SkillSelectionEntry[];
+};
+
+export type CharacterProgression = {
+  buckets: LevelUpBucket[];
 };
 
 export interface DerivedStats {

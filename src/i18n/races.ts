@@ -16,13 +16,13 @@ export const raceDictionary: Record<
     en: {
       name: 'Human',
       description: `Greedy, cunning and power hungry, humans are the most influential and numerous race in The Exile even though they are the shortest lived. Very adaptable. Standing 1.5 up to 2.20 meters tall. Life expectancy ~80 years`,
-      specialAbilities: ['Quick learner (+1 skill on levels 2,5,8,11..)'],
+      specialAbilities: ['Quick learner (+1 skill on levels 3,6,9,12)'],
       restrictions: ['None'],
     },
     he: {
       name: 'אדם',
       description: `חמדנים, ערמומיים וצמאי כוח – בני האדם הם הגזע הדומיננטי ביותר בגולים, למרות אורך חייהם הקצר. מסתגלים מהר. גובה ממוצע 1.5 עד 2.20 מטר. תוחלת חיים ~80 שנה`,
-      specialAbilities: ['לומדים מהר (+1 מיומנות בדרגות 2,5,8,11...)'],
+      specialAbilities: ['לומדים מהר (+1 מיומנות בדרגות 3,6,9,12)'],
       restrictions: ['אין'],
     },
   },
@@ -33,6 +33,7 @@ export const raceDictionary: Record<
       specialAbilities: [
         'Magic affinity (+1 to magic dice rolls)',
         'Immunity to paralysis and sleep',
+        'Darkvision (30m)',
       ],
       restrictions: ['Cannot use heavy weapons without power armor'],
     },
@@ -42,6 +43,7 @@ export const raceDictionary: Record<
       specialAbilities: [
         'חיבור לקסם (+1 לגלגולי קוביות קסם)',
         'חסינות לשיתוק ולשינה',
+        'ראיית חושך (30 מטר)',
       ],
       restrictions: ['לא יכולים להשתמש בנשקים כבדים ללא שריון כוח'],
     },
@@ -53,6 +55,7 @@ export const raceDictionary: Record<
       specialAbilities: [
         'Magic resistance: +1 on saving throws vs spells',
         'Level 11: Half damage from magic effects',
+        'Darkvision (30m)',
       ],
       restrictions: ['Cannot use large items', 'Cannot be a magic user'],
     },
@@ -62,6 +65,7 @@ export const raceDictionary: Record<
       specialAbilities: [
         'עמידות לקסם: +1 לגלגולי הצלה נגד לחשים',
         'דרגה 11: נזק מחצי מקסמי אויב',
+        'ראיית חושך (30 מטר)',
       ],
       restrictions: ['לא יכולים להשתמש בציוד גדול', 'לא יכולים להיות קוסמים'],
     },

@@ -30,6 +30,10 @@ export type TierData = {
     classId: ClassId;
     atLevel: number;
   }[];
+  freeForRaces?: {
+    raceId: RaceId;
+    atLevel: number;
+  }[];
   effects: StatModifier[];
 };
 
