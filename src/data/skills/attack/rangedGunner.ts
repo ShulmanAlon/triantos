@@ -12,6 +12,8 @@ export const rangedGunner: SkillEntity = {
       tier: 1,
       name: 'Proficient',
       description: 'Proficient using mounted weapons (no -4 penalty)',
+      deltaDescription: 'Proficient using mounted weapons (no -4 penalty).',
+      totalDescription: 'Proficient using mounted weapons (no -4 penalty).',
       prerequisites: [{ type: 'level', minimum: 2 }],
       effects: [
         {
@@ -26,6 +28,8 @@ export const rangedGunner: SkillEntity = {
       tier: 2,
       name: 'Expert',
       description: '+2 attack with mounted weapons',
+      deltaDescription: '+2 attack with mounted weapons.',
+      totalDescription: '+2 attack with mounted weapons.',
       prerequisites: [
         { type: 'skill', skillId: 'rangedGunner', tier: 1 },
         { type: 'level', minimum: 6 },
@@ -37,6 +41,8 @@ export const rangedGunner: SkillEntity = {
       tier: 3,
       name: 'Master',
       description: '+2 attack with mounted weapons (+4 total)',
+      deltaDescription: '+2 attack with mounted weapons.',
+      totalDescription: '+4 attack with mounted weapons.',
       prerequisites: [
         { type: 'skill', skillId: 'rangedGunner', tier: 2 },
         { type: 'level', minimum: 10 },

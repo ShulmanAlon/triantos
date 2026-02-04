@@ -13,6 +13,10 @@ export const halflingLuckyCriticals: SkillEntity = {
       name: 'Initial',
       description:
         'Double damage on 19 and 20 attack rolls (19 only if attack hit).',
+      deltaDescription:
+        'Double damage on 19 and 20 attack rolls (19 only if attack hit).',
+      totalDescription:
+        'Double damage on 19 and 20 attack rolls (19 only if attack hit).',
       freeForRaces: [{ raceId: 'Halfling', atLevel: 1 }],
       effects: [],
     },

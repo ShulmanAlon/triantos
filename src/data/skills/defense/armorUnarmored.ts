@@ -11,6 +11,8 @@ export const armorUnarmored: SkillEntity = {
       tier: 1,
       name: 'Proficient',
       description: `Basic clothing, no armor`,
+      deltaDescription: 'Unarmored AC proficiency.',
+      totalDescription: 'Can benefit from unarmored AC.',
       prerequisites: [{ type: 'attribute', attribute: 'str', minimum: 13 }],
       freeForClasses: [
         { classId: 'Fighter', atLevel: 1 },
@@ -31,6 +33,8 @@ export const armorUnarmored: SkillEntity = {
       tier: 2,
       name: 'Expert',
       description: `+1 AC when not using armor`,
+      deltaDescription: '+1 AC when unarmored.',
+      totalDescription: '+1 AC when unarmored.',
       prerequisites: [
         { type: 'skill', skillId: 'armorUnarmored', tier: 1 },
         { type: 'level', minimum: 3 },
@@ -49,6 +53,8 @@ export const armorUnarmored: SkillEntity = {
       tier: 3,
       name: 'Master',
       description: `+1 AC when when not using armor (+2 total)`,
+      deltaDescription: '+1 AC when unarmored.',
+      totalDescription: '+2 AC when unarmored.',
       prerequisites: [
         { type: 'skill', skillId: 'armorUnarmored', tier: 2 },
         { type: 'level', minimum: 6 },

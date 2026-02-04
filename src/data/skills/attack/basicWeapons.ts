@@ -12,6 +12,8 @@ export const basicWeapons: SkillEntity = {
       tier: 1,
       name: 'Proficient',
       description: 'Proficient with basic weapons (no -4 penalty)',
+      deltaDescription: 'Proficient with basic weapons (no -4 penalty).',
+      totalDescription: 'Proficient with basic weapons (no -4 penalty).',
       effects: [
         {
           target: 'proficiency.basicWeapons',
@@ -30,6 +32,8 @@ export const basicWeapons: SkillEntity = {
       tier: 2,
       name: 'Expert',
       description: '+1 attack with basic weapons',
+      deltaDescription: '+1 attack with basic weapons.',
+      totalDescription: '+1 attack with basic weapons.',
       prerequisites: [
         { type: 'skill', skillId: 'basicWeapons', tier: 1 },
         { type: 'level', minimum: 4 },
@@ -40,6 +44,8 @@ export const basicWeapons: SkillEntity = {
       tier: 3,
       name: 'Master',
       description: '+1 attack with basic weapons (+2 total)',
+      deltaDescription: '+1 attack with basic weapons.',
+      totalDescription: '+2 attack with basic weapons.',
       prerequisites: [
         { type: 'skill', skillId: 'basicWeapons', tier: 2 },
         { type: 'level', minimum: 8 },

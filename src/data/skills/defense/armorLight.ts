@@ -13,6 +13,8 @@ export const armorLight: SkillEntity = {
       name: 'Proficient',
       description: `Allows the use of:
     Leather Armor, Ceramic Armor, Small Shield`,
+      deltaDescription: 'Unlock light armor use (Leather, Ceramic, Small Shield).',
+      totalDescription: 'Can use light armor (Leather, Ceramic, Small Shield).',
       freeForClasses: [
         { classId: 'Fighter', atLevel: 1 },
         { classId: 'Cleric', atLevel: 1 },
@@ -31,6 +33,8 @@ export const armorLight: SkillEntity = {
       tier: 2,
       name: 'Expert',
       description: `+1 AC when using light armor`,
+      deltaDescription: '+1 AC when using light armor.',
+      totalDescription: '+1 AC when using light armor.',
       prerequisites: [
         { type: 'skill', skillId: 'armorLight', tier: 1 },
         { type: 'level', minimum: 3 },
@@ -49,6 +53,8 @@ export const armorLight: SkillEntity = {
       tier: 3,
       name: 'Master',
       description: `+1 AC when using light armor (+2 total)`,
+      deltaDescription: '+1 AC when using light armor.',
+      totalDescription: '+2 AC when using light armor.',
       prerequisites: [
         { type: 'skill', skillId: 'armorLight', tier: 2 },
         { type: 'level', minimum: 6 },

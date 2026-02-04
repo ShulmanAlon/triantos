@@ -470,82 +470,100 @@ export default function CharacterCreatePage() {
                 const tierRows = skill.tiers
                   .map((tier) => {
                     const tierKey = `${skill.id}:${tier.tier}`;
-                    const availability =
-                      selectedClassData && selectedRaceId
-                        ? getSkillTierAvailability({
-                            skill,
-                            tier,
-                            attributes,
+                const availability =
+                  selectedClassData && selectedRaceId
+                    ? getSkillTierAvailability({
+                        skill,
+                        tier,
+                        attributes,
                             classId: selectedClassData.id,
                             raceId: selectedRaceId,
                             level,
                             pool: skillRemaining,
                             acquired: acquiredSkills,
-                            allowSameLevelForPrereqs: true,
-                          })
-                        : { status: 'ineligible', reasons: [], canAfford: false };
+                        allowSameLevelForPrereqs: true,
+                      })
+                    : { status: 'ineligible', reasons: [], canAfford: false };
 
-                    if (
-                      availability.status === 'acquired' &&
-                      !showAcquiredSkills
-                    ) {
-                      return null;
-                    }
-                    if (availability.status === 'locked' && !showLockedSkills) {
-                      return null;
-                    }
-                    if (
-                      availability.status === 'ineligible' &&
-                      !showIneligibleSkills
-                    ) {
-                      return null;
-                    }
-                    if (availability.status === 'available') {
-                      // default view: obtainable skills only
-                      // no filter needed
-                    }
+                const isAffordable = availability.canAfford;
+                const affordableStatus =
+                  availability.status === 'available' && !isAffordable
+                    ? 'locked'
+                    : availability.status;
 
-                    const isSelected = currentSelections.some(
-                      (s) => s.skillId === skill.id && s.tier === tier.tier
-                    );
+                const isSelected = currentSelections.some(
+                  (s) => s.skillId === skill.id && s.tier === tier.tier
+                );
 
-                    const spendOptions: SkillPointType[] =
-                      skill.skillPointType === 'core'
-                        ? ['core', 'human']
-                        : skill.skillPointType === 'utility'
-                        ? ['utility', 'human']
-                        : ['human'];
+                if (
+                  affordableStatus === 'acquired' &&
+                  !showAcquiredSkills &&
+                  !isSelected
+                ) {
+                  return null;
+                }
+                if (affordableStatus === 'locked' && !showLockedSkills) {
+                  return null;
+                }
+                if (affordableStatus === 'ineligible' && !showIneligibleSkills) {
+                  return null;
+                }
 
-                    const defaultSpendType =
-                      spendTypeByTier[tierKey] ??
-                      (skill.skillPointType !== 'human' &&
-                      skillRemaining[skill.skillPointType] > 0
-                        ? skill.skillPointType
-                        : skillRemaining.human > 0
-                        ? 'human'
-                        : skill.skillPointType);
+                const canUseHumanPoint =
+                  selectedRaceId === 'Human' && skillRemaining.human > 0;
+                const spendOptions: SkillPointType[] =
+                  skill.skillPointType === 'core'
+                    ? [
+                        'core',
+                        ...(canUseHumanPoint ? (['human'] as SkillPointType[]) : []),
+                      ]
+                    : skill.skillPointType === 'utility'
+                    ? [
+                        'utility',
+                        ...(canUseHumanPoint ? (['human'] as SkillPointType[]) : []),
+                      ]
+                    : canUseHumanPoint
+                    ? ['human']
+                    : [];
 
-                    const canUseSpendType =
-                      defaultSpendType === 'core'
-                        ? skillRemaining.core > 0
-                        : defaultSpendType === 'utility'
-                        ? skillRemaining.utility > 0
-                        : skillRemaining.human > 0;
+                const defaultSpendType =
+                  spendTypeByTier[tierKey] ??
+                  (skill.skillPointType !== 'human' &&
+                  skillRemaining[skill.skillPointType] > 0
+                    ? skill.skillPointType
+                    : skillRemaining.human > 0
+                    ? 'human'
+                    : skill.skillPointType);
 
-                    const statusLabel =
-                      availability.status === 'available'
-                        ? 'Available'
-                        : availability.status === 'locked'
-                        ? 'Locked'
-                        : availability.status === 'ineligible'
-                        ? 'Ineligible'
-                        : 'Acquired';
+                const canUseSpendType =
+                  defaultSpendType === 'core'
+                    ? skillRemaining.core > 0
+                    : defaultSpendType === 'utility'
+                    ? skillRemaining.utility > 0
+                    : skillRemaining.human > 0;
 
-                    const prereqLabels = (tier.prerequisites ?? []).map(
-                      (prereq) => getPrereqLabel(prereq)
-                    );
+                const statusLabel =
+                  affordableStatus === 'available'
+                    ? 'Available'
+                    : affordableStatus === 'locked'
+                    ? 'Locked'
+                    : affordableStatus === 'ineligible'
+                    ? 'Ineligible'
+                    : 'Acquired';
 
-                    return (
+                const prereqLabels = (tier.prerequisites ?? []).map(
+                  (prereq) => getPrereqLabel(prereq)
+                );
+                const pointRequirement =
+                  affordableStatus === 'locked' && availability.status === 'available'
+                    ? skill.skillPointType === 'core'
+                      ? ui.requiresCorePoint ?? 'Requires a core skill point'
+                      : skill.skillPointType === 'utility'
+                      ? ui.requiresUtilityPoint ?? 'Requires a utility skill point'
+                      : ui.requiresHumanPoint ?? 'Requires a human skill point'
+                    : null;
+
+                return (
                       <div
                         key={tierKey}
                         className="flex items-start justify-between gap-4 border rounded-md p-3 bg-white"
@@ -554,18 +572,23 @@ export default function CharacterCreatePage() {
                           <div className="font-medium text-gray-800">
                             Tier {tier.tier}
                           </div>
-                          {tier.description && (
-                            <div className="text-xs text-gray-600">
-                              {tier.description}
-                            </div>
-                          )}
+                      {(tier.deltaDescription ?? tier.description) && (
+                        <div className="text-xs text-gray-600">
+                          {tier.deltaDescription ?? tier.description}
+                        </div>
+                      )}
                           <div className="text-xs text-gray-500 mt-1">
                             {statusLabel}
                             {availability.reasons.length > 0
                               ? ` (${availability.reasons.join(', ')})`
                               : ''}
                           </div>
-                          {availability.status === 'locked' &&
+                          {pointRequirement && (
+                            <div className="mt-2 text-xs text-red-600">
+                              {pointRequirement}
+                            </div>
+                          )}
+                          {affordableStatus === 'locked' &&
                             prereqLabels.length > 0 && (
                               <div className="mt-2 text-xs text-gray-600">
                                 <div className="font-semibold">
@@ -597,7 +620,7 @@ export default function CharacterCreatePage() {
                             >
                               Remove
                             </Button>
-                          ) : availability.status === 'available' ? (
+                          ) : affordableStatus === 'available' ? (
                             <>
                               <select
                                 className="border border-gray-300 rounded-md px-2 py-1 text-xs"

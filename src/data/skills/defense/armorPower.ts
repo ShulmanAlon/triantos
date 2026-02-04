@@ -12,6 +12,8 @@ export const armorPower: SkillEntity = {
       tier: 1,
       name: 'Proficient',
       description: `Allows the use of Power-Armor`,
+      deltaDescription: 'Unlock Power-Armor use.',
+      totalDescription: 'Can use Power-Armor.',
       prerequisites: [
         { type: 'attribute', attribute: 'str', minimum: 15 },
         { type: 'attribute', attribute: 'con', minimum: 15 },
@@ -31,6 +33,8 @@ export const armorPower: SkillEntity = {
       tier: 2,
       name: 'Expert',
       description: `+2 AC when using Power-Armor`,
+      deltaDescription: '+2 AC when using Power-Armor.',
+      totalDescription: '+2 AC when using Power-Armor.',
       prerequisites: [
         { type: 'skill', skillId: 'armorPower', tier: 1 },
         { type: 'level', minimum: 14 },

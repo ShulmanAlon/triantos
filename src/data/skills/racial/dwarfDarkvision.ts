@@ -12,6 +12,8 @@ export const dwarfDarkvision: SkillEntity = {
       tier: 1,
       name: 'Initial',
       description: 'Darkvision (30m).',
+      deltaDescription: 'Darkvision (30m).',
+      totalDescription: 'Darkvision (30m).',
       freeForRaces: [{ raceId: 'Dwarf', atLevel: 1 }],
       effects: [],
     },

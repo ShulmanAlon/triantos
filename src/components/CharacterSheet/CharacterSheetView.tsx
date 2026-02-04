@@ -20,7 +20,13 @@ interface CharacterSheetProps {
   level: number;
   attributes: Record<Attribute, number>;
   derived: DerivedStats | null;
-  skills?: { name: string; tier: number; source?: string }[];
+  skills?: {
+    name: string;
+    tier: number;
+    source?: string;
+    totalDescription?: string;
+    skillDescription?: string;
+  }[];
 }
 
 export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
@@ -119,13 +125,24 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
       {skills.length > 0 && (
         <div className="mt-4">
           <h3 className="font-semibold">{ui.skills}</h3>
-          <ul className="ml-4 list-disc text-sm text-gray-700">
+          <div className="mt-2 space-y-2">
             {skills.map((skill, index) => (
-              <li key={`${skill.name}-${skill.tier}-${index}`}>
-                {skill.name} — Tier {skill.tier}
-              </li>
+              <details
+                key={`${skill.name}-${skill.tier}-${index}`}
+                className="rounded border border-gray-200 bg-white/70 px-3 py-2 text-sm text-gray-700"
+              >
+                <summary className="cursor-pointer font-medium">
+                  {skill.name} — Tier {skill.tier}
+                  {skill.totalDescription ? ` (${skill.totalDescription})` : ''}
+                </summary>
+                {skill.skillDescription && (
+                  <div className="mt-2 text-xs text-gray-600 whitespace-pre-line">
+                    {skill.skillDescription}
+                  </div>
+                )}
+              </details>
             ))}
-          </ul>
+          </div>
         </div>
       )}
     </div>

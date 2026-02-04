@@ -12,6 +12,8 @@ export const energyShield: SkillEntity = {
       tier: 1,
       name: 'Proficient',
       description: 'Enables using energy shield',
+      deltaDescription: 'Unlock Energy Shield use.',
+      totalDescription: 'Can use Energy Shield.',
       prerequisites: [{ type: 'level', minimum: 6 }],
       effects: [
         {
@@ -27,6 +29,8 @@ export const energyShield: SkillEntity = {
       tier: 2,
       name: 'Advanced',
       description: 'Energy Shield grants +10 temporary HP',
+      deltaDescription: 'Energy Shield grants +10 temporary HP.',
+      totalDescription: 'Energy Shield grants +10 temporary HP.',
       prerequisites: [
         { type: 'skill', skillId: 'energyShield', tier: 1 },
         { type: 'level', minimum: 10 },
@@ -45,6 +49,8 @@ export const energyShield: SkillEntity = {
       tier: 3,
       name: 'Expert',
       description: 'Energy Shield grants +20 temporary HP',
+      deltaDescription: 'Energy Shield grants +10 temporary HP.',
+      totalDescription: 'Energy Shield grants +20 temporary HP.',
       prerequisites: [
         { type: 'skill', skillId: 'energyShield', tier: 2 },
         { type: 'level', minimum: 14 },

@@ -12,6 +12,8 @@ export const dwarfMagicDamageReduction: SkillEntity = {
       tier: 1,
       name: 'Initial',
       description: 'Half damage from magic effects.',
+      deltaDescription: 'Half damage from magic effects.',
+      totalDescription: 'Half damage from magic effects.',
       freeForRaces: [{ raceId: 'Dwarf', atLevel: 11 }],
       effects: [],
     },

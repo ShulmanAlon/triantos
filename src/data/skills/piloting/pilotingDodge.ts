@@ -12,6 +12,8 @@ export const pilotingDodge: SkillEntity = {
       tier: 1,
       name: 'Basic',
       description: 'Can dodge once per battle, max 1 per round.',
+      deltaDescription: 'Piloting Dodge: 1 per battle, max 1 per round.',
+      totalDescription: 'Piloting Dodge: 1 per battle, max 1 per round.',
       prerequisites: [{ type: 'skill', skillId: 'piloting', tier: 2 }],
       effects: [
         {
@@ -36,6 +38,8 @@ export const pilotingDodge: SkillEntity = {
       tier: 2,
       name: 'Expert',
       description: 'Can dodge twice per battle, max 1 per round.',
+      deltaDescription: 'Piloting Dodge: +1 use per battle (2 total).',
+      totalDescription: 'Piloting Dodge: 2 per battle, max 1 per round.',
       prerequisites: [
         { type: 'skill', skillId: 'pilotingDodge', tier: 1 },
         { type: 'skill', skillId: 'piloting', tier: 3 },
@@ -63,6 +67,8 @@ export const pilotingDodge: SkillEntity = {
       tier: 3,
       name: 'Master',
       description: 'Can dodge 3 times per battle, max 1 per round.',
+      deltaDescription: 'Piloting Dodge: +1 use per battle (3 total).',
+      totalDescription: 'Piloting Dodge: 3 per battle, max 1 per round.',
       prerequisites: [
         { type: 'skill', skillId: 'pilotingDodge', tier: 2 },
         { type: 'skill', skillId: 'piloting', tier: 4 },

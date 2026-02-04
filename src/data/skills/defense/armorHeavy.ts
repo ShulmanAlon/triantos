@@ -13,6 +13,8 @@ export const armorHeavy: SkillEntity = {
       tier: 1,
       name: 'Proficient',
       description: `Allows the use of heavy armor`,
+      deltaDescription: 'Unlock heavy armor use.',
+      totalDescription: 'Can use heavy armor.',
       prerequisites: [{ type: 'attribute', attribute: 'str', minimum: 13 }],
       freeForClasses: [{ classId: 'Fighter', atLevel: 1 }],
       effects: [
@@ -29,6 +31,8 @@ export const armorHeavy: SkillEntity = {
       tier: 2,
       name: 'Expert',
       description: `+1 AC when using heavy armor`,
+      deltaDescription: '+1 AC when using heavy armor.',
+      totalDescription: '+1 AC when using heavy armor.',
       prerequisites: [
         { type: 'skill', skillId: 'armorHeavy', tier: 1 },
         { type: 'level', minimum: 3 },
@@ -47,6 +51,8 @@ export const armorHeavy: SkillEntity = {
       tier: 3,
       name: 'Master',
       description: `+1 AC when using heavy armor (+2 total)`,
+      deltaDescription: '+1 AC when using heavy armor.',
+      totalDescription: '+2 AC when using heavy armor.',
       prerequisites: [
         { type: 'skill', skillId: 'armorHeavy', tier: 2 },
         { type: 'level', minimum: 6 },

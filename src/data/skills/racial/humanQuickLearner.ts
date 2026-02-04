@@ -12,6 +12,8 @@ export const humanQuickLearner: SkillEntity = {
       tier: 1,
       name: 'Initial',
       description: 'Quick learner (extra skill points at levels 3, 6, 9, 12).',
+      deltaDescription: 'Gain extra skill points at levels 3, 6, 9, 12.',
+      totalDescription: 'Gain extra skill points at levels 3, 6, 9, 12.',
       freeForRaces: [{ raceId: 'Human', atLevel: 1 }],
       effects: [],
     },

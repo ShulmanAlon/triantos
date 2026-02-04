@@ -12,6 +12,8 @@ export const dwarfMagicResistance: SkillEntity = {
       tier: 1,
       name: 'Initial',
       description: '+2 on saving throws vs spells.',
+      deltaDescription: '+2 on saving throws vs spells.',
+      totalDescription: '+2 on saving throws vs spells.',
       freeForRaces: [{ raceId: 'Dwarf', atLevel: 1 }],
       effects: [],
     },

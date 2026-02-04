@@ -11,6 +11,8 @@ export const meleeEnergyWeapons: SkillEntity = {
       tier: 1,
       name: 'Proficient',
       description: 'Proficient with energy melee weapons (no -4 penalty)',
+      deltaDescription: 'Proficient with energy melee weapons (no -4 penalty).',
+      totalDescription: 'Proficient with energy melee weapons (no -4 penalty).',
       prerequisites: [{ type: 'level', minimum: 6 }],
       effects: [
         {
@@ -25,6 +27,8 @@ export const meleeEnergyWeapons: SkillEntity = {
       tier: 2,
       name: 'Expert',
       description: '+1 attack with energy melee weapons',
+      deltaDescription: '+1 attack with energy melee weapons.',
+      totalDescription: '+1 attack with energy melee weapons.',
       prerequisites: [
         { type: 'skill', skillId: 'meleeEnergyWeapons', tier: 1 },
         { type: 'level', minimum: 10 },
@@ -37,6 +41,8 @@ export const meleeEnergyWeapons: SkillEntity = {
       tier: 3,
       name: 'Master',
       description: '+1 attack with energy melee weapons (+2 total)',
+      deltaDescription: '+1 attack with energy melee weapons.',
+      totalDescription: '+2 attack with energy melee weapons.',
       prerequisites: [
         { type: 'skill', skillId: 'meleeEnergyWeapons', tier: 2 },
         { type: 'level', minimum: 14 },

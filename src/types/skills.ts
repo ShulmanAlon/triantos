@@ -25,6 +25,8 @@ export type TierData = {
   tier: number;
   name: TierName; // 'Basic', 'Advanced', etc.
   description?: string;
+  deltaDescription?: string;
+  totalDescription?: string;
   prerequisites?: TierPrerequisite[]; // See below
   freeForClasses?: {
     classId: ClassId;

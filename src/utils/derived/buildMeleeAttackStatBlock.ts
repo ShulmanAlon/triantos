@@ -18,8 +18,9 @@ export function buildMeleeAttackStatBlock(
   const entries: StatFormula[] = [];
 
   for (const type of MELEE_TYPES) {
-    const key = `melee_bonus_${type.toLowerCase()}`; // e.g. melee_bonus_slash
-    const typeBonus = derived.modifiers[key] ?? 0;
+    const lowerType = type.toLowerCase();
+    const attackKey = `attack_bonus_melee_${lowerType}`;
+    const typeBonus = derived.modifiers[attackKey] ?? 0;
 
     const components: StatComponent[] = [
       { source: 'Base Attack Bonus', value: bab },

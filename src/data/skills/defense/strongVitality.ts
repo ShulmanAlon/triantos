@@ -11,6 +11,8 @@ export const strongVitality: SkillEntity = {
       tier: 1,
       name: 'Advanced',
       description: 'Gain 5 additional HP',
+      deltaDescription: '+5 HP.',
+      totalDescription: '+5 HP.',
       prerequisites: [{ type: 'level', minimum: 3 }],
       effects: [
         {
@@ -26,6 +28,8 @@ export const strongVitality: SkillEntity = {
       tier: 2,
       name: 'Expert',
       description: 'Gain 10 more additional HP (+15 total)',
+      deltaDescription: '+10 HP.',
+      totalDescription: '+15 HP.',
       prerequisites: [
         { type: 'skill', skillId: 'strongVitality', tier: 1 },
         { type: 'level', minimum: 6 },

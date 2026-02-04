@@ -12,6 +12,8 @@ export const elfImmunity: SkillEntity = {
       tier: 1,
       name: 'Initial',
       description: 'Immunity to paralysis and sleep.',
+      deltaDescription: 'Immunity to paralysis and sleep.',
+      totalDescription: 'Immunity to paralysis and sleep.',
       freeForRaces: [{ raceId: 'Elf', atLevel: 1 }],
       effects: [],
     },

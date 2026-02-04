@@ -58,18 +58,33 @@ export const CharacterSheet = () => {
           character.level,
         )
       : [];
-  const skillNameById = new Map(allSkills.map((skill) => [skill.id, skill.name]));
-  const skillSummary = skillSelections.map((selection) => ({
-    name: skillNameById.get(selection.skillId) ?? selection.skillId,
-    tier: selection.tier,
-    source: selection.source,
-  }));
-  const debugBuckets =
-    typeof character?.progression === 'string'
-      ? character.progression
-      : JSON.stringify(character?.progression ?? {});
-  const debugSummary = `buckets:${progressionBuckets.length} selections:${skillSelections.length}`;
-  const debugMeta = `progressionType:${typeof character?.progression} keys:${Object.keys(character ?? {}).join(',')}`;
+  const skillById = new Map(allSkills.map((skill) => [skill.id, skill]));
+  const highestBySkill = new Map<
+    string,
+    { tier: number; source?: string }
+  >();
+  for (const selection of skillSelections) {
+    const current = highestBySkill.get(selection.skillId);
+    if (!current || selection.tier > current.tier) {
+      highestBySkill.set(selection.skillId, {
+        tier: selection.tier,
+        source: selection.source,
+      });
+    }
+  }
+  const skillSummary = Array.from(highestBySkill.entries()).map(
+    ([skillId, data]) => {
+      const skill = skillById.get(skillId);
+      const tier = skill?.tiers.find((t) => t.tier === data.tier);
+      return {
+        name: skill?.name ?? skillId,
+        tier: data.tier,
+        source: data.source,
+        totalDescription: tier?.totalDescription ?? tier?.description,
+        skillDescription: skill?.description,
+      };
+    }
+  );
 
   return (
     <LoadingErrorWrapper loading={isLoading} error={hasError}>
@@ -116,13 +131,6 @@ export const CharacterSheet = () => {
               character.level,
             )}
           />
-          <div className="text-xs text-gray-500 mt-2">
-            Debug skills: {debugSummary}
-          </div>
-          <div className="text-xs text-gray-500 mt-1">{debugMeta}</div>
-          <pre className="text-xs text-gray-400 whitespace-pre-wrap mt-1">
-            {debugBuckets}
-          </pre>
           {canEditCharacter && (
             <Button
               variant="destructive"
