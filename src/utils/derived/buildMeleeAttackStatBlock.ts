@@ -7,6 +7,7 @@ import {
 import { Attribute } from '@/types/attributes';
 import { getModifier } from '../modifier';
 import { MELEE_TYPES } from '@/config/constants';
+import { getTagBasedModifier } from '@/utils/logic/tagModifiers';
 
 export function buildMeleeAttackStatBlock(
   attributes: Record<Attribute, number>,
@@ -20,7 +21,8 @@ export function buildMeleeAttackStatBlock(
   for (const type of MELEE_TYPES) {
     const lowerType = type.toLowerCase();
     const attackKey = `attack_bonus_melee_${lowerType}`;
-    const typeBonus = derived.modifiers[attackKey] ?? 0;
+    const tagBonus = getTagBasedModifier('attack_bonus', ['melee', lowerType], derived);
+    const typeBonus = (derived.modifiers[attackKey] ?? 0) + tagBonus;
 
     const components: StatComponent[] = [
       { source: 'Base Attack Bonus', value: bab },

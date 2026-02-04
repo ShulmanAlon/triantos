@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { CharacterSheetView } from '@/components/CharacterSheet/CharacterSheetView';
 import { ClassId, GameClass } from '@/types/gameClass';
 import { getClassById } from '@/utils/classUtils';
 import { getBaseDerivedStats } from '@/utils/derived/getBaseDerivedStats';
+import { getFinalStats } from '@/utils/derived/getFinalStats';
 import { Button } from '@/components/ui/Button';
 import EditCharacterModal from '@/components/EditCharacterModal';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -12,6 +13,9 @@ import { useCharacterById } from '@/hooks/useCharacterById';
 import { LoadingErrorWrapper } from '@/components/LoadingErrorWrapper';
 import { allSkills } from '@/data/skills/allSkills';
 import { getAcquiredSkillSelectionsUpToLevel } from '@/utils/skills/skillProgression';
+import EquipmentLoadoutModal from '@/components/EquipmentLoadoutModal';
+import { allItems } from '@/data/items/allItems';
+import { EquipmentLoadout, EquipmentLoadouts } from '@/types/characters';
 
 export const CharacterSheet = () => {
   const { id: characterId } = useParams<{ id: string }>();
@@ -20,6 +24,8 @@ export const CharacterSheet = () => {
 
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showLoadoutModal, setShowLoadoutModal] = useState(false);
+  const [selectedLoadoutId, setSelectedLoadoutId] = useState('loadout-1');
 
   const {
     character,
@@ -48,16 +54,15 @@ export const CharacterSheet = () => {
     return character.progression.buckets ?? [];
   })();
 
-  const skillSelections =
-    character && progressionBuckets.length > 0
-      ? getAcquiredSkillSelectionsUpToLevel(
-          progressionBuckets,
-          allSkills,
-          character.class_id,
-          character.race_id,
-          character.level,
-        )
-      : [];
+  const skillSelections = character
+    ? getAcquiredSkillSelectionsUpToLevel(
+        progressionBuckets,
+        allSkills,
+        character.class_id,
+        character.race_id,
+        character.level,
+      )
+    : [];
   const skillById = new Map(allSkills.map((skill) => [skill.id, skill]));
   const highestBySkill = new Map<
     string,
@@ -85,6 +90,53 @@ export const CharacterSheet = () => {
       };
     }
   );
+  const finalStats = character
+    ? getFinalStats(
+        getClassById(character.class_id as ClassId) as GameClass,
+        character.attributes,
+        character.level,
+        skillSelections,
+        allSkills,
+      )
+    : null;
+
+  const normalizedLoadouts = useMemo<EquipmentLoadouts>(() => {
+    if (!character?.equipment_loadouts) {
+      return {
+        activeId: 'loadout-1',
+        loadouts: [
+          { id: 'loadout-1', name: 'Loadout 1', items: {} },
+          { id: 'loadout-2', name: 'Loadout 2', items: {} },
+          { id: 'loadout-3', name: 'Loadout 3', items: {} },
+          { id: 'loadout-4', name: 'Loadout 4', items: {} },
+        ],
+      };
+    }
+    const raw =
+      typeof character.equipment_loadouts === 'string'
+        ? (JSON.parse(character.equipment_loadouts) as EquipmentLoadouts)
+        : character.equipment_loadouts;
+    const loadouts = (raw.loadouts ?? []).map((loadout) => ({
+      ...loadout,
+      items: Array.isArray(loadout.items) ? {} : loadout.items,
+    }));
+    const existingIds = new Set(loadouts.map((l) => l.id));
+    const defaults: EquipmentLoadout[] = [
+      { id: 'loadout-1', name: 'Loadout 1', items: {} },
+      { id: 'loadout-2', name: 'Loadout 2', items: {} },
+      { id: 'loadout-3', name: 'Loadout 3', items: {} },
+      { id: 'loadout-4', name: 'Loadout 4', items: {} },
+    ];
+    for (const def of defaults) {
+      if (!existingIds.has(def.id)) {
+        loadouts.push(def);
+      }
+    }
+    return { activeId: raw.activeId ?? 'loadout-1', loadouts };
+  }, [character?.equipment_loadouts]);
+
+  const loadouts = normalizedLoadouts.loadouts;
+  const activeLoadoutId = normalizedLoadouts.activeId;
 
   return (
     <LoadingErrorWrapper loading={isLoading} error={hasError}>
@@ -125,11 +177,28 @@ export const CharacterSheet = () => {
             level={character.level}
             attributes={character.attributes}
             skills={skillSummary}
-            derived={getBaseDerivedStats(
-              getClassById(character.class_id as ClassId) as GameClass,
-              character.attributes,
-              character.level,
-            )}
+            equipmentLoadouts={loadouts}
+            activeLoadoutId={activeLoadoutId}
+            onLoadoutSelect={(loadoutId) => {
+              setSelectedLoadoutId(loadoutId);
+              setShowLoadoutModal(true);
+            }}
+            derived={
+              finalStats?.base ??
+              getBaseDerivedStats(
+                getClassById(character.class_id as ClassId) as GameClass,
+                character.attributes,
+                character.level,
+              )
+            }
+          />
+          <EquipmentLoadoutModal
+            isOpen={showLoadoutModal}
+            equipmentLoadouts={normalizedLoadouts}
+            selectedLoadoutId={selectedLoadoutId}
+            items={allItems}
+            onClose={() => setShowLoadoutModal(false)}
+            onSave={(next) => updateCharacter({ equipment_loadouts: next })}
           />
           {canEditCharacter && (
             <Button

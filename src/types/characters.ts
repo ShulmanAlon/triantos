@@ -17,6 +17,7 @@ interface CharacterBase {
   user_id: string;
   campaign_id: string;
   progression?: CharacterProgression;
+  equipment_loadouts?: EquipmentLoadouts;
 }
 
 export interface CharacterPreview extends CharacterBase {
@@ -45,6 +46,19 @@ export type CharacterSkillSelection = {
   acquiredAtLevel: number;
   source?: 'selected' | 'class' | 'race';
   spendType?: SkillPointType;
+};
+
+export type EquipmentLoadout = {
+  id: string;
+  name: string;
+  items: Record<string, string | null>;
+  toggles?: Record<string, boolean>;
+  notes?: string;
+};
+
+export type EquipmentLoadouts = {
+  activeId: string;
+  loadouts: EquipmentLoadout[];
 };
 
 export type SkillPointPool = {
@@ -88,6 +102,7 @@ export type FinalCharacterStats = {
     hpBreakdown: StatBlock<number>;
     hpTemp: StatBlock<number>;
     meleeAttack: StatBlock<number>;
+    rangedAttack: StatBlock<number>;
     spellSlots?: Record<number, number>;
     ac: StatBlock;
   };

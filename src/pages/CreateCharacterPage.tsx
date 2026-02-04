@@ -32,6 +32,7 @@ import {
 } from '@/utils/skills/skillProgression';
 import {
   CharacterProgression,
+  EquipmentLoadouts,
   LevelUpBucket,
   SkillSelectionEntry,
 } from '@/types/characters';
@@ -155,6 +156,15 @@ export default function CharacterCreatePage() {
     if (!user || !campaignId) return;
     setSaving(true);
     const progression: CharacterProgression = { buckets: skillBuckets };
+    const equipment_loadouts: EquipmentLoadouts = {
+      activeId: 'loadout-1',
+      loadouts: [
+        { id: 'loadout-1', name: 'Loadout 1', items: {} },
+        { id: 'loadout-2', name: 'Loadout 2', items: {} },
+        { id: 'loadout-3', name: 'Loadout 3', items: {} },
+        { id: 'loadout-4', name: 'Loadout 4', items: {} },
+      ],
+    };
 
     const { error: insertError } = await supabase
       .from(TABLES.CHARACTERS)
@@ -166,6 +176,7 @@ export default function CharacterCreatePage() {
         level,
         attributes,
         progression,
+        equipment_loadouts,
         user_id: user.id,
         campaign_id: campaignId,
         image_url: imageUrl,

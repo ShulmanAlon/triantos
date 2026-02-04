@@ -12,6 +12,7 @@ import { buildACStatBlock } from './buildACStatBlock';
 import { buildHPStatBlock } from './buildHPStatBlock';
 import { buildTempHPStatBlock } from './buildTempHPStatBlock';
 import { buildMeleeAttackStatBlock } from './buildMeleeAttackStatBlock';
+import { buildRangedAttackStatBlock } from './buildRangedAttackStatBlock';
 
 export function getFinalStats(
   gameClass: GameClass,
@@ -32,6 +33,11 @@ export function getFinalStats(
     derived,
     base.baseAttackBonus,
   );
+  const rangedAttackBlock = buildRangedAttackStatBlock(
+    attributes,
+    derived,
+    base.baseAttackBonus,
+  );
 
   // const hp = derived.modifiers['hp'] ?? 0;
   // const attackBonusBonus = derived.modifiers['attack_bonus'] ?? 0;
@@ -45,6 +51,7 @@ export function getFinalStats(
       hpTemp: tempHPBlock,
       spellSlots: base.spellSlots, // might be unchanged
       meleeAttack: meleeAttackBlock,
+      rangedAttack: rangedAttackBlock,
     },
   };
 }

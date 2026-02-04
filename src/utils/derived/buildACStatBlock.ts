@@ -7,6 +7,7 @@ import {
 import { Attribute } from '@/types/attributes';
 import { BASE_AC } from '@/config/constants';
 import { getModifier } from '../modifier';
+import { getTagBasedModifier } from '@/utils/logic/tagModifiers';
 
 const skillLabelMap: Record<string, string> = {
   ac_with_unarmored: 'Unarmored Skill',
@@ -33,7 +34,8 @@ export function buildACStatBlock(
     { id: 'powerArmor', label: 'Power Armor' },
   ];
 
-  const shieldBonus = derived.modifiers['ac_with_shield'] ?? 0;
+  const shieldTagBonus = getTagBasedModifier('ac', ['shield'], derived);
+  const shieldBonus = (derived.modifiers['ac_with_shield'] ?? 0) + shieldTagBonus;
   const shieldEnabled =
     derived.toggles['ac_with_heavyArmor'] ||
     'ac_with_heavyArmor' in derived.modifiers ||
@@ -44,7 +46,8 @@ export function buildACStatBlock(
     const armorKey = `ac_with_${armor.id}`;
     const armorEnabled =
       derived.toggles[armorKey] || armorKey in derived.modifiers;
-    const armorBonus = derived.modifiers[armorKey] ?? 0;
+    const armorTagBonus = getTagBasedModifier('ac', ['armor', armor.id], derived);
+    const armorBonus = (derived.modifiers[armorKey] ?? 0) + armorTagBonus;
 
     if (!armorEnabled && armorBonus === 0) continue;
 

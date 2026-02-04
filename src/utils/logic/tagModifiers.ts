@@ -6,12 +6,10 @@ import { CharacterDerivedStats } from '@/types/characters';
  *   ['melee', 'melee.energy', 'melee.energy.2h']
  */
 function generateTagCombos(tags: string[]): string[] {
-  const sorted = [...tags].sort(); // sort to get consistent key order
   const combos: string[] = [];
 
-  for (let i = 1; i <= sorted.length; i++) {
-    const combo = sorted.slice(0, i).join('.');
-    combos.push(combo);
+  for (let i = 1; i <= tags.length; i++) {
+    combos.push(tags.slice(0, i).join('.'));
   }
 
   return combos;

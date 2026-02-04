@@ -10,7 +10,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { uiLabels } from '@/i18n/ui';
 import { getAttributeNameById } from '@/utils/attributeUtils';
 import { ATTRIBUTE_ORDER } from '@/config/constants';
-import { DerivedStats } from '@/types/characters';
+import { DerivedStats, EquipmentLoadout } from '@/types/characters';
 
 interface CharacterSheetProps {
   characterName: string;
@@ -20,6 +20,9 @@ interface CharacterSheetProps {
   level: number;
   attributes: Record<Attribute, number>;
   derived: DerivedStats | null;
+  equipmentLoadouts?: EquipmentLoadout[];
+  activeLoadoutId?: string;
+  onLoadoutSelect?: (loadoutId: string) => void;
   skills?: {
     name: string;
     tier: number;
@@ -37,6 +40,9 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
   level,
   attributes,
   derived,
+  equipmentLoadouts = [],
+  activeLoadoutId,
+  onLoadoutSelect,
   skills = [],
 }) => {
   const { language } = useLanguage();
@@ -96,6 +102,39 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
             })}
           </tbody>
         </table>
+      </div>
+
+      <div className="mt-4 border rounded p-3 bg-white/70 shadow-sm">
+        <h3 className="font-semibold mb-2">Equipment Loadouts</h3>
+        <ul className="text-sm text-gray-700 space-y-1">
+          {(equipmentLoadouts.length > 0
+            ? equipmentLoadouts
+            : [
+                { id: 'loadout-1', name: 'Loadout 1', items: {} },
+                { id: 'loadout-2', name: 'Loadout 2', items: {} },
+                { id: 'loadout-3', name: 'Loadout 3', items: {} },
+                { id: 'loadout-4', name: 'Loadout 4', items: {} },
+              ]
+          ).map((loadout) => (
+            <li
+              key={loadout.id}
+              className={
+                loadout.id === activeLoadoutId
+                  ? 'font-semibold text-gray-900'
+                  : 'text-gray-700'
+              }
+            >
+              <button
+                type="button"
+                onClick={() => onLoadoutSelect?.(loadout.id)}
+                className="text-left w-full hover:underline"
+              >
+                {loadout.name}
+                {loadout.id === activeLoadoutId ? ' (Active)' : ''}
+              </button>
+            </li>
+          ))}
+        </ul>
       </div>
 
       <div className="mt-4">
