@@ -25,6 +25,7 @@ export const CharacterSheet = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showLoadoutModal, setShowLoadoutModal] = useState(false);
+  const [showLevelDownModal, setShowLevelDownModal] = useState(false);
   const [selectedLoadoutId, setSelectedLoadoutId] = useState('loadout-1');
 
   const {
@@ -138,6 +139,28 @@ export const CharacterSheet = () => {
   const loadouts = normalizedLoadouts.loadouts;
   const activeLoadoutId = normalizedLoadouts.activeId;
 
+  const handleLevelDown = () => {
+    if (!character || character.level <= 1) return;
+    const currentLevelBucket = progressionBuckets.find(
+      (bucket) => bucket.level === character.level
+    );
+    const attributeIncreases = currentLevelBucket?.attributeIncreases ?? {};
+    const nextAttributes = { ...character.attributes };
+    for (const [key, value] of Object.entries(attributeIncreases)) {
+      if (typeof value !== 'number') continue;
+      const attr = key as keyof typeof nextAttributes;
+      nextAttributes[attr] = (nextAttributes[attr] ?? 0) - value;
+    }
+    const nextBuckets = progressionBuckets.filter(
+      (bucket) => bucket.level !== character.level
+    );
+    updateCharacter({
+      level: character.level - 1,
+      attributes: nextAttributes,
+      progression: { buckets: nextBuckets },
+    });
+  };
+
   return (
     <LoadingErrorWrapper loading={isLoading} error={hasError}>
       {!character ? (
@@ -227,6 +250,44 @@ export const CharacterSheet = () => {
             >
               ⬆️ Level Up
             </Button>
+          )}
+          {canEditCharacter && (
+            <Button
+              variant="outline"
+              className="mt-4 ml-2"
+              onClick={() => setShowLevelDownModal(true)}
+              disabled={character.level <= 1}
+            >
+              ⬇️ Level Down
+            </Button>
+          )}
+          {showLevelDownModal && character && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+              <div className="bg-white p-6 rounded shadow max-w-sm w-full space-y-4">
+                <h3 className="text-lg font-semibold">Level Down</h3>
+                <p className="text-sm text-gray-600">
+                  This will remove all level {character.level} progression
+                  choices. Continue?
+                </p>
+                <div className="flex justify-end gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowLevelDownModal(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    onClick={() => {
+                      handleLevelDown();
+                      setShowLevelDownModal(false);
+                    }}
+                  >
+                    Level Down
+                  </Button>
+                </div>
+              </div>
+            </div>
           )}
           {showDeleteModal && (
             <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">

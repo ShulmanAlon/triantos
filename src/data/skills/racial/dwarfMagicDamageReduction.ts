@@ -5,7 +5,7 @@ export const dwarfMagicDamageReduction: SkillEntity = {
   name: 'Magic Damage Resistance',
   family: 'utility',
   skillPointType: 'utility',
-  description: 'Dwarves gain resistance to magic damage at higher levels.',
+  description: 'Dwarves gain reduction from magic damage at level 11.',
   forbiddenRaces: ['Human', 'Elf', 'Halfling'],
   tiers: [
     {
@@ -14,6 +14,7 @@ export const dwarfMagicDamageReduction: SkillEntity = {
       description: 'Half damage from magic effects.',
       deltaDescription: 'Half damage from magic effects.',
       totalDescription: 'Half damage from magic effects.',
+      prerequisites: [{ type: 'level', minimum: 11 }],
       freeForRaces: [{ raceId: 'Dwarf', atLevel: 11 }],
       effects: [],
     },

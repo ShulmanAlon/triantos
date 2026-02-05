@@ -30,6 +30,12 @@ export type SkillSelectionValidationResult = {
   remaining: SkillPointPool;
 };
 
+export type InvalidSkillSelection = {
+  skillId: string;
+  tier: number;
+  reason: string;
+};
+
 const emptyPool: SkillPointPool = { core: 0, utility: 0, human: 0 };
 
 const addPool = (a: SkillPointPool, b: SkillPointPool): SkillPointPool => ({
@@ -380,4 +386,78 @@ export const validateLevelSkillSelections = ({
     used,
     remaining,
   };
+};
+
+export const getInvalidSelectionsForLevel = ({
+  buckets,
+  level,
+  gameClass,
+  raceId,
+  attributes,
+  skillEntities,
+}: {
+  buckets: LevelUpBucket[];
+  level: number;
+  gameClass: GameClass;
+  raceId: RaceId;
+  attributes: Record<Attribute, number>;
+  skillEntities: SkillEntity[];
+}): InvalidSkillSelection[] => {
+  const invalid: InvalidSkillSelection[] = [];
+  const currentBucket = buckets.find((b) => b.level === level);
+  const selections = currentBucket?.skillSelections ?? [];
+  if (selections.length === 0) return invalid;
+
+  const acquired = getAcquiredSkillSelectionsUpToLevel(
+    buckets,
+    skillEntities,
+    gameClass.id,
+    raceId,
+    level
+  );
+
+  for (const selection of selections) {
+    const skill = skillEntities.find((s) => s.id === selection.skillId);
+    if (!skill) {
+      invalid.push({
+        skillId: selection.skillId,
+        tier: selection.tier,
+        reason: 'unknown',
+      });
+      continue;
+    }
+
+    const tier = getTierByNumber(skill, selection.tier);
+    if (!tier) {
+      invalid.push({
+        skillId: selection.skillId,
+        tier: selection.tier,
+        reason: 'invalid-tier',
+      });
+      continue;
+    }
+
+    if (isSkillForbidden(skill, gameClass.id, raceId)) {
+      invalid.push({
+        skillId: selection.skillId,
+        tier: selection.tier,
+        reason: 'forbidden',
+      });
+      continue;
+    }
+
+    const prereqs = tier.prerequisites ?? [];
+    for (const prereq of prereqs) {
+      if (!isPrerequisiteMet(prereq, attributes, acquired, level, true)) {
+        invalid.push({
+          skillId: selection.skillId,
+          tier: selection.tier,
+          reason: 'prerequisite',
+        });
+        break;
+      }
+    }
+  }
+
+  return invalid;
 };

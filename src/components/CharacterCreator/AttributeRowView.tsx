@@ -19,6 +19,7 @@ interface AttributeRowProps {
   usedPoints: number;
   hasAbilityPointThisLevel: boolean;
   requiredValue?: number;
+  showNextCost?: boolean;
 }
 
 export function AttributeRow({
@@ -31,6 +32,7 @@ export function AttributeRow({
   usedPoints,
   hasAbilityPointThisLevel,
   requiredValue,
+  showNextCost = true,
 }: AttributeRowProps) {
   const nextValue = value + 1;
   const prevValue = value - 1;
@@ -46,7 +48,9 @@ export function AttributeRow({
     ? hasAbilityPointThisLevel && usedPoints < 1
     : cost <= pool && value < max;
 
-  const canDecrease = !isLevelUpMode && value > min;
+  const canDecrease = isLevelUpMode
+    ? hasAbilityPointThisLevel && value > baseline
+    : value > min;
 
   const modifier = getModifier(value);
 
@@ -72,7 +76,7 @@ export function AttributeRow({
               'w-8 h-8 border rounded-lg border-gray-300 flex items-center justify-center'
             }
             onClick={() => canDecrease && onChange(attr, prevValue, refund)}
-            disabled={!canDecrease || isLevelUpMode}
+            disabled={!canDecrease}
           >
             -
           </Button>
@@ -119,9 +123,11 @@ export function AttributeRow({
       </td>
 
       {/* Next Point Cost */}
-      <td className="w-24 font-mono text-center pl-4 text-sm">
-        {cost} {cost > 1 ? ui.pts : ui.pt}
-      </td>
+      {showNextCost && (
+        <td className="w-24 font-mono text-center pl-4 text-sm">
+          {cost} {cost > 1 ? ui.pts : ui.pt}
+        </td>
+      )}
     </tr>
   );
 }

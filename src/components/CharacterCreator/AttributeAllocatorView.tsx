@@ -12,6 +12,7 @@ interface AttributeAllocatorProps {
   isLevelUpMode: boolean;
   usedPoints: number;
   hasAbilityPointThisLevel: boolean;
+  showNextCost?: boolean;
   onChange: (attr: Attribute, newValue: number, cost: number) => void;
   selectedClassData?: GameClass | undefined;
 }
@@ -23,6 +24,7 @@ export const AttributeAllocator: React.FC<AttributeAllocatorProps> = ({
   isLevelUpMode,
   usedPoints,
   hasAbilityPointThisLevel,
+  showNextCost = true,
   onChange,
   selectedClassData,
 }) => {
@@ -48,7 +50,9 @@ export const AttributeAllocator: React.FC<AttributeAllocatorProps> = ({
             <th className="text-center font-semibold pb-1">{ui.raceBase}</th>
             <th className="text-center font-semibold pb-1">{ui.value}</th>
             <th className="text-center font-semibold pb-1">{ui.modifier}</th>
-            <th className="text-center font-semibold pb-1">{ui.nextCost}</th>
+            {showNextCost && (
+              <th className="text-center font-semibold pb-1">{ui.nextCost}</th>
+            )}
             <th className="w-10">{/*Spacer for buttons column*/}</th>
           </tr>
         </thead>
@@ -63,6 +67,7 @@ export const AttributeAllocator: React.FC<AttributeAllocatorProps> = ({
               isLevelUpMode={isLevelUpMode}
               usedPoints={usedPoints}
               hasAbilityPointThisLevel={hasAbilityPointThisLevel}
+              showNextCost={showNextCost}
               onChange={onChange}
               requiredValue={
                 selectedClassData?.primaryAttributes?.[attr as Attribute]
