@@ -17,7 +17,7 @@ function App() {
   return (
     <LanguageProvider>
       <Router>
-        <main className="w-full max-w-screen-md mx-auto p-4">
+        <main className="w-full max-w-screen-lg mx-auto px-4 pb-10">
           <Header />
           <Routes>
             <Route path="/" element={<LandingPage />} />

@@ -1,1 +1,62 @@
 @import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    --ink: #1b1a17;
+    --muted: #5b5b55;
+    --paper: #f7f4ee;
+    --panel: #fffaf0;
+    --panel-opaque: rgba(255, 250, 240, 0.9);
+    --accent: #0f7b6c;
+    --accent-dark: #0a5a50;
+    --accent-soft: #cde9e4;
+    --warn: #b3402a;
+    --shadow: 0 12px 30px rgba(19, 19, 16, 0.12);
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
+    color: var(--ink);
+    background:
+      radial-gradient(1200px 500px at 10% -10%, #f1e8d6 0%, transparent 60%),
+      radial-gradient(900px 400px at 90% 10%, #d9efe9 0%, transparent 55%),
+      linear-gradient(180deg, #f9f6f0 0%, #f3efe6 100%);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: 'Fraunces', 'Georgia', serif;
+    letter-spacing: -0.01em;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-black/5 bg-white/80 backdrop-blur shadow-sm;
+    box-shadow: var(--shadow);
+  }
+
+  .panel {
+    @apply rounded-xl border border-black/5 backdrop-blur;
+    background: var(--panel-opaque);
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold;
+    background: var(--accent-soft);
+    color: var(--accent-dark);
+  }
+
+  .section-title {
+    @apply text-lg font-semibold;
+  }
+}

@@ -10,11 +10,11 @@ export const LanguageSelector = () => {
   const { language, setLanguage } = useLanguage();
 
   return (
-    <div className="ml-auto mb-4">
+    <div className="flex items-center">
       <select
         value={language}
         onChange={(e) => setLanguage(e.target.value as typeof language)}
-        className="px-3 py-1 border border-gray-300 rounded text-sm"
+        className="px-3 py-2 border border-black/10 rounded-xl text-sm bg-white/80"
       >
         {SUPPORTED_LANGUAGES.map((lang) => (
           <option key={lang} value={lang}>

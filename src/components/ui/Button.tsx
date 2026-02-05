@@ -17,11 +17,15 @@ export function Button({
   type = 'button',
   variant = 'primary',
 }: ButtonProps) {
-  const baseClasses = 'rounded px-4 py-2 font-semibold text-sm shadow-sm';
+  const baseClasses =
+    'rounded-xl px-4 py-2 text-sm font-semibold transition-all shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]/40 focus-visible:ring-offset-2';
   const variantClasses = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-700',
-    outline: 'border border-gray-300 text-gray-700 hover:bg-gray-100',
-    destructive: 'bg-red-600 text-white hover:bg-red-700',
+    primary:
+      'bg-[var(--accent)] text-white hover:bg-[var(--accent-dark)] shadow-[0_10px_18px_rgba(15,123,108,0.25)]',
+    outline:
+      'border border-black/10 text-[var(--ink)] hover:bg-black/5 bg-white/70',
+    destructive:
+      'bg-[var(--warn)] text-white hover:bg-[#8d2f1f] shadow-[0_10px_18px_rgba(179,64,42,0.2)]',
   }[variant];
 
   return (
@@ -30,7 +34,7 @@ export function Button({
       disabled={disabled}
       type={type}
       className={`${baseClasses} ${variantClasses} ${
-        disabled ? 'opacity-50 cursor-not-allowed' : ''
+        disabled ? 'opacity-50 cursor-not-allowed hover:bg-transparent' : ''
       } ${className}`}
       data-testid="button"
     >

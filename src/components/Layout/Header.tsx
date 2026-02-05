@@ -16,7 +16,7 @@ export const Header = () => {
     : 'Not signed in';
 
   return (
-    <header className="w-full flex justify-between items-center px-4 py-2 border-b bg-white mb-4 shadow-sm">
+    <header className="w-full flex flex-wrap gap-3 justify-between items-center px-4 py-3 mt-6 mb-6 card">
       <div>
         <Button //TODO remove after tests
           type="button"
@@ -27,7 +27,7 @@ export const Header = () => {
           Test
         </Button>
       </div>
-      <div className="text-sm text-gray-700">
+      <div className="text-sm text-[var(--muted)]">
         <span className={session ? 'font-medium' : 'italic text-gray-500'}>
           {displayName}
         </span>

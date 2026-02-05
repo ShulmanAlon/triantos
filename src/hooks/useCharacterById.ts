@@ -68,6 +68,7 @@ export function useCharacterById(characterId: string | undefined) {
           deleted,
           attributes,
           progression,
+          equipment_loadouts,
           user_id,
           campaign_id,
           owner_username: users

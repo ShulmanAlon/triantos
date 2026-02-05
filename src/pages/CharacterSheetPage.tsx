@@ -16,6 +16,7 @@ import { getAcquiredSkillSelectionsUpToLevel } from '@/utils/skills/skillProgres
 import EquipmentLoadoutModal from '@/components/EquipmentLoadoutModal';
 import { allItems } from '@/data/items/allItems';
 import { EquipmentLoadout, EquipmentLoadouts } from '@/types/characters';
+import { StatModifier } from '@/types/modifiers';
 
 export const CharacterSheet = () => {
   const { id: characterId } = useParams<{ id: string }>();
@@ -91,16 +92,6 @@ export const CharacterSheet = () => {
       };
     }
   );
-  const finalStats = character
-    ? getFinalStats(
-        getClassById(character.class_id as ClassId) as GameClass,
-        character.attributes,
-        character.level,
-        skillSelections,
-        allSkills,
-      )
-    : null;
-
   const normalizedLoadouts = useMemo<EquipmentLoadouts>(() => {
     if (!character?.equipment_loadouts) {
       return {
@@ -138,6 +129,114 @@ export const CharacterSheet = () => {
 
   const loadouts = normalizedLoadouts.loadouts;
   const activeLoadoutId = normalizedLoadouts.activeId;
+  const activeLoadout =
+    loadouts.find((loadout) => loadout.id === activeLoadoutId) ?? null;
+  const activeArmorItem =
+    allItems.find((item) => item.id === activeLoadout?.items['armor']) ?? null;
+  const activeShieldItem =
+    allItems.find((item) => item.id === activeLoadout?.items['shield']) ?? null;
+  const activePrimaryWeapon =
+    allItems.find(
+      (item) => item.id === activeLoadout?.items['weapon_primary']
+    ) ?? null;
+  const activeOffhandWeapon =
+    allItems.find(
+      (item) => item.id === activeLoadout?.items['weapon_offhand']
+    ) ?? null;
+
+  const armorType = activeArmorItem?.tags.includes('heavyArmor')
+    ? 'heavyArmor'
+    : activeArmorItem?.tags.includes('lightArmor')
+    ? 'lightArmor'
+    : activeArmorItem?.tags.includes('powerArmor')
+    ? 'powerArmor'
+    : 'unarmored';
+
+  const getWeaponTypeLabel = (item: typeof activePrimaryWeapon | null) => {
+    if (!item) return 'Fists';
+    const isRanged = item.tags.includes('ranged');
+    const isMelee = item.tags.includes('melee');
+    const damageType =
+      item.tags.find((tag) =>
+        ['energy', 'blunt', 'slash', 'pierce'].includes(tag)
+      ) ?? 'physical';
+    if (isRanged) return `${damageType} ranged`;
+    if (isMelee) return `${damageType} melee`;
+    return 'weapon';
+  };
+
+  const meleeWeapon =
+    activePrimaryWeapon?.tags.includes('melee')
+      ? activePrimaryWeapon
+      : activeOffhandWeapon?.tags.includes('melee')
+      ? activeOffhandWeapon
+      : null;
+  const rangedWeapon =
+    activePrimaryWeapon?.tags.includes('ranged')
+      ? activePrimaryWeapon
+      : activeOffhandWeapon?.tags.includes('ranged')
+      ? activeOffhandWeapon
+      : null;
+
+  const meleeDamageType =
+    meleeWeapon?.tags.find((tag) =>
+      ['energy', 'blunt', 'slash', 'pierce'].includes(tag)
+    ) ?? 'blunt';
+
+  const getRangedAttackType = () => {
+    const profs = rangedWeapon?.requiresProficiency ?? [];
+    if (profs.includes('rangedAdvancedWeapons')) return 'advanced';
+    if (profs.includes('rangedHeavyWeapons')) return 'heavy';
+    if (profs.includes('rangedMounted')) return 'mounted';
+    return 'basic';
+  };
+
+  const meleeTypeLabel = getWeaponTypeLabel(meleeWeapon);
+  const rangedTypeLabel = getWeaponTypeLabel(rangedWeapon);
+  const showRangedSummary = !!rangedWeapon;
+  const showMeleeSummary = !rangedWeapon;
+  const meleeProficiencyId = meleeWeapon?.requiresProficiency?.[0];
+  const rangedProficiencyId = rangedWeapon?.requiresProficiency?.[0];
+  const equipmentModifiers: StatModifier[] = activeLoadout
+    ? Object.values(activeLoadout.items)
+        .filter((itemId): itemId is string => !!itemId)
+        .map((itemId) => allItems.find((item) => item.id === itemId))
+        .flatMap((item) =>
+          (item?.modifiers ?? []).map((modifier) => ({
+            ...modifier,
+            sourceItem: modifier.sourceItem ?? item?.name ?? 'equipment',
+          }))
+        )
+    : [];
+
+  const finalStats = character
+    ? getFinalStats(
+        getClassById(character.class_id as ClassId) as GameClass,
+        character.attributes,
+        character.level,
+        skillSelections,
+        allSkills,
+        equipmentModifiers,
+        {
+          ac: {
+            armorType,
+            shieldEquipped: !!activeShieldItem,
+          },
+          melee: {
+            id: meleeDamageType,
+            label: meleeTypeLabel,
+            requiredProficiencyId: meleeProficiencyId,
+          },
+          ranged: rangedWeapon
+            ? {
+                id: getRangedAttackType(),
+                label: rangedTypeLabel,
+                requiredProficiencyId: rangedProficiencyId,
+              }
+            : undefined,
+        },
+      )
+    : null;
 
   const handleLevelDown = () => {
     if (!character || character.level <= 1) return;
@@ -167,30 +266,33 @@ export const CharacterSheet = () => {
         <p className="p-4 text-red-600">Character not found.</p>
       ) : (
         <div>
-          {canEditCharacter && (
-            <Button variant="outline" onClick={() => setShowEditModal(true)}>
-              ✏️ Edit Character
-            </Button>
-          )}
-          <Button
-            variant="outline"
-            onClick={() => navigate(`/campaign/${character.campaign_id}`)}
-          >
-            ← Back to Campaign
-          </Button>
-          {canEditCharacter && (
-            <Button
-              variant="outline"
-              onClick={() => {
-                updateCharacter({ visible: !character.visible });
-              }}
-              className="mt-2"
-            >
-              {character.visible
-                ? '👁️ Hide from other players'
-                : '🙈 Make visible to players'}
-            </Button>
-          )}
+          <div className="card p-4 flex flex-wrap gap-2 items-center justify-between">
+            <div className="flex flex-wrap gap-2">
+              {canEditCharacter && (
+                <Button variant="outline" onClick={() => setShowEditModal(true)}>
+                  ✏️ Edit Character
+                </Button>
+              )}
+              <Button
+                variant="outline"
+                onClick={() => navigate(`/campaign/${character.campaign_id}`)}
+              >
+                ← Back to Campaign
+              </Button>
+            </div>
+            {canEditCharacter && (
+              <Button
+                variant="outline"
+                onClick={() => {
+                  updateCharacter({ visible: !character.visible });
+                }}
+              >
+                {character.visible
+                  ? '👁️ Hide from other players'
+                  : '🙈 Make visible to players'}
+              </Button>
+            )}
+          </div>
 
           <CharacterSheetView
             characterName={character.name}
@@ -202,10 +304,32 @@ export const CharacterSheet = () => {
             skills={skillSummary}
             equipmentLoadouts={loadouts}
             activeLoadoutId={activeLoadoutId}
-            onLoadoutSelect={(loadoutId) => {
+            onLoadoutSelect={async (loadoutId) => {
+              const next = {
+                ...normalizedLoadouts,
+                activeId: loadoutId,
+              };
+              await updateCharacter({ equipment_loadouts: next });
+            }}
+            onLoadoutEdit={(loadoutId) => {
               setSelectedLoadoutId(loadoutId);
               setShowLoadoutModal(true);
             }}
+            equipmentSummary={{
+              armorTypeLabel:
+                armorType === 'heavyArmor'
+                  ? 'Heavy Armor'
+                  : armorType === 'lightArmor'
+                  ? 'Light Armor'
+                  : armorType === 'powerArmor'
+                  ? 'Power Armor'
+                  : 'Unarmored',
+              rangedTypeLabel,
+              meleeTypeLabel,
+              showRangedSummary,
+              showMeleeSummary,
+            }}
+            finalStats={finalStats?.final}
             derived={
               finalStats?.base ??
               getBaseDerivedStats(
@@ -221,16 +345,34 @@ export const CharacterSheet = () => {
             selectedLoadoutId={selectedLoadoutId}
             items={allItems}
             onClose={() => setShowLoadoutModal(false)}
-            onSave={(next) => updateCharacter({ equipment_loadouts: next })}
+            onSave={async (next) => {
+              await updateCharacter({ equipment_loadouts: next });
+            }}
           />
           {canEditCharacter && (
-            <Button
-              variant="destructive"
-              onClick={() => setShowDeleteModal(true)}
-              className="mt-4"
-            >
-              🗑️ Delete Character
-            </Button>
+            <div className="mt-4 flex items-center justify-between">
+              <div className="flex gap-2">
+                <Button
+                  variant="primary"
+                  onClick={() => navigate(`/character/${character.id}/level-up`)}
+                >
+                  ⬆️ Level Up
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowLevelDownModal(true)}
+                  disabled={character.level <= 1}
+                >
+                  ⬇️ Level Down
+                </Button>
+              </div>
+              <Button
+                variant="destructive"
+                onClick={() => setShowDeleteModal(true)}
+              >
+                🗑️ Delete Character
+              </Button>
+            </div>
           )}
 
           <EditCharacterModal
@@ -242,25 +384,6 @@ export const CharacterSheet = () => {
               setShowEditModal(false);
             }}
           />
-          {canEditCharacter && (
-            <Button
-              variant="primary"
-              className="mt-4"
-              onClick={() => navigate(`/character/${character.id}/level-up`)}
-            >
-              ⬆️ Level Up
-            </Button>
-          )}
-          {canEditCharacter && (
-            <Button
-              variant="outline"
-              className="mt-4 ml-2"
-              onClick={() => setShowLevelDownModal(true)}
-              disabled={character.level <= 1}
-            >
-              ⬇️ Level Down
-            </Button>
-          )}
           {showLevelDownModal && character && (
             <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
               <div className="bg-white p-6 rounded shadow max-w-sm w-full space-y-4">

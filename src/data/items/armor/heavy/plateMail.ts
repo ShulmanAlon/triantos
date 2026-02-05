@@ -5,8 +5,8 @@ export const plateArmor: GameItem = {
   name: 'Plate Armor',
   type: 'armor',
   tags: ['heavyArmor'],
-  modifiers: [{ target: 'ac_with_heavyArmor', operation: 'add', value: 6 }],
-  requiresProficiency: ['heavyArmor'],
+  modifiers: [{ target: 'ac_armor_base', operation: 'add', value: 6 }],
+  requiresProficiency: ['armorHeavy'],
 };
 
 export const plateArmorPlusOneFireResist: GameItem = {
@@ -15,9 +15,9 @@ export const plateArmorPlusOneFireResist: GameItem = {
   type: 'armor',
   tags: ['heavyArmor'],
   modifiers: [
-    { target: 'ac_with_heavyArmor', operation: 'add', value: 6 },
-    { target: 'ac_with_heavyArmor', operation: 'add', value: 1 },
+    { target: 'ac_armor_base', operation: 'add', value: 6 },
+    { target: 'ac_armor_magic', operation: 'add', value: 1 },
     { target: 'resist.fire', operation: 'multiply', value: 0.5 },
   ],
-  requiresProficiency: ['heavyArmor'],
+  requiresProficiency: ['armorHeavy'],
 };

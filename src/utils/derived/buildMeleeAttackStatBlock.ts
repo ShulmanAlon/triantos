@@ -6,19 +6,28 @@ import {
 } from '@/types/characters';
 import { Attribute } from '@/types/attributes';
 import { getModifier } from '../modifier';
-import { MELEE_TYPES } from '@/config/constants';
+import { MELEE_TYPES, MeleeTypes } from '@/config/constants';
 import { getTagBasedModifier } from '@/utils/logic/tagModifiers';
 
 export function buildMeleeAttackStatBlock(
   attributes: Record<Attribute, number>,
   derived: CharacterDerivedStats,
-  bab: number
+  bab: number,
+  selectedType?: { id: MeleeTypes; label: string },
+  requiredProficiencyId?: string
 ): StatBlock<number> {
   const strMod = getModifier(attributes.str);
+  const flatBonus = derived.modifiers['attack_bonus_flat'] ?? 0;
+  const proficiencyKey = requiredProficiencyId
+    ? (`proficiency.${requiredProficiencyId}` as keyof CharacterDerivedStats['toggles'])
+    : null;
+  const isProficient = proficiencyKey ? derived.toggles[proficiencyKey] : true;
 
   const entries: StatFormula[] = [];
 
-  for (const type of MELEE_TYPES) {
+  const types = selectedType ? [selectedType.id] : MELEE_TYPES;
+
+  for (const type of types) {
     const lowerType = type.toLowerCase();
     const attackKey = `attack_bonus_melee_${lowerType}`;
     const tagBonus = getTagBasedModifier('attack_bonus', ['melee', lowerType], derived);
@@ -29,17 +38,31 @@ export function buildMeleeAttackStatBlock(
       { source: 'STR Modifier', value: strMod },
     ];
 
-    if (typeBonus !== 0) {
+    if (selectedType || typeBonus !== 0) {
       components.push({
         source: `${type} Skill Bonus`,
         value: typeBonus,
       });
     }
 
+    if (flatBonus !== 0) {
+      components.push({
+        source: 'Magic Bonus',
+        value: flatBonus,
+      });
+    }
+
+    if (requiredProficiencyId && !isProficient) {
+      components.push({
+        source: 'Proficiency Penalty',
+        value: -4,
+      });
+    }
+
     const total = components.reduce((sum, c) => sum + c.value, 0);
 
     entries.push({
-      label: type,
+      label: selectedType?.id === type ? selectedType.label : type,
       components,
       total,
     });

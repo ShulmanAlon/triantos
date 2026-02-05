@@ -12,7 +12,10 @@ import { buildACStatBlock } from './buildACStatBlock';
 import { buildHPStatBlock } from './buildHPStatBlock';
 import { buildTempHPStatBlock } from './buildTempHPStatBlock';
 import { buildMeleeAttackStatBlock } from './buildMeleeAttackStatBlock';
-import { buildRangedAttackStatBlock } from './buildRangedAttackStatBlock';
+import { buildRangedAttackStatBlock, RangedType } from './buildRangedAttackStatBlock';
+import { StatModifier } from '@/types/modifiers';
+import { EquipmentACContext } from './buildACStatBlock';
+import { MeleeTypes } from '@/config/constants';
 
 export function getFinalStats(
   gameClass: GameClass,
@@ -20,23 +23,41 @@ export function getFinalStats(
   level: number,
   skillSelections: CharacterSkillSelection[],
   skillEntities: SkillEntity[],
+  equipmentModifiers: StatModifier[] = [],
+  equipmentContext?: {
+    ac?: EquipmentACContext;
+    melee?: { id: MeleeTypes; label: string; requiredProficiencyId?: string };
+    ranged?: { id: RangedType; label: string; requiredProficiencyId?: string };
+  },
 ): FinalCharacterStats {
   const base = getBaseDerivedStats(gameClass, attributes, level);
 
-  const effects = getCharacterEffects(skillSelections, skillEntities);
-  const derived = interpretEffects(effects);
+  const skillEffects = getCharacterEffects(skillSelections, skillEntities);
+  const derivedFromSkills = interpretEffects(skillEffects);
+  const derivedFromEquipment = interpretEffects(equipmentModifiers);
+  const derived = interpretEffects([...skillEffects, ...equipmentModifiers]);
   const hpBlock = buildHPStatBlock(gameClass, attributes, level, derived);
   const tempHPBlock = buildTempHPStatBlock(derived);
-  const acBlock = buildACStatBlock(derived, attributes);
+  const acBlock = buildACStatBlock(
+    derived,
+    attributes,
+    equipmentModifiers,
+    derivedFromSkills,
+    equipmentContext?.ac
+  );
   const meleeAttackBlock = buildMeleeAttackStatBlock(
     attributes,
     derived,
     base.baseAttackBonus,
+    equipmentContext?.melee,
+    equipmentContext?.melee?.requiredProficiencyId,
   );
   const rangedAttackBlock = buildRangedAttackStatBlock(
     attributes,
     derived,
     base.baseAttackBonus,
+    equipmentContext?.ranged,
+    equipmentContext?.ranged?.requiredProficiencyId,
   );
 
   // const hp = derived.modifiers['hp'] ?? 0;

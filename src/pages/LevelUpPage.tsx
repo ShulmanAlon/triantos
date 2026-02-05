@@ -369,9 +369,12 @@ export default function CharacterLevelUpPage() {
       ) : !canEditCharacter ? (
         <p className="p-4 text-red-600">You do not have permission.</p>
       ) : (
-        <div className="max-w-2xl mx-auto p-4">
+        <div className="max-w-3xl mx-auto p-4 card">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-bold">{ui.levelUp}</h2>
+            <div>
+              <p className="chip">{ui.levelUp}</p>
+              <h2 className="text-2xl font-bold mt-2">{ui.levelUp}</h2>
+            </div>
             <Button variant="outline" onClick={() => navigate(-1)}>
               {ui.cancel}
             </Button>
@@ -383,7 +386,7 @@ export default function CharacterLevelUpPage() {
             </div>
           )}
 
-          <div className="mb-4 text-sm text-gray-700">
+          <div className="mb-4 text-sm text-gray-700 panel p-3">
             <div>
               {ui.level}: {currentLevel} → {nextLevel}
             </div>
@@ -422,13 +425,13 @@ export default function CharacterLevelUpPage() {
               )}
             </>
           ) : (
-            <div className="text-sm text-gray-600 mb-4">
+            <div className="text-sm text-gray-600 mb-4 panel p-3">
               No attribute points available at this level.
             </div>
           )}
 
           {selectedClassData && attributesReady && (
-            <div className="border-t pt-4 mt-4 space-y-2 text-sm text-gray-700">
+            <div className="panel p-3 mt-4 space-y-2 text-sm text-gray-700">
               <p>
                 <strong>HP:</strong>{' '}
                 {getBaseDerivedStats(selectedClassData, attributes, nextLevel)?.hp}
@@ -469,7 +472,7 @@ export default function CharacterLevelUpPage() {
           )}
 
           {skillPool.core + skillPool.utility + skillPool.human > 0 && (
-            <div className="mb-6 mt-6 border rounded-md p-4 bg-gray-50 text-sm text-gray-700">
+            <div className="mb-6 mt-6 panel p-4 text-sm text-gray-700">
               <h3 className="text-sm font-semibold text-gray-700 mb-2">
                 {ui.skills}
               </h3>
@@ -626,7 +629,7 @@ export default function CharacterLevelUpPage() {
                         return (
                           <div
                             key={tierKey}
-                            className="flex items-start justify-between gap-4 border rounded-md p-3 bg-white"
+                            className="flex items-start justify-between gap-4 border rounded-xl p-3 bg-white/80"
                           >
                             <div>
                               <div className="font-medium text-gray-800">

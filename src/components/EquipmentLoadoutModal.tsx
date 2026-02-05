@@ -9,7 +9,7 @@ type Props = {
   selectedLoadoutId: string;
   items: GameItem[];
   onClose: () => void;
-  onSave: (next: EquipmentLoadouts) => void;
+  onSave: (next: EquipmentLoadouts) => void | Promise<void>;
 };
 
 type SlotKey = 'armor' | 'weapon_primary' | 'weapon_offhand' | 'shield';
@@ -29,14 +29,12 @@ export default function EquipmentLoadoutModal({
   onClose,
   onSave,
 }: Props) {
-  const [activeId, setActiveId] = useState(equipmentLoadouts.activeId);
   const [loadouts, setLoadouts] = useState<EquipmentLoadout[]>(
     equipmentLoadouts.loadouts
   );
 
   useEffect(() => {
     if (!isOpen) return;
-    setActiveId(equipmentLoadouts.activeId);
     setLoadouts(equipmentLoadouts.loadouts);
   }, [equipmentLoadouts, isOpen]);
 
@@ -80,8 +78,8 @@ export default function EquipmentLoadoutModal({
     );
   };
 
-  const save = () => {
-    onSave({ activeId, loadouts });
+  const save = async () => {
+    await onSave({ activeId: equipmentLoadouts.activeId, loadouts });
     onClose();
   };
 
@@ -92,33 +90,27 @@ export default function EquipmentLoadoutModal({
       <div className="bg-white p-6 rounded shadow max-w-lg w-full space-y-4">
         <h3 className="text-lg font-semibold">Edit Equipment Loadout</h3>
 
-        <div className="grid grid-cols-2 gap-3 text-sm">
-          <label className="flex flex-col gap-1">
-            Active Loadout
-            <select
-              className="border rounded px-2 py-1"
-              value={activeId}
-              onChange={(e) => setActiveId(e.target.value)}
-            >
-              {loadouts.map((l) => (
-                <option key={l.id} value={l.id}>
-                  {l.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="flex flex-col gap-1">
-            Editing Loadout
-            <select className="border rounded px-2 py-1" value={selectedLoadoutId} disabled>
-              {loadouts.map((l) => (
-                <option key={l.id} value={l.id}>
-                  {l.name}
-                </option>
-              ))}
-            </select>
-          </label>
+        <div className="text-sm text-[var(--muted)]">
+          Editing: {activeLoadout?.name ?? 'Loadout'}
         </div>
 
+        <label className="flex flex-col gap-1 text-sm">
+          Loadout Name
+          <input
+            className="border rounded px-2 py-1"
+            value={activeLoadout?.name ?? ''}
+            onChange={(e) =>
+              setLoadouts((prev) =>
+                prev.map((loadout) =>
+                  loadout.id === selectedLoadoutId
+                    ? { ...loadout, name: e.target.value }
+                    : loadout
+                )
+              )
+            }
+            placeholder={selectedLoadoutId.replace('-', ' ') || 'Loadout'}
+          />
+        </label>
         <div className="grid grid-cols-2 gap-3 text-sm">
           <label className="flex flex-col gap-1">
             {SLOT_LABELS.armor}

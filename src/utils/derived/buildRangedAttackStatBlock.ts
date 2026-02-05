@@ -8,7 +8,7 @@ import { Attribute } from '@/types/attributes';
 import { getModifier } from '../modifier';
 import { getTagBasedModifier } from '@/utils/logic/tagModifiers';
 
-type RangedType = 'basic' | 'advanced' | 'heavy' | 'mounted';
+export type RangedType = 'basic' | 'advanced' | 'heavy' | 'mounted';
 
 const RANGED_TYPES: { id: RangedType; label: string; key: string }[] = [
   { id: 'basic', label: 'Basic Ranged', key: 'attack_bonus_basic' },
@@ -20,12 +20,23 @@ const RANGED_TYPES: { id: RangedType; label: string; key: string }[] = [
 export function buildRangedAttackStatBlock(
   attributes: Record<Attribute, number>,
   derived: CharacterDerivedStats,
-  bab: number
+  bab: number,
+  selectedType?: { id: RangedType; label: string },
+  requiredProficiencyId?: string
 ): StatBlock<number> {
   const dexMod = getModifier(attributes.dex);
+  const flatBonus = derived.modifiers['attack_bonus_flat'] ?? 0;
+  const proficiencyKey = requiredProficiencyId
+    ? (`proficiency.${requiredProficiencyId}` as keyof CharacterDerivedStats['toggles'])
+    : null;
+  const isProficient = proficiencyKey ? derived.toggles[proficiencyKey] : true;
   const entries: StatFormula[] = [];
 
-  for (const type of RANGED_TYPES) {
+  const selected =
+    selectedType?.id && RANGED_TYPES.find((type) => type.id === selectedType.id);
+  const types = selected ? [selected] : RANGED_TYPES;
+
+  for (const type of types) {
     const tagBonus = getTagBasedModifier('attack_bonus', ['ranged', type.id], derived);
     const typeBonus = (derived.modifiers[type.key] ?? 0) + tagBonus;
 
@@ -34,15 +45,29 @@ export function buildRangedAttackStatBlock(
       { source: 'DEX Modifier', value: dexMod },
     ];
 
-    if (typeBonus !== 0) {
+    if (selectedType || typeBonus !== 0) {
       components.push({
         source: `${type.label} Skill Bonus`,
         value: typeBonus,
       });
     }
 
+    if (flatBonus !== 0) {
+      components.push({
+        source: 'Magic Bonus',
+        value: flatBonus,
+      });
+    }
+
+    if (requiredProficiencyId && !isProficient) {
+      components.push({
+        source: 'Proficiency Penalty',
+        value: -4,
+      });
+    }
+
     entries.push({
-      label: type.label,
+      label: selectedType?.id === type.id ? selectedType.label : type.label,
       components,
       total: components.reduce((sum, c) => sum + c.value, 0),
     });

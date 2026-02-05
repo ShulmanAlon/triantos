@@ -1,4 +1,5 @@
 import { StatModifier } from './modifiers';
+import { WeaponProficiencyId } from '@/config/constants';
 
 export interface GameItem {
   id: string;
@@ -9,7 +10,7 @@ export interface GameItem {
   modifiers?: StatModifier[]; // Optional stat effects
   ammo?: AmmoType;
   ammoConsumption?: number;
-  requiresProficiency?: string[]; // proficiency id needed
+  requiresProficiency?: ProficiencyId[]; // proficiency id needed
   activeAbilities?: string[]; // Optional references to active skills granted
   notes?: string; // Optional DM-written description or context
 }
@@ -51,6 +52,14 @@ export type EquipSlot =
   | 'ranged1'
   | 'ranged2'
   | 'shield';
+
+export type ProficiencyId =
+  | WeaponProficiencyId
+  | 'armorHeavy'
+  | 'armorLight'
+  | 'armorPower'
+  | 'armorUnarmored'
+  | 'shieldFortress';
 
 export const ITEM_TAGS = [
   'lightArmor',

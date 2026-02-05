@@ -10,7 +10,12 @@ import { useLanguage } from '@/context/LanguageContext';
 import { uiLabels } from '@/i18n/ui';
 import { getAttributeNameById } from '@/utils/attributeUtils';
 import { ATTRIBUTE_ORDER } from '@/config/constants';
-import { DerivedStats, EquipmentLoadout } from '@/types/characters';
+import {
+  DerivedStats,
+  EquipmentLoadout,
+  StatBlock,
+  FinalCharacterStats,
+} from '@/types/characters';
 
 interface CharacterSheetProps {
   characterName: string;
@@ -23,6 +28,15 @@ interface CharacterSheetProps {
   equipmentLoadouts?: EquipmentLoadout[];
   activeLoadoutId?: string;
   onLoadoutSelect?: (loadoutId: string) => void;
+  onLoadoutEdit?: (loadoutId: string) => void;
+  finalStats?: FinalCharacterStats['final'];
+  equipmentSummary?: {
+    armorTypeLabel?: string;
+    rangedTypeLabel?: string;
+    meleeTypeLabel?: string;
+    showRangedSummary?: boolean;
+    showMeleeSummary?: boolean;
+  };
   skills?: {
     name: string;
     tier: number;
@@ -43,39 +57,170 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
   equipmentLoadouts = [],
   activeLoadoutId,
   onLoadoutSelect,
+  onLoadoutEdit,
+  finalStats,
+  equipmentSummary,
   skills = [],
 }) => {
   const { language } = useLanguage();
   const ui = uiLabels[language];
   if (!derived) return null;
+  const getStatValue = (block?: StatBlock<number>): number | null => {
+    if (!block) return null;
+    if (block.type === 'simple') return block.value;
+    if (!block.entries || block.entries.length === 0) return null;
+    const filtered = block.selectedLabels?.length
+      ? block.entries.filter((entry) =>
+          block.selectedLabels?.includes(entry.label)
+        )
+      : block.entries;
+    return Math.max(...filtered.map((entry) => entry.total));
+  };
+
+  const renderBreakdown = (block?: StatBlock<number>) => {
+    if (!block || block.type !== 'breakdown') return null;
+    return (
+      <details className="mt-2 text-xs text-[var(--muted)]">
+        <summary className="cursor-pointer">Details</summary>
+        <div className="mt-2 space-y-2">
+          {block.entries.map((entry) => (
+            <div key={entry.label} className="rounded-lg bg-white/70 p-2">
+              <div className="text-[var(--ink)] font-semibold">
+                {entry.label}: {entry.total}
+              </div>
+              <div className="mt-1 space-y-1">
+                {entry.components.map((component) => (
+                  <div
+                    key={`${entry.label}-${component.source}`}
+                    className="flex items-center justify-between"
+                  >
+                    <span>{component.source}</span>
+                    <span>
+                      {component.source === 'Base'
+                        ? component.value
+                        : component.value >= 0
+                        ? `+${component.value}`
+                        : component.value}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </details>
+    );
+  };
+
   return (
-    <div className="mt-6 p-4 border rounded bg-gray-50 w-fit">
-      <h2 className="text-2xl font-bold mb-4">{ui.characterSheet}</h2>
-      <h2 className="text-xl font-bold mb-1">{characterName}</h2>
-      <p className="text-sm text-gray-600 mb-4">
-        {ui.player}: {playerName}
-      </p>
-      <p>
+    <div className="mt-6 card p-6">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <div>
+          <p className="chip">{ui.characterSheet}</p>
+          <h2 className="text-2xl font-bold mt-2">{characterName}</h2>
+          <p className="text-sm text-[var(--muted)]">
+            {ui.player}: {playerName}
+          </p>
+        </div>
+        <div className="panel px-4 py-3 text-sm text-[var(--muted)]">
+          <div>
+            {ui.level}: <span className="font-semibold">{level}</span>
+          </div>
+          <div>
+            {ui.xpNeeded} {level + 1}:{' '}
+            <span className="font-semibold">{XP_TABLE[level]}</span>
+          </div>
+        </div>
+      </div>
+      <p className="text-sm text-[var(--muted)]">
         {ui.class}:{' '}
         {selectedClassId
           ? getClassNameById(selectedClassId, language)
           : 'Select Class'}
       </p>
-      <p>
+      <p className="text-sm text-[var(--muted)]">
         {ui.race}:{' '}
         {selectedRaceId
           ? getRaceNameById(selectedRaceId, language)
           : 'Select Race'}
       </p>
-      <p>
-        {ui.level}: {level}
-      </p>
-      <p>
-        {ui.xpNeeded} {level + 1}: {XP_TABLE[level]}
-      </p>
 
-      <div className="mt-4 border rounded p-3 bg-white/70 shadow-sm">
-        <h3 className="font-semibold mb-2">{ui.attributes}</h3>
+      {finalStats && (
+        <div className="mt-4 panel p-4">
+          <h3 className="section-title mb-3">Combat Summary</h3>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="rounded-xl bg-white/80 p-3 border border-black/5">
+              <div className="text-xs uppercase tracking-wide text-[var(--muted)]">
+                HP
+              </div>
+              <div className="text-2xl font-bold">
+                {getStatValue(finalStats.hpBreakdown) ?? derived.hp}
+              </div>
+              {renderBreakdown(finalStats.hpBreakdown)}
+            </div>
+            <div className="rounded-xl bg-white/80 p-3 border border-black/5">
+              <div className="text-xs uppercase tracking-wide text-[var(--muted)]">
+                Temp HP
+              </div>
+              <div className="text-2xl font-bold">
+                {getStatValue(finalStats.hpTemp) ?? 0}
+              </div>
+              {renderBreakdown(finalStats.hpTemp)}
+            </div>
+            <div className="rounded-xl bg-white/80 p-3 border border-black/5">
+              <div className="text-xs uppercase tracking-wide text-[var(--muted)]">
+                AC
+              </div>
+              <div className="text-2xl font-bold">
+                {getStatValue(finalStats.ac) ?? '—'}
+              </div>
+              {equipmentSummary?.armorTypeLabel && (
+                <div className="text-xs text-[var(--muted)]">
+                  {equipmentSummary.armorTypeLabel}
+                </div>
+              )}
+              {renderBreakdown(finalStats.ac)}
+            </div>
+            {equipmentSummary?.showMeleeSummary && (
+              <div className="rounded-xl bg-white/80 p-3 border border-black/5">
+                <div className="text-xs uppercase tracking-wide text-[var(--muted)]">
+                  Melee Attack
+                </div>
+                <div className="text-2xl font-bold">
+                  {getStatValue(finalStats.meleeAttack) ??
+                    derived.baseAttackBonus}
+                </div>
+                {equipmentSummary?.meleeTypeLabel && (
+                  <div className="text-xs text-[var(--muted)]">
+                    {equipmentSummary.meleeTypeLabel}
+                  </div>
+                )}
+                {renderBreakdown(finalStats.meleeAttack)}
+              </div>
+            )}
+            {equipmentSummary?.showRangedSummary && (
+              <div className="rounded-xl bg-white/80 p-3 border border-black/5">
+                <div className="text-xs uppercase tracking-wide text-[var(--muted)]">
+                  Ranged Attack
+                </div>
+                <div className="text-2xl font-bold">
+                  {getStatValue(finalStats.rangedAttack) ??
+                    derived.baseAttackBonus}
+                </div>
+                {equipmentSummary?.rangedTypeLabel && (
+                  <div className="text-xs text-[var(--muted)]">
+                    {equipmentSummary.rangedTypeLabel}
+                  </div>
+                )}
+                {renderBreakdown(finalStats.rangedAttack)}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      <div className="mt-4 panel p-4">
+        <h3 className="section-title mb-2">{ui.attributes}</h3>
         <table className="text-sm">
           <thead>
             <tr>
@@ -90,7 +235,7 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
               const modifier = getModifier(attrValue);
               return (
                 <tr key={attr}>
-                  <td className="pr-4 font-medium">
+                  <td className="pr-4 font-medium text-[var(--ink)]">
                     {getAttributeNameById(attr, language)}
                   </td>
                   <td className="pr-4 text-center">{attrValue}</td>
@@ -104,9 +249,23 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
         </table>
       </div>
 
-      <div className="mt-4 border rounded p-3 bg-white/70 shadow-sm">
-        <h3 className="font-semibold mb-2">Equipment Loadouts</h3>
-        <ul className="text-sm text-gray-700 space-y-1">
+      {derived.spellSlots && (
+        <div className="mt-4 panel p-4">
+          <h3 className="section-title mb-2">{ui.spellSlots}</h3>
+          <ul className="ml-4 list-disc text-sm text-[var(--muted)]">
+            {Object.entries(derived.spellSlots).map(([level, slots]) => (
+              <li key={level}>
+                {ui.levelSpell} {level}: {slots}{' '}
+                {slots !== 1 ? ui.spells : ui.spell}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <div className="mt-4 panel p-4">
+        <h3 className="section-title mb-2">Equipment Loadouts</h3>
+        <ul className="text-sm text-[var(--muted)] space-y-2">
           {(equipmentLoadouts.length > 0
             ? equipmentLoadouts
             : [
@@ -118,64 +277,58 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
           ).map((loadout) => (
             <li
               key={loadout.id}
-              className={
-                loadout.id === activeLoadoutId
-                  ? 'font-semibold text-gray-900'
-                  : 'text-gray-700'
-              }
+              className="flex items-center justify-between gap-2"
             >
-              <button
-                type="button"
-                onClick={() => onLoadoutSelect?.(loadout.id)}
-                className="text-left w-full hover:underline"
-              >
-                {loadout.name}
-                {loadout.id === activeLoadoutId ? ' (Active)' : ''}
-              </button>
+              <div>
+                <div
+                  className={
+                    loadout.id === activeLoadoutId
+                      ? 'font-semibold text-[var(--ink)]'
+                      : 'text-[var(--muted)]'
+                  }
+                >
+                  {loadout.name || `Loadout ${loadout.id.split('-')[1] ?? ''}`}
+                </div>
+                {loadout.id === activeLoadoutId && (
+                  <div className="text-xs text-[var(--muted)]">Active</div>
+                )}
+              </div>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => onLoadoutSelect?.(loadout.id)}
+                  className="text-xs font-semibold rounded-lg border border-black/10 px-2 py-1 hover:bg-black/5"
+                >
+                  {loadout.id === activeLoadoutId ? 'Selected' : 'Select'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onLoadoutEdit?.(loadout.id)}
+                  className="text-xs font-semibold rounded-lg border border-black/10 px-2 py-1 hover:bg-black/5"
+                >
+                  Edit
+                </button>
+              </div>
             </li>
           ))}
         </ul>
       </div>
 
-      <div className="mt-4">
-        <h3 className="font-semibold">{ui.stats}</h3>
-        <p>
-          {ui.hp}: {derived.hp}
-        </p>
-        <p>
-          {ui.baseAttackBonus}: {derived.baseAttackBonus ?? '—'}
-        </p>
-
-        {derived.spellSlots && (
-          <div className="mt-4">
-            <h4 className="font-semibold mb-1">{ui.spellSlots}</h4>
-            <ul className="ml-4 list-disc text-sm text-gray-700">
-              {Object.entries(derived.spellSlots).map(([level, slots]) => (
-                <li key={level}>
-                  {ui.levelSpell} {level}: {slots}{' '}
-                  {slots !== 1 ? ui.spells : ui.spell}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
-
       {skills.length > 0 && (
         <div className="mt-4">
-          <h3 className="font-semibold">{ui.skills}</h3>
+          <h3 className="section-title">{ui.skills}</h3>
           <div className="mt-2 space-y-2">
             {skills.map((skill, index) => (
               <details
                 key={`${skill.name}-${skill.tier}-${index}`}
-                className="rounded border border-gray-200 bg-white/70 px-3 py-2 text-sm text-gray-700"
+                className="rounded-xl border border-black/5 bg-white/80 px-3 py-2 text-sm text-[var(--muted)]"
               >
                 <summary className="cursor-pointer font-medium">
                   {skill.name} — Tier {skill.tier}
                   {skill.totalDescription ? ` (${skill.totalDescription})` : ''}
                 </summary>
                 {skill.skillDescription && (
-                  <div className="mt-2 text-xs text-gray-600 whitespace-pre-line">
+                  <div className="mt-2 text-xs text-[var(--muted)] whitespace-pre-line">
                     {skill.skillDescription}
                   </div>
                 )}

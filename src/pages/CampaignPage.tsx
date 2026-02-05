@@ -43,54 +43,77 @@ export default function CampaignPage() {
   const hasError = campaignError || charactersError;
 
   return (
-    <main className="p-6 space-y-6">
+    <main className="space-y-6">
       <LoadingErrorWrapper loading={isLoading} error={hasError}>
         {!campaign ? (
           <p className="p-4 text-red-600">Campaign not found.</p>
         ) : (
           <div>
-            {canEditCampaign && (
-              <Button variant="outline" onClick={() => setShowEditModal(true)}>
-                ✏️ Edit Campaign
-              </Button>
-            )}
-            <div className="flex gap-2">
-              <h1 className="text-3xl font-bold">{campaign.name}</h1>
-              <Button
-                variant="primary"
-                onClick={() =>
-                  navigate(`/campaign/${campaign.campaign_id}/handbook`)
-                }
-              >
-                Player’s Handbook
-              </Button>
-              <Button variant="outline" onClick={() => navigate('/dashboard')}>
-                ← Back to Dashboard
-              </Button>
+            <div className="card p-5 space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <h1 className="text-3xl font-bold">{campaign.name}</h1>
+                  {campaign.description && (
+                    <p className="text-sm text-[var(--muted)] mt-1">
+                      {campaign.description}
+                    </p>
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {canEditCampaign && (
+                    <Button
+                      variant="outline"
+                      onClick={() => setShowEditModal(true)}
+                    >
+                      ✏️ Edit Campaign
+                    </Button>
+                  )}
+                  <Button
+                    variant="primary"
+                    onClick={() =>
+                      navigate(`/campaign/${campaign.campaign_id}/handbook`)
+                    }
+                  >
+                    Player’s Handbook
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => navigate('/dashboard')}
+                  >
+                    ← Back to Dashboard
+                  </Button>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-6 items-start">
+                <div className="relative w-40 h-40 rounded-xl overflow-hidden shadow-sm bg-white/80 border border-black/5">
+                  <ImageWithPlaceholder
+                    src={getCampaignImage(campaign.image_url)}
+                    blurSrc={getCampaignBlurImage()}
+                    alt="Campaign preview"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="space-y-2 text-sm text-[var(--muted)]">
+                  <p>
+                    <span className="font-semibold text-[var(--ink)]">
+                      DM:
+                    </span>{' '}
+                    {campaign.owner_username ?? 'Unknown'}
+                  </p>
+                  <p>
+                    <span className="font-semibold text-[var(--ink)]">
+                      Members:
+                    </span>{' '}
+                    {campaign.members
+                      .filter((m) => m.user_id !== campaign.owner_id)
+                      .map((m) => m.username)
+                      .join(', ') || 'None'}
+                  </p>
+                </div>
+              </div>
             </div>
-            <p className="text-gray-700">{campaign.description}</p>
-            <div className="relative cursor-pointer w-40 h-40 border rounded overflow-hidden shadow-sm bg-gray-100 group">
-              <ImageWithPlaceholder
-                src={getCampaignImage(campaign.image_url)}
-                blurSrc={getCampaignBlurImage()}
-                alt="Campaign preview"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="space-y-1 pt-2 text-gray-600">
-              <p>
-                <span className="font-medium">DM:</span>{' '}
-                {campaign.owner_username ?? 'Unknown'}
-              </p>
-              <p>
-                <span className="font-medium">Members:</span>{' '}
-                {campaign.members
-                  .filter((m) => m.user_id !== campaign.owner_id)
-                  .map((m) => m.username)
-                  .join(', ') || 'None'}
-              </p>
-            </div>
-            <div className="flex justify-between items-center pt-4">
+            <div className="flex justify-between items-center pt-4 pb-3">
               <h2 className="text-2xl font-semibold">Characters</h2>
               <Button
                 variant="outline"
@@ -115,22 +138,26 @@ export default function CampaignPage() {
                   <div
                     key={char.id}
                     onClick={() => navigate(`/character/${char.id}`)}
-                    className="cursor-pointer p-4 border rounded hover:bg-gray-50 transition relative"
+                    className="cursor-pointer card p-4 transition hover:-translate-y-0.5"
                   >
-                    <ImageWithPlaceholder
-                      src={getCharacterImage(
-                        char.image_url,
-                        char.class_id as ClassId
-                      )}
-                      blurSrc={getCharacterBlurImage(char.class_id as ClassId)}
-                      alt={char.name}
-                    />
-                    <p className="text-xs italic text-gray-500">
+                    <div className="rounded-xl overflow-hidden border border-black/5 bg-white/80">
+                      <ImageWithPlaceholder
+                        src={getCharacterImage(
+                          char.image_url,
+                          char.class_id as ClassId
+                        )}
+                        blurSrc={getCharacterBlurImage(char.class_id as ClassId)}
+                        alt={char.name}
+                      />
+                    </div>
+                    <p className="text-xs italic text-[var(--muted)] mt-2">
                       Owner: {char.owner_username}
                     </p>
                     <h3 className="text-lg font-bold">{char.name}</h3>
-                    <p className="text-sm text-gray-600">{char.player_name}</p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-[var(--muted)]">
+                      {char.player_name}
+                    </p>
+                    <p className="text-sm text-[var(--muted)]">
                       {char.class_id} • {char.race_id} • Level {char.level}
                     </p>
                     {!char.visible && (
@@ -144,6 +171,7 @@ export default function CampaignPage() {
             {canEditCampaign && (
               <Button
                 variant="destructive"
+                className="mt-6"
                 onClick={async () => {
                   const confirmed = window.confirm(
                     'Are you sure you want to delete this campaign?'

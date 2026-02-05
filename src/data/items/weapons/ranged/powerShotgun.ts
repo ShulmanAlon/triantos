@@ -12,7 +12,7 @@ export const powerShotgun: GameItem = {
       value: { diceRoll: 3, diceType: 6 },
     },
   ],
-  requiresProficiency: ['basicWeapons'],
+  requiresProficiency: ['rangedAdvancedWeapons'],
   ammo: 'energy',
   ammoConsumption: 3,
 };
