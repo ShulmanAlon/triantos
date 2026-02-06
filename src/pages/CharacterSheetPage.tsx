@@ -367,9 +367,11 @@ export const CharacterSheet = () => {
             onToggleVisibility={handleVisibilityToggle}
           />
 
-          <CharacterSheetView
+          <div className="section-gap">
+            <CharacterSheetView
             characterName={character.name}
             playerName={character.player_name}
+            imageUrl={character.image_url}
             selectedClassId={character.class_id}
             selectedRaceId={character.race_id}
             level={character.level}
@@ -385,7 +387,8 @@ export const CharacterSheet = () => {
             equipmentSummary={equipmentSummary}
             finalStats={finalStats?.final}
             derived={derivedStats}
-          />
+            />
+          </div>
           <EquipmentLoadoutModal
             isOpen={showLoadoutModal}
             equipmentLoadouts={normalizedLoadouts}
@@ -396,27 +399,27 @@ export const CharacterSheet = () => {
             derived={finalStats?.derived ?? null}
           />
           {canEditCharacter && (
-            <div className="mt-4 flex items-center justify-between">
+            <div className="section-gap flex items-center justify-between">
               <div className="flex gap-2">
                 <Button
                   variant="primary"
                   onClick={() => navigate(`/character/${character.id}/level-up`)}
                 >
-                  ⬆️ Level Up
+                  Level Up
                 </Button>
                 <Button
                   variant="outline"
                   onClick={() => setShowLevelDownModal(true)}
                   disabled={character.level <= 1}
                 >
-                  ⬇️ Level Down
+                  Level Down
                 </Button>
               </div>
               <Button
                 variant="destructive"
                 onClick={() => setShowDeleteModal(true)}
               >
-                🗑️ Delete Character
+                Delete Character
               </Button>
             </div>
           )}

@@ -26,7 +26,7 @@ function App() {
     <LanguageProvider>
       <ToastProvider>
         <Router>
-          <main className="w-full max-w-5xl mx-auto px-4 pb-10">
+          <main className="w-full max-w-6xl mx-auto px-5 pb-12">
             <Header />
             <Suspense fallback={<LoadingFallback />}>
               <Routes>

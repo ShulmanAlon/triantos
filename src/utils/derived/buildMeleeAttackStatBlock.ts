@@ -34,13 +34,17 @@ export function buildMeleeAttackStatBlock(
     const typeBonus = getModifierValue(derived, attackKey) + tagBonus;
 
     const components: StatComponent[] = [
-      { source: 'Base Attack Bonus', value: bab },
-      { source: 'STR Modifier', value: strMod },
+      { source: 'Base Attack', value: bab },
+      { source: 'STR Mod', value: strMod },
     ];
 
     if (selectedType || typeBonus !== 0) {
+      const displayType =
+        type === 'energy'
+          ? 'Energy Melee'
+          : `${type.charAt(0).toUpperCase()}${type.slice(1)}`;
       components.push({
-        source: `${type} Skill Bonus`,
+        source: `${displayType} Skill`,
         value: typeBonus,
       });
     }

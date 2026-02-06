@@ -45,7 +45,8 @@ export default function CampaignPage() {
           <p className="p-4 text-red-600">Campaign not found.</p>
         ) : (
           <div>
-            <CampaignHeader
+            <div className="section-gap">
+              <CampaignHeader
               campaign={campaign}
               canEdit={canEditCampaign}
               onEdit={() => setShowEditModal(true)}
@@ -53,8 +54,10 @@ export default function CampaignPage() {
                 navigate(`/campaign/${campaign.campaign_id}/handbook`)
               }
               onBack={() => navigate('/dashboard')}
-            />
-            <CampaignCharacters
+              />
+            </div>
+            <div className="section-gap">
+              <CampaignCharacters
               campaign={campaign}
               characters={characters}
               user={user}
@@ -62,7 +65,8 @@ export default function CampaignPage() {
               onCreate={() =>
                 navigate(`/campaign/${campaign.campaign_id}/create-character`)
               }
-            />
+              />
+            </div>
             {canEditCampaign && (
               <Button
                 variant="destructive"

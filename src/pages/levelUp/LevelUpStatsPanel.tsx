@@ -12,7 +12,7 @@ export const LevelUpStatsPanel = ({
   if (!nextStats) return null;
 
   return (
-    <div className="panel p-3 mt-4 space-y-2 text-sm text-gray-700">
+    <div className="panel p-3 space-y-2 text-sm text-gray-700">
       <p>
         <strong>HP:</strong> {nextStats.hp}
       </p>

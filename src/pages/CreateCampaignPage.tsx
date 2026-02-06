@@ -64,12 +64,14 @@ export default function CreateCampaign() {
   return (
     <main className="max-w-xl mx-auto p-6 space-y-4">
       <h1 className="text-2xl font-bold">Create New Campaign</h1>
-      <CampaignImagePicker
-        imageUrl={imageUrl}
-        onEdit={() => setShowImageModal(true)}
-      />
+      <div className="section-gap">
+        <CampaignImagePicker
+          imageUrl={imageUrl}
+          onEdit={() => setShowImageModal(true)}
+        />
+      </div>
 
-      <label className="block">
+      <label className="block section-gap">
         <span className="text-sm font-medium">Campaign Name</span>
         <input
           type="text"
@@ -79,7 +81,7 @@ export default function CreateCampaign() {
         />
       </label>
 
-      <label className="block">
+      <label className="block section-gap">
         <span className="text-sm font-medium">Description (optional)</span>
         <textarea
           value={description}
@@ -88,7 +90,7 @@ export default function CreateCampaign() {
         />
       </label>
 
-      <div className="flex justify-between gap-4 pt-2">
+      <div className="section-gap flex justify-between gap-4 pt-2">
         <button
           onClick={() => navigate('/dashboard')}
           className="text-gray-700 px-4 py-2 border border-gray-300 rounded hover:bg-gray-100"

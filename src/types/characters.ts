@@ -12,6 +12,7 @@ interface CharacterBase {
   race_id: RaceId;
   level: number;
   visible: boolean;
+  created_at?: string;
   attributes: Record<Attribute, number>;
   user_id: string;
   campaign_id: string;

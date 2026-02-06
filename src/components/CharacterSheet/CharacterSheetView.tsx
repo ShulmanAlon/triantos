@@ -10,6 +10,8 @@ import { useLanguage } from '@/context/LanguageContext';
 import { uiLabels } from '@/i18n/ui';
 import { getAttributeNameById } from '@/utils/attributeUtils';
 import { ATTRIBUTE_ORDER } from '@/config/constants';
+import { ImageWithPlaceholder } from '@/components/ImageWithPlaceholder';
+import { getCharacterBlurImage, getCharacterImage } from '@/utils/imageUtils';
 import {
   DerivedStats,
   EquipmentLoadout,
@@ -34,6 +36,7 @@ type EquipmentSummary = {
 interface CharacterSheetProps {
   characterName: string;
   playerName: string;
+  imageUrl?: string | null;
   selectedClassId: ClassId | undefined;
   selectedRaceId: RaceId | undefined;
   level: number;
@@ -63,6 +66,7 @@ const getStatValue = (block?: StatBlock<number>): number | null => {
 export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
   characterName,
   playerName,
+  imageUrl,
   selectedClassId = undefined,
   selectedRaceId = undefined,
   level,
@@ -81,37 +85,57 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
   if (!derived) return null;
 
   return (
-    <div className="mt-6 card p-6">
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-        <div>
-          <p className="chip">{ui.characterSheet}</p>
-          <h2 className="text-2xl font-bold mt-2">{characterName}</h2>
-          <p className="text-sm text-(--muted)">
-            {ui.player}: {playerName}
-          </p>
+    <div className="mt-6 card p-5">
+      <div className="flex flex-wrap items-start gap-4 mb-4">
+        <div className="w-40 h-40 rounded-xl overflow-hidden border border-black/5 bg-white/80">
+          {imageUrl || selectedClassId ? (
+            <ImageWithPlaceholder
+              src={getCharacterImage(imageUrl ?? '', selectedClassId)}
+              blurSrc={getCharacterBlurImage(selectedClassId)}
+              alt={characterName}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-xs text-(--muted)">
+              —
+            </div>
+          )}
         </div>
-        <div className="panel px-4 py-3 text-sm text-(--muted)">
-          <div>
-            {ui.level}: <span className="font-semibold">{level}</span>
+        <div className="flex-1 min-w-[240px]">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="chip">{ui.characterSheet}</p>
+              <h2 className="text-2xl font-bold mt-2">{characterName}</h2>
+              <p className="text-sm text-(--muted) mt-1">
+                {ui.player}: {playerName}
+              </p>
+            </div>
+            <div className="panel px-4 py-3 text-sm text-(--muted)">
+              <div>
+                {ui.level}: <span className="font-semibold">{level}</span>
+              </div>
+              <div>
+                {ui.xpNeeded} {level + 1}:{' '}
+                <span className="font-semibold">{XP_TABLE[level]}</span>
+              </div>
+            </div>
           </div>
-          <div>
-            {ui.xpNeeded} {level + 1}:{' '}
-            <span className="font-semibold">{XP_TABLE[level]}</span>
+          <div className="flex flex-wrap gap-4 text-sm text-(--muted) mt-2">
+            <span>
+              {ui.class}:{' '}
+              {selectedClassId
+                ? getClassNameById(selectedClassId, language)
+                : 'Select Class'}
+            </span>
+            <span>
+              {ui.race}:{' '}
+              {selectedRaceId
+                ? getRaceNameById(selectedRaceId, language)
+                : 'Select Race'}
+            </span>
           </div>
         </div>
       </div>
-      <p className="text-sm text-(--muted)">
-        {ui.class}:{' '}
-        {selectedClassId
-          ? getClassNameById(selectedClassId, language)
-          : 'Select Class'}
-      </p>
-      <p className="text-sm text-(--muted)">
-        {ui.race}:{' '}
-        {selectedRaceId
-          ? getRaceNameById(selectedRaceId, language)
-          : 'Select Race'}
-      </p>
 
       {finalStats && (
         <CombatSummary
@@ -121,69 +145,87 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
         />
       )}
 
-      <div className="mt-4 panel p-4">
-        <h3 className="section-title mb-2">{ui.attributes}</h3>
-        <table className="text-sm">
-          <thead>
-            <tr>
-              <th className="text-left px-1"></th>
-              <th className="text-left px-1">{ui.value}</th>
-              <th className="text-left px-1">{ui.modifier}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {ATTRIBUTE_ORDER.map((attr) => {
-              const attrValue = attributes[attr];
-              const modifier = getModifier(attrValue);
-              return (
-                <tr key={attr}>
-                  <td className="pr-4 font-medium text-(--ink)">
-                    {getAttributeNameById(attr, language)}
-                  </td>
-                  <td className="pr-4 text-center">{attrValue}</td>
-                  <td className="text-gray-500 text-center w-10">
-                    {modifier > 0 ? `+${modifier}` : modifier}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+      <div className="mt-4 grid gap-4 lg:grid-cols-2 items-stretch">
+        <div className="panel p-4">
+          <h3 className="section-title mb-2">{ui.attributes}</h3>
+          <table className="text-base w-full">
+            <thead>
+              <tr>
+                <th className="text-left px-2"></th>
+                <th className="text-center px-2 w-20">{ui.value}</th>
+                <th className="text-center px-2 w-20">{ui.modifier}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {ATTRIBUTE_ORDER.map((attr) => {
+                const attrValue = attributes[attr];
+                const modifier = getModifier(attrValue);
+                return (
+                  <tr key={attr}>
+                    <td className="pr-6 font-semibold text-(--ink)">
+                      {getAttributeNameById(attr, language)}
+                    </td>
+                    <td className="px-2 text-center w-20 font-mono">
+                      {attrValue}
+                    </td>
+                    <td className="text-gray-500 w-20 font-mono relative text-center">
+                      <span className="absolute right-1/2 top-1/2 -translate-y-1/2 -translate-x-2 w-3 text-center">
+                        {modifier === 0 ? ' ' : modifier > 0 ? '+' : '-'}
+                      </span>
+                      <span className="block w-full text-center tabular-nums">
+                        {Math.abs(modifier)}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+
+        <LoadoutList
+          equipmentLoadouts={equipmentLoadouts}
+          activeLoadoutId={activeLoadoutId}
+          onLoadoutSelect={onLoadoutSelect}
+          onLoadoutEdit={onLoadoutEdit}
+        />
       </div>
 
       {derived.spellSlots && (
-        <div className="mt-4 panel p-4">
-          <h3 className="section-title mb-2">{ui.spellSlots}</h3>
-          <ul className="ml-4 list-disc text-sm text-(--muted)">
-            {Object.entries(derived.spellSlots).map(([level, slots]) => (
-              <li key={level}>
-                {ui.levelSpell} {level}: {slots}{' '}
-                {slots !== 1 ? ui.spells : ui.spell}
-              </li>
-            ))}
-          </ul>
+        <div className="mt-4 lg:grid lg:grid-cols-2 lg:gap-4">
+          <div className="panel p-4">
+            <h3 className="section-title mb-2">{ui.spellSlots}</h3>
+            <ul className="ml-4 list-disc text-sm text-(--muted)">
+              {Object.entries(derived.spellSlots).map(([level, slots]) => (
+                <li key={level}>
+                  {ui.levelSpell} {level}: {slots}{' '}
+                  {slots !== 1 ? ui.spells : ui.spell}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       )}
 
-      <LoadoutList
-        equipmentLoadouts={equipmentLoadouts}
-        activeLoadoutId={activeLoadoutId}
-        onLoadoutSelect={onLoadoutSelect}
-        onLoadoutEdit={onLoadoutEdit}
-      />
-
       {skills.length > 0 && (
-        <div className="mt-4">
-          <h3 className="section-title">{ui.skills}</h3>
-          <div className="mt-2 space-y-2">
+        <div className="mt-4 panel p-4">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="section-title">{ui.skills}</h3>
+            <span className="text-xs text-(--muted)">
+              {skills.length} total
+            </span>
+          </div>
+          <div className="mt-2 columns-1 sm:columns-2 gap-4">
             {skills.map((skill, index) => (
               <details
                 key={`${skill.name}-${skill.tier}-${index}`}
-                className="rounded-xl border border-black/5 bg-white/80 px-3 py-2 text-sm text-(--muted)"
+                className="mb-2 break-inside-avoid rounded-xl border border-black/10 bg-white/70 px-3 py-2 text-sm text-(--muted)"
               >
                 <summary className="cursor-pointer font-medium">
                   {skill.name} — Tier {skill.tier}
-                  {skill.totalDescription ? ` (${skill.totalDescription})` : ''}
+                  {skill.totalDescription
+                    ? ` (${skill.totalDescription})`
+                    : ''}
                 </summary>
                 {skill.skillDescription && (
                   <div className="mt-2 text-xs text-(--muted) whitespace-pre-line">
@@ -208,71 +250,70 @@ function CombatSummary({
   derived: DerivedStats;
   equipmentSummary?: EquipmentSummary;
 }) {
+  const [showDetails, setShowDetails] = React.useState(true);
   return (
     <div className="mt-4 panel p-4">
-      <h3 className="section-title mb-3">Combat Summary</h3>
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="flex items-center justify-between mb-2">
+        <h3 className="section-title">Combat Summary</h3>
+        <button
+          type="button"
+          onClick={() => setShowDetails((prev) => !prev)}
+          className="text-[11px] font-semibold uppercase tracking-wide rounded-full border border-black/10 px-3 py-1 hover:bg-black/5"
+        >
+          {showDetails ? 'Hide Details' : 'Show Details'}
+        </button>
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         <div className="rounded-xl bg-white/80 p-3 border border-black/5">
-          <div className="text-xs uppercase tracking-wide text-(--muted)">
+          <div className="text-xs font-semibold text-(--ink)">
             HP
           </div>
-          <div className="text-2xl font-bold">
+          <div className="text-[22px] font-bold">
             {getStatValue(finalStats.hpBreakdown) ?? derived.hp}
           </div>
-          <StatBreakdown block={finalStats.hpBreakdown} />
+          <StatBreakdown block={finalStats.hpBreakdown} showDetails={showDetails} />
         </div>
         <div className="rounded-xl bg-white/80 p-3 border border-black/5">
-          <div className="text-xs uppercase tracking-wide text-(--muted)">
+          <div className="text-xs font-semibold text-(--ink)">
             Temp HP
           </div>
-          <div className="text-2xl font-bold">
+          <div className="text-[22px] font-bold">
             {getStatValue(finalStats.hpTemp) ?? 0}
           </div>
-          <StatBreakdown block={finalStats.hpTemp} />
+          <StatBreakdown block={finalStats.hpTemp} showDetails={showDetails} />
         </div>
         <div className="rounded-xl bg-white/80 p-3 border border-black/5">
-          <div className="text-xs uppercase tracking-wide text-(--muted)">
+          <div className="text-xs font-semibold text-(--ink)">
             AC
           </div>
-          <div className="text-2xl font-bold">
+          <div className="text-[22px] font-bold">
             {getStatValue(finalStats.ac) ?? '—'}
           </div>
-          {equipmentSummary?.armorTypeLabel && (
-            <div className="text-xs text-(--muted)">
-              {equipmentSummary.armorTypeLabel}
-            </div>
-          )}
-          <StatBreakdown block={finalStats.ac} />
+          <StatBreakdown block={finalStats.ac} showDetails={showDetails} />
         </div>
         {equipmentSummary?.showMeleeSummary && (
           <div className="rounded-xl bg-white/80 p-3 border border-black/5">
-            <div className="text-xs uppercase tracking-wide text-(--muted)">
+            <div className="text-xs font-semibold text-(--ink)">
               Melee Attack
             </div>
-            <div className="text-2xl font-bold">
+            <div className="text-[22px] font-bold">
               {getStatValue(finalStats.meleeAttack) ?? derived.baseAttackBonus}
             </div>
-            {equipmentSummary?.meleeTypeLabel && (
-              <div className="text-xs text-(--muted)">
-                {equipmentSummary.meleeTypeLabel}
-              </div>
-            )}
-            <StatBreakdown block={finalStats.meleeAttack} />
+            <StatBreakdown block={finalStats.meleeAttack} showDetails={showDetails} />
           </div>
         )}
         {equipmentSummary?.showMeleeSummary && (
           <div className="rounded-xl bg-white/80 p-3 border border-black/5">
-            <div className="text-xs uppercase tracking-wide text-(--muted)">
+            <div className="text-xs font-semibold text-(--ink)">
               Melee Damage
             </div>
-            <div className="text-lg font-semibold">
+            <div className="text-base font-semibold">
               {equipmentSummary.meleeDamageSummary ?? '—'}
             </div>
             {equipmentSummary.meleeDamageParts &&
               equipmentSummary.meleeDamageParts.length > 0 && (
-                <details className="mt-2 text-xs text-(--muted)" open>
-                  <summary className="cursor-pointer">Details</summary>
-                  <div className="mt-2 space-y-1">
+                <SummaryDetails showDetails={showDetails}>
+                  <div className="rounded-lg bg-white/70 p-2 space-y-1">
                     {equipmentSummary.meleeDamageParts.map((part, idx) => (
                       <div
                         key={`${part.label}-${idx}`}
@@ -283,39 +324,33 @@ function CombatSummary({
                       </div>
                     ))}
                   </div>
-                </details>
+                </SummaryDetails>
               )}
           </div>
         )}
         {equipmentSummary?.showRangedSummary && (
           <div className="rounded-xl bg-white/80 p-3 border border-black/5">
-            <div className="text-xs uppercase tracking-wide text-(--muted)">
+            <div className="text-xs font-semibold text-(--ink)">
               Ranged Attack
             </div>
-            <div className="text-2xl font-bold">
+            <div className="text-[22px] font-bold">
               {getStatValue(finalStats.rangedAttack) ?? derived.baseAttackBonus}
             </div>
-            {equipmentSummary?.rangedTypeLabel && (
-              <div className="text-xs text-(--muted)">
-                {equipmentSummary.rangedTypeLabel}
-              </div>
-            )}
-            <StatBreakdown block={finalStats.rangedAttack} />
+            <StatBreakdown block={finalStats.rangedAttack} showDetails={showDetails} />
           </div>
         )}
         {equipmentSummary?.showRangedSummary && (
           <div className="rounded-xl bg-white/80 p-3 border border-black/5">
-            <div className="text-xs uppercase tracking-wide text-(--muted)">
+            <div className="text-xs font-semibold text-(--ink)">
               Ranged Damage
             </div>
-            <div className="text-lg font-semibold">
+            <div className="text-base font-semibold">
               {equipmentSummary.rangedDamageSummary ?? '—'}
             </div>
             {equipmentSummary.rangedDamageParts &&
               equipmentSummary.rangedDamageParts.length > 0 && (
-                <details className="mt-2 text-xs text-(--muted)" open>
-                  <summary className="cursor-pointer">Details</summary>
-                  <div className="mt-2 space-y-1">
+                <SummaryDetails showDetails={showDetails}>
+                  <div className="rounded-lg bg-white/70 p-2 space-y-1">
                     {equipmentSummary.rangedDamageParts.map((part, idx) => (
                       <div
                         key={`${part.label}-${idx}`}
@@ -326,7 +361,7 @@ function CombatSummary({
                       </div>
                     ))}
                   </div>
-                </details>
+                </SummaryDetails>
               )}
           </div>
         )}
@@ -347,7 +382,7 @@ function LoadoutList({
   onLoadoutEdit?: (loadoutId: string) => void;
 }) {
   return (
-    <div className="mt-4 panel p-4">
+    <div className="panel p-4 h-full">
       <h3 className="section-title mb-2">Equipment Loadouts</h3>
       <ul className="text-sm text-(--muted) space-y-2">
         {(equipmentLoadouts.length > 0
@@ -359,8 +394,11 @@ function LoadoutList({
               { id: 'loadout-4', name: 'Loadout 4', items: {} },
             ]
         ).map((loadout) => (
-          <li key={loadout.id} className="flex items-center justify-between gap-2">
-            <div>
+          <li
+            key={loadout.id}
+            className="flex items-center justify-between gap-2 py-1"
+          >
+            <div className="flex items-center gap-2">
               <div
                 className={
                   loadout.id === activeLoadoutId
@@ -370,22 +408,26 @@ function LoadoutList({
               >
                 {getLoadoutDisplayName(loadout)}
               </div>
-              {loadout.id === activeLoadoutId && (
-                <div className="text-xs text-(--muted)">Active</div>
-              )}
             </div>
             <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => onLoadoutSelect?.(loadout.id)}
-                className="text-xs font-semibold rounded-lg border border-black/10 px-2 py-1 hover:bg-black/5"
-              >
-                {loadout.id === activeLoadoutId ? 'Selected' : 'Select'}
-              </button>
+              {loadout.id === activeLoadoutId && (
+                <span className="text-[10px] font-semibold uppercase tracking-wide text-(--ink) bg-black/5 rounded-full px-2 py-1">
+                  Selected
+                </span>
+              )}
+              {loadout.id !== activeLoadoutId && (
+                <button
+                  type="button"
+                  onClick={() => onLoadoutSelect?.(loadout.id)}
+                  className="text-xs font-semibold text-(--ink) hover:underline"
+                >
+                  Select
+                </button>
+              )}
               <button
                 type="button"
                 onClick={() => onLoadoutEdit?.(loadout.id)}
-                className="text-xs font-semibold rounded-lg border border-black/10 px-2 py-1 hover:bg-black/5"
+                className="text-xs font-semibold text-(--ink) hover:underline"
               >
                 Edit
               </button>
@@ -397,37 +439,53 @@ function LoadoutList({
   );
 }
 
-function StatBreakdown({ block }: { block?: StatBlock<number> }) {
+function SummaryDetails({
+  showDetails,
+  children,
+}: {
+  showDetails: boolean;
+  children: React.ReactNode;
+}) {
+  if (!showDetails) return null;
+  return (
+    <div className="mt-1 text-xs text-(--muted)">
+      <div className="mt-1 border-t border-black/5" />
+      <div className="pt-1 space-y-2">{children}</div>
+    </div>
+  );
+}
+
+function StatBreakdown({
+  block,
+  showDetails,
+}: {
+  block?: StatBlock<number>;
+  showDetails: boolean;
+}) {
   if (!block || block.type !== 'breakdown') return null;
   return (
-    <details className="mt-2 text-xs text-(--muted)" open>
-      <summary className="cursor-pointer">Details</summary>
-      <div className="mt-2 space-y-2">
-        {block.entries.map((entry) => (
-          <div key={entry.label} className="rounded-lg bg-white/70 p-2">
-            <div className="text-(--ink) font-semibold">
-              {entry.label}: {entry.total}
-            </div>
-            <div className="mt-1 space-y-1">
-              {entry.components.map((component) => (
-                <div
-                  key={`${entry.label}-${component.source}`}
-                  className="flex items-center justify-between"
-                >
-                  <span>{component.source}</span>
-                  <span>
-                    {component.source === 'Base'
-                      ? component.value
-                      : component.value >= 0
-                      ? `+${component.value}`
-                      : component.value}
-                  </span>
-                </div>
-              ))}
-            </div>
+    <SummaryDetails showDetails={showDetails}>
+      {block.entries.map((entry) => (
+        <div key={entry.label} className="rounded-lg bg-white/70 p-2">
+          <div className="space-y-1">
+            {entry.components.map((component) => (
+              <div
+                key={`${entry.label}-${component.source}`}
+                className="flex items-center justify-between"
+              >
+                <span>{component.source}</span>
+                <span>
+                  {component.source === 'Base'
+                    ? component.value
+                    : component.value >= 0
+                    ? `+${component.value}`
+                    : component.value}
+                </span>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-    </details>
+        </div>
+      ))}
+    </SummaryDetails>
   );
 }

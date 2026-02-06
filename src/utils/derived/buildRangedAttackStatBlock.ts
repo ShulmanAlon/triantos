@@ -43,13 +43,15 @@ export function buildRangedAttackStatBlock(
     const typeBonus = getModifierValue(derived, type.key) + tagBonus;
 
     const components: StatComponent[] = [
-      { source: 'Base Attack Bonus', value: bab },
-      { source: 'DEX Modifier', value: dexMod },
+      { source: 'Base Attack', value: bab },
+      { source: 'DEX Mod', value: dexMod },
     ];
 
     if (selectedType || typeBonus !== 0) {
+      const skillLabel =
+        type.id === 'advanced' ? 'Adv Ranged Skill' : `${type.label} Skill`;
       components.push({
-        source: `${type.label} Skill Bonus`,
+        source: skillLabel,
         value: typeBonus,
       });
     }

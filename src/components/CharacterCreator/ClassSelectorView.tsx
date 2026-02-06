@@ -43,12 +43,10 @@ export const ClassSelector: React.FC<ClassSelectorProps> = ({
   };
 
   return (
-    <div className="mb-6 space-y-3">
+    <div className="mb-6 space-y-3 max-w-xl">
       {/* Class Dropdown */}
       <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-1">
-          {ui.class}
-        </label>
+        <label className="sr-only">{ui.class}</label>
         <select
           className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
           value={selectedClassId ?? ''}

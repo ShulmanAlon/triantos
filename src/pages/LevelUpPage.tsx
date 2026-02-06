@@ -30,6 +30,8 @@ import { getClassById, getClassLevelDataById } from '@/utils/classUtils';
 import { getBaseDerivedStats } from '@/utils/derived/getBaseDerivedStats';
 import { getRaceById } from '@/utils/raceUtils';
 import { attributeLabels } from '@/i18n/attributes';
+import { getClassNameById } from '@/utils/classUtils';
+import { getRaceNameById } from '@/utils/raceUtils';
 import { useToast } from '@/context/ToastContext';
 import { LevelUpHeader } from '@/pages/levelUp/LevelUpHeader';
 import { LevelUpStatsPanel } from '@/pages/levelUp/LevelUpStatsPanel';
@@ -412,44 +414,50 @@ export default function CharacterLevelUpPage() {
       ) : !canEditCharacter ? (
         <p className="p-4 text-red-600">You do not have permission.</p>
       ) : (
-        <div className="max-w-3xl mx-auto p-4 card">
+        <div className="max-w-6xl mx-auto p-4">
           <LevelUpHeader
             title={ui.levelUp}
             cancelLabel={ui.cancel}
             onCancel={() => navigate(-1)}
             currentLevel={currentLevel}
             nextLevel={nextLevel}
-            classId={character.class_id}
-            raceId={character.race_id}
+            classId={getClassNameById(character.class_id, language)}
+            raceId={getRaceNameById(character.race_id, language)}
             showMissingProgression={!nextLevelData}
+            rightContent={
+              selectedClassData &&
+              attributesReady && (
+                <LevelUpStatsPanel nextStats={nextBaseStats} hpGain={hpGain} />
+              )
+            }
           />
 
-          <AttributePointSection
-            hasAbilityPoint={hasAbilityPointThisLevel}
-            hasUnspent={hasUnspentAbilityPoint}
-            attributesReady={attributesReady}
-            attributes={attributes}
-            baseline={character.attributes}
-            usedPoints={usedPoints}
-            onChange={handleAttributeChange}
-            selectedClassData={selectedClassData}
-          />
-
-          {selectedClassData && attributesReady && (
-            <LevelUpStatsPanel nextStats={nextBaseStats} hpGain={hpGain} />
+          {hasAbilityPointThisLevel && (
+            <div className="section-gap panel p-4">
+              <AttributePointSection
+                hasAbilityPoint={hasAbilityPointThisLevel}
+                hasUnspent={hasUnspentAbilityPoint}
+                attributesReady={attributesReady}
+                attributes={attributes}
+                baseline={character.attributes}
+                usedPoints={usedPoints}
+                onChange={handleAttributeChange}
+                selectedClassData={selectedClassData}
+              />
+            </div>
           )}
 
           {hasSkillPoints && skillsData && (
-            <div className="mb-6 mt-6 panel p-4 text-sm text-gray-700">
-              <h3 className="text-sm font-semibold text-gray-700 mb-2">
-                {ui.skills}
-              </h3>
-              <div className="flex flex-wrap gap-4 text-xs text-gray-600 mb-4">
-                <div>
+            <div className="section-gap panel p-4 text-sm text-gray-700">
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+                <h3 className="section-title">{ui.skills}</h3>
+                <div className="text-xs text-gray-600">
                   <span className="font-semibold">Pool:</span> Core{' '}
                   {skillRemaining.core}, Utility {skillRemaining.utility}, Human{' '}
                   {skillRemaining.human}
                 </div>
+              </div>
+              <div className="flex flex-wrap gap-4 text-xs text-gray-600 mb-4">
                 <label className="flex items-center gap-2">
                   <input
                     type="checkbox"
@@ -558,7 +566,7 @@ export default function CharacterLevelUpPage() {
 
           {error && <div className="sr-only">{error}</div>}
 
-          <div className="flex justify-end gap-2">
+          <div className="section-gap flex justify-end gap-2">
             <Button variant="outline" onClick={() => navigate(-1)}>
               {ui.cancel}
             </Button>

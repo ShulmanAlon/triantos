@@ -48,7 +48,7 @@ export const CharacterSkillsPanel = ({
   const sortedSkills = skills.slice().sort((a, b) => a.name.localeCompare(b.name));
 
   return (
-    <div className="space-y-3">
+    <div className="columns-1 lg:columns-2 gap-6">
       {sortedSkills.map((skill) => {
         const tierRows = skill.tiers
           .map((tier) => {
@@ -127,7 +127,10 @@ export const CharacterSkillsPanel = ({
         if (tierRows.length === 0) return null;
 
         return (
-          <div key={skill.id} className="space-y-2">
+          <div
+            key={skill.id}
+            className="mb-3 break-inside-avoid space-y-2 border-b border-black/10 pb-3 last:border-b-0"
+          >
             <div className="text-sm font-semibold text-gray-800">
               {skill.name}
             </div>

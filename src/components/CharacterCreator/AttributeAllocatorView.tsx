@@ -32,26 +32,38 @@ export const AttributeAllocator: React.FC<AttributeAllocatorProps> = ({
   const ui = uiLabels[language];
   return (
     <div className="mb-6 space-y-3">
-      {/* Title */}
-      <h3 className="text-base font-semibold text-gray-800">{ui.attributes}</h3>
-
       {/* Pool Tracker */}
       {!isLevelUpMode && (
-        <p className="text-sm text-right text-gray-700">
-          {ui.pointsRemaining}: <strong>{pool}</strong>
-        </p>
+        <div className="flex justify-end">
+          <div className="text-sm text-gray-700">
+            {ui.pointsRemaining}:{' '}
+            <span className="ml-1 inline-flex items-center justify-center rounded-full bg-black/5 px-2 py-0.5 font-semibold">
+              {pool}
+            </span>
+          </div>
+        </div>
       )}
 
       {/* Attribute Table */}
       <table className="w-full text-sm border-collapse">
         <thead>
           <tr className="text-gray-600">
-            <th className="text-left font-semibold pb-1">{ui.attribute}</th>
-            <th className="text-center font-semibold pb-1">{ui.raceBase}</th>
-            <th className="text-center font-semibold pb-1">{ui.value}</th>
-            <th className="text-center font-semibold pb-1">{ui.modifier}</th>
+            <th className="text-left font-semibold pb-2 text-xs uppercase tracking-wide">
+              {ui.attribute}
+            </th>
+            <th className="text-center font-semibold pb-2 text-xs uppercase tracking-wide">
+              {ui.raceBase}
+            </th>
+            <th className="text-center font-semibold pb-2 text-xs uppercase tracking-wide">
+              {ui.value}
+            </th>
+            <th className="text-center font-semibold pb-2 text-xs uppercase tracking-wide">
+              {ui.modifier}
+            </th>
             {showNextCost && (
-              <th className="text-center font-semibold pb-1">{ui.nextCost}</th>
+              <th className="text-center font-semibold pb-2 text-xs uppercase tracking-wide">
+                {ui.nextCost}
+              </th>
             )}
             <th className="w-10">{/*Spacer for buttons column*/}</th>
           </tr>

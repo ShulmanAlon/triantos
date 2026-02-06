@@ -15,6 +15,14 @@ const makeDamageLabel = (label: string, value: string) => ({
 const formatSignedValue = (value: number): string =>
   value > 0 ? `+${value}` : `${value}`;
 
+const toTitleCase = (value: string): string =>
+  value
+    .replace(/[_-]+/g, ' ')
+    .split(' ')
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
+
 export const isDamageTarget = (target: string): target is DamageTarget =>
   target.startsWith('damage.');
 
@@ -31,10 +39,11 @@ export const parseDamageParts = (mods: StatModifier[]): DamagePart[] => {
 };
 
 export const formatDamagePart = (part: DamagePart): string => {
+  const typeLabel = toTitleCase(part.type);
   if (typeof part.value === 'number') {
-    return `${part.value} ${part.type}`;
+    return `${part.value} ${typeLabel}`;
   }
-  return `${part.value.diceRoll}d${part.value.diceType} ${part.type}`;
+  return `${part.value.diceRoll}d${part.value.diceType} ${typeLabel}`;
 };
 
 export const getModifierValue = (
@@ -82,13 +91,13 @@ export const buildDamageBreakdown = ({
   const parts: { label: string; value: string }[] = [];
 
   for (const part of baseParts) {
-    parts.push(makeDamageLabel('weapon', formatDamagePart(part)));
+    parts.push(makeDamageLabel('Weapon', formatDamagePart(part)));
   }
 
   if (typeof strengthModifier === 'number' && strengthModifier !== 0) {
     parts.push({
-      label: 'STR',
-      value: formatSignedValue(strengthModifier),
+      label: 'STR Mod',
+      value: `${formatSignedValue(strengthModifier)} Physical`,
     });
   }
 
@@ -96,7 +105,7 @@ export const buildDamageBreakdown = ({
     const text = formatDamagePart(part);
     parts.push(
       makeDamageLabel(
-        'enchantment',
+        'Enchantment',
         text.startsWith('-') ? text : `+${text}`
       )
     );
@@ -104,13 +113,13 @@ export const buildDamageBreakdown = ({
 
   const summaryParts: string[] = [];
   for (const part of parts) {
-    if (part.label === 'weapon') {
+    if (part.label === 'Weapon') {
       summaryParts.push(part.value.split(' ')[0]);
-    } else if (part.label === 'STR') {
+    } else if (part.label === 'STR Mod') {
       summaryParts.push(part.value);
-    } else if (part.label === 'enchantment') {
+    } else if (part.label === 'Enchantment') {
       summaryParts.push(part.value.split(' ')[0]);
-    } else if (part.label.startsWith('skill')) {
+    } else if (part.label.startsWith('Skill')) {
       summaryParts.push(part.value);
     }
   }

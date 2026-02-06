@@ -13,7 +13,6 @@ export const armorUnarmored: SkillEntity = {
       description: `Basic clothing, no armor`,
       deltaDescription: 'Unarmored AC proficiency.',
       totalDescription: 'Can benefit from unarmored AC.',
-      prerequisites: [{ type: 'attribute', attribute: 'str', minimum: 13 }],
       freeForClasses: [
         { classId: 'Fighter', atLevel: 1 },
         { classId: 'MagicUser', atLevel: 1 },

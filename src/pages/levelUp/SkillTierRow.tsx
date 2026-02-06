@@ -45,16 +45,28 @@ export const SkillTierRow = ({
             {tier.deltaDescription ?? tier.description}
           </div>
         )}
-        <div className="text-xs text-gray-500 mt-1">
-          {statusLabel}
-          {availability.reasons.length > 0
-            ? ` (${availability.reasons.join(', ')})`
-            : ''}
+        <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-gray-500">
+          <span
+            className={`rounded-full px-2 py-0.5 font-semibold uppercase tracking-wide ${
+              statusLabel === 'Available'
+                ? 'bg-green-100 text-green-700'
+                : statusLabel === 'Locked'
+                ? 'bg-yellow-100 text-yellow-700'
+                : statusLabel === 'Ineligible'
+                ? 'bg-red-100 text-red-700'
+                : 'bg-gray-100 text-gray-700'
+            }`}
+          >
+            {statusLabel}
+          </span>
+          {availability.reasons.length > 0 && (
+            <span>({availability.reasons.join(', ')})</span>
+          )}
         </div>
         {pointRequirement && (
           <div className="mt-2 text-xs text-red-600">{pointRequirement}</div>
         )}
-        {availability.status === 'locked' && prereqLabels.length > 0 && (
+        {prereqLabels.length > 0 && (
           <div className="mt-2 text-xs text-gray-600">
             <div className="font-semibold">Requirements:</div>
             <ul className="list-disc list-inside">

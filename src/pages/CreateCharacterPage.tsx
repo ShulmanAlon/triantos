@@ -70,9 +70,9 @@ export default function CharacterCreatePage() {
   const [skillBuckets, setSkillBuckets] = useState<LevelUpBucket[]>([
     { level: 1, skillSelections: [] },
   ]);
+  const [showAcquiredSkills, setShowAcquiredSkills] = useState(true);
   const [showLockedSkills, setShowLockedSkills] = useState(false);
   const [showIneligibleSkills, setShowIneligibleSkills] = useState(false);
-  const [showAcquiredSkills, setShowAcquiredSkills] = useState(false);
   const [spendTypeByTier, setSpendTypeByTier] = useState<
     Record<string, SkillPointType>
   >({});
@@ -106,8 +106,9 @@ export default function CharacterCreatePage() {
         const tiers = skill.tiers
           .filter((tier) =>
             tier.freeForRaces?.some(
-              (grant) => grant.raceId === selectedRaceId && grant.atLevel <= level
-            )
+              (grant) =>
+                grant.raceId === selectedRaceId && grant.atLevel <= level,
+            ),
           )
           .map((tier) => ({ skill, tier }));
         return tiers.length > 0 ? tiers : [];
@@ -231,6 +232,8 @@ export default function CharacterCreatePage() {
 
   const handleBackToAttributes = () => {
     setCreationStep('attributes');
+    updateCurrentBucketSelections([]);
+    setSpendTypeByTier({});
   };
 
   const currentBucket =
@@ -240,20 +243,18 @@ export default function CharacterCreatePage() {
   const updateCurrentBucketSelections = (next: SkillSelectionEntry[]) => {
     setSkillBuckets((prev) =>
       prev.map((bucket) =>
-        bucket.level === level
-          ? { ...bucket, skillSelections: next }
-          : bucket
-      )
+        bucket.level === level ? { ...bucket, skillSelections: next } : bucket,
+      ),
     );
   };
 
   const handleAddSkill = (
     skillId: SkillId,
     tier: number,
-    spendType: SkillPointType
+    spendType: SkillPointType,
   ) => {
     const exists = currentSelections.some(
-      (s) => s.skillId === skillId && s.tier === tier
+      (s) => s.skillId === skillId && s.tier === tier,
     );
     if (exists) return;
     updateCurrentBucketSelections([
@@ -265,8 +266,8 @@ export default function CharacterCreatePage() {
   const handleRemoveSkill = (skillId: SkillId, tier: number) => {
     updateCurrentBucketSelections(
       currentSelections.filter(
-        (s) => !(s.skillId === skillId && s.tier === tier)
-      )
+        (s) => !(s.skillId === skillId && s.tier === tier),
+      ),
     );
   };
 
@@ -287,7 +288,7 @@ export default function CharacterCreatePage() {
           skillsData,
           selectedClassData.id,
           selectedRaceId,
-          level
+          level,
         )
       : [];
 
@@ -312,7 +313,7 @@ export default function CharacterCreatePage() {
       (selection) =>
         selection.skillId === skillId &&
         selection.tier >= tier &&
-        selection.acquiredAtLevel <= level
+        selection.acquiredAtLevel <= level,
     );
   const getPrereqLabel = (prereq: {
     type: 'level' | 'attribute' | 'skill';
@@ -345,213 +346,255 @@ export default function CharacterCreatePage() {
     return { label: 'Unknown requirement', met: false };
   };
 
+  const stepLabels: Record<CreationStep, string> = {
+    class: ui.class ?? 'Class',
+    race: ui.race ?? 'Race',
+    attributes: ui.attributes ?? 'Attributes',
+    skills: ui.skills ?? 'Skills',
+  };
+  const steps: CreationStep[] = ['class', 'race', 'attributes', 'skills'];
+
   return (
-    <div className="max-w-3xl mx-auto p-4 card">
-      <CreateCharacterHeader
-        title={ui.characterCreator}
-        createdBy={user?.username}
-      />
-      <div className="flex gap-4 items-start">
-        <div className="flex-1">
-          <CharacterNameForm
-            characterName={characterName}
-            playerName={playerName}
-            onCharacterNameChange={setCharacterName}
-            onPlayerNameChange={setPlayerName}
-          />
-        </div>
-
-        <CharacterImagePicker
-          imageUrl={imageUrl}
-          classId={selectedClassId}
-          characterName={characterName}
-          onEdit={() => setShowImageModal(true)}
+    <div className="section-gap relative">
+      <div className="card p-5">
+        <CreateCharacterHeader
+          title={ui.characterCreator}
+          createdBy={user?.username}
         />
-      </div>
-      {creationStep !== 'skills' && (
-        <>
-          {/* Class selection */}
-          <div className="mb-6">
-            <ClassSelector
-              classOptions={classes}
-              selectedClassId={selectedClassId}
-              isDisabled={false}
-              onChange={handleClassChange}
-              currentAttributes={attributes}
+        <div className="flex flex-wrap gap-2 text-xs text-(--muted) mb-4">
+          {steps.map((step, index) => (
+            <div
+              key={step}
+              className={`px-3 py-1 rounded-full border ${
+                creationStep === step
+                  ? 'border-(--accent)/40 bg-(--accent)/10 text-(--ink) font-semibold'
+                  : 'border-black/10'
+              }`}
+            >
+              {index + 1}. {stepLabels[step]}
+            </div>
+          ))}
+        </div>
+        <div className="section-gap panel p-4 grid gap-4 lg:grid-cols-[1.4fr_0.6fr] items-start">
+          <div>
+            <CharacterNameForm
+              characterName={characterName}
+              playerName={playerName}
+              onCharacterNameChange={setCharacterName}
+              onPlayerNameChange={setPlayerName}
             />
           </div>
-          {/* Race selection */}
-          <div className="mb-6">
-            <RaceSelector
-              raceOptions={races}
-              selectedRaceId={selectedRaceId}
-              isDisabled={creationStep === 'class'}
-              onChange={handleRaceChange}
-              allowedRacesId={allowedRacesId}
+
+          <div className="flex justify-end">
+            <CharacterImagePicker
+              imageUrl={imageUrl}
+              classId={selectedClassId}
+              characterName={characterName}
+              onEdit={() => setShowImageModal(true)}
             />
           </div>
-          {selectedRaceId && racialSkillsAtLevel.length > 0 && (
-            <div className="mb-6 panel p-3">
-              <h3 className="text-sm font-semibold text-gray-700 mb-2">
-                {ui.racialAbilities ?? 'Racial Abilities'}
-              </h3>
-              <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
-                {racialSkillsAtLevel.map(({ skill, tier }) => (
-                  <li key={`${skill.id}-${tier.tier}`}>
-                    <span className="font-medium">{skill.name}</span>
-                    {tier.description ? ` — ${tier.description}` : ''}
-                  </li>
+        </div>
+        {creationStep !== 'skills' && (
+          <>
+            <div className="section-gap grid gap-4 lg:grid-cols-2 items-start">
+              {/* Class selection */}
+              <div className="panel p-4">
+                <h3 className="section-title mb-2">{ui.class}</h3>
+                <ClassSelector
+                  classOptions={classes}
+                  selectedClassId={selectedClassId}
+                  isDisabled={false}
+                  onChange={handleClassChange}
+                  currentAttributes={attributes}
+                />
+              </div>
+              {/* Race selection */}
+              <div className="panel p-4">
+                <h3 className="section-title mb-2">{ui.race}</h3>
+                <RaceSelector
+                  raceOptions={races}
+                  selectedRaceId={selectedRaceId}
+                  isDisabled={creationStep === 'class'}
+                  onChange={handleRaceChange}
+                  allowedRacesId={allowedRacesId}
+                />
+              </div>
+            </div>
+            {selectedRaceId && racialSkillsAtLevel.length > 0 && (
+              <div className="section-gap panel p-3">
+                <h3 className="text-sm font-semibold text-gray-700 mb-2">
+                  {ui.racialAbilities ?? 'Racial Abilities'}
+                </h3>
+                <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
+                  {racialSkillsAtLevel.map(({ skill, tier }) => (
+                    <li key={`${skill.id}-${tier.tier}`}>
+                      <span className="font-medium">{skill.name}</span>
+                      {tier.description ? ` — ${tier.description}` : ''}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {/* Attribute allocator */}
+            <div className="section-gap">
+              <div className="panel p-4">
+                <h3 className="section-title mb-2">{ui.attributes}</h3>
+                <AttributeAllocator
+                  attributes={attributes}
+                  baseline={effectiveBaseline}
+                  pool={pool}
+                  isLevelUpMode={false}
+                  usedPoints={usedPoints}
+                  hasAbilityPointThisLevel={hasAbilityPointThisLevel}
+                  onChange={handleAttributeChange}
+                  selectedClassData={selectedClassData}
+                />
+              </div>
+            </div>
+            {selectedClassData && (
+              <div className="section-gap">
+                <DerivedStatsPanel stats={derivedStats} />
+              </div>
+            )}
+          </>
+        )}
+        {creationStep === 'skills' && !skillsData && (
+          <div className="section-gap panel p-4 text-sm text-gray-700">
+            Loading skills...
+          </div>
+        )}
+        {creationStep === 'skills' && skillsData && (
+          <div className="section-gap panel p-4 text-sm text-gray-700">
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+              <h3 className="section-title">{ui.skills}</h3>
+              <div className="text-xs text-gray-600">
+                <span className="font-semibold">Pool:</span> Core{' '}
+                {skillRemaining.core}, Utility {skillRemaining.utility}
+                {selectedRaceId === 'Human' && (
+                  <>
+                    , Human {skillRemaining.human}
+                  </>
+                )}
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-4 text-xs text-gray-600 mb-4">
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={showLockedSkills}
+                  onChange={(e) => setShowLockedSkills(e.target.checked)}
+                />
+                {ui.showLocked ?? 'Show locked'}
+              </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={showIneligibleSkills}
+                  onChange={(e) => setShowIneligibleSkills(e.target.checked)}
+                />
+                {ui.showIneligible ?? 'Show ineligible'}
+              </label>
+            </div>
+
+            <CharacterSkillsPanel
+              skills={skills}
+              skillRemaining={skillRemaining}
+              currentSelections={currentSelections}
+              showAcquired={showAcquiredSkills}
+              showLocked={showLockedSkills}
+              showIneligible={showIneligibleSkills}
+              getAvailability={(skill, tierNumber) =>
+                selectedClassData && selectedRaceId
+                  ? getSkillTierAvailability({
+                      skill,
+                      tier: skill.tiers.find((t) => t.tier === tierNumber)!,
+                      attributes,
+                      classId: selectedClassData.id,
+                      raceId: selectedRaceId,
+                      level,
+                      pool: skillRemaining,
+                      acquired: acquiredSkills,
+                      allowSameLevelForPrereqs: true,
+                    })
+                  : { status: 'ineligible', reasons: [], canAfford: false }
+              }
+              getPrereqLabels={(skill, tierNumber) =>
+                (
+                  skill.tiers.find((t) => t.tier === tierNumber)
+                    ?.prerequisites ?? []
+                ).map((prereq) => getPrereqLabel(prereq))
+              }
+              getPointRequirement={(skill, tierNumber, availability) =>
+                availability.status === 'available' && !availability.canAfford
+                  ? skill.skillPointType === 'core'
+                    ? (ui.requiresCorePoint ?? 'Requires a core skill point')
+                    : skill.skillPointType === 'utility'
+                      ? (ui.requiresUtilityPoint ??
+                        'Requires a utility skill point')
+                      : (ui.requiresHumanPoint ??
+                        'Requires a human skill point')
+                  : null
+              }
+              getSpendOptions={(skill) => {
+                const canUseHumanPoint =
+                  selectedRaceId === 'Human' && skillRemaining.human > 0;
+                if (skill.skillPointType === 'core') {
+                  return [
+                    'core',
+                    ...(canUseHumanPoint
+                      ? (['human'] as SkillPointType[])
+                      : []),
+                  ];
+                }
+                if (skill.skillPointType === 'utility') {
+                  return [
+                    'utility',
+                    ...(canUseHumanPoint
+                      ? (['human'] as SkillPointType[])
+                      : []),
+                  ];
+                }
+                return canUseHumanPoint ? ['human'] : [];
+              }}
+              getDefaultSpendType={(tierKey, skill) =>
+                spendTypeByTier[tierKey] ??
+                (skill.skillPointType !== 'human' &&
+                skillRemaining[skill.skillPointType] > 0
+                  ? skill.skillPointType
+                  : skillRemaining.human > 0
+                    ? 'human'
+                    : skill.skillPointType)
+              }
+              onSpendTypeChange={(tierKey, value) =>
+                setSpendTypeByTier((prev) => ({ ...prev, [tierKey]: value }))
+              }
+              onAdd={(skillId, tier, spendType) =>
+                handleAddSkill(skillId, tier, spendType)
+              }
+              onRemove={(skillId, tier) => handleRemoveSkill(skillId, tier)}
+            />
+
+            {skillValidation && !skillValidation.isValid && (
+              <div className="mt-4 text-xs text-red-600 space-y-1">
+                {skillValidation.errors.map((err, idx) => (
+                  <div key={idx}>{err}</div>
                 ))}
-              </ul>
-            </div>
-          )}
-          {/* Attribute allocator */}
-          <AttributeAllocator
-            attributes={attributes}
-            baseline={effectiveBaseline}
-            pool={pool}
-            isLevelUpMode={false}
-            usedPoints={usedPoints}
-            hasAbilityPointThisLevel={hasAbilityPointThisLevel}
-            onChange={handleAttributeChange}
-            selectedClassData={selectedClassData}
-          />
-          {selectedClassData && <DerivedStatsPanel stats={derivedStats} />}
-        </>
-      )}
-      {creationStep === 'skills' && !skillsData && (
-        <div className="mb-6 panel p-4 text-sm text-gray-700">
-          Loading skills...
-        </div>
-      )}
-      {creationStep === 'skills' && skillsData && (
-        <div className="mb-6 panel p-4 text-sm text-gray-700">
-          <h3 className="text-sm font-semibold text-gray-700 mb-2">
-            {ui.skills}
-          </h3>
-          <div className="flex flex-wrap gap-4 text-xs text-gray-600 mb-4">
-            <div>
-              <span className="font-semibold">Pool:</span>{' '}
-              Core {skillRemaining.core}, Utility {skillRemaining.utility}, Human{' '}
-              {skillRemaining.human}
-            </div>
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={showAcquiredSkills}
-                onChange={(e) => setShowAcquiredSkills(e.target.checked)}
-              />
-              {ui.showAcquired ?? 'Show acquired'}
-            </label>
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={showLockedSkills}
-                onChange={(e) => setShowLockedSkills(e.target.checked)}
-              />
-              {ui.showLocked ?? 'Show locked'}
-            </label>
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={showIneligibleSkills}
-                onChange={(e) => setShowIneligibleSkills(e.target.checked)}
-              />
-              {ui.showIneligible ?? 'Show ineligible'}
-            </label>
+              </div>
+            )}
           </div>
+        )}
 
-          <CharacterSkillsPanel
-            skills={skills}
-            skillRemaining={skillRemaining}
-            currentSelections={currentSelections}
-            showAcquired={showAcquiredSkills}
-            showLocked={showLockedSkills}
-            showIneligible={showIneligibleSkills}
-            getAvailability={(skill, tierNumber) =>
-              selectedClassData && selectedRaceId
-                ? getSkillTierAvailability({
-                    skill,
-                    tier: skill.tiers.find((t) => t.tier === tierNumber)!,
-                    attributes,
-                    classId: selectedClassData.id,
-                    raceId: selectedRaceId,
-                    level,
-                    pool: skillRemaining,
-                    acquired: acquiredSkills,
-                    allowSameLevelForPrereqs: true,
-                  })
-                : { status: 'ineligible', reasons: [], canAfford: false }
-            }
-            getPrereqLabels={(skill, tierNumber) =>
-              (skill.tiers.find((t) => t.tier === tierNumber)?.prerequisites ?? [])
-                .map((prereq) => getPrereqLabel(prereq))
-            }
-            getPointRequirement={(skill, tierNumber, availability) =>
-              availability.status === 'available' && !availability.canAfford
-                ? skill.skillPointType === 'core'
-                  ? ui.requiresCorePoint ?? 'Requires a core skill point'
-                  : skill.skillPointType === 'utility'
-                  ? ui.requiresUtilityPoint ?? 'Requires a utility skill point'
-                  : ui.requiresHumanPoint ?? 'Requires a human skill point'
-                : null
-            }
-            getSpendOptions={(skill) => {
-              const canUseHumanPoint =
-                selectedRaceId === 'Human' && skillRemaining.human > 0;
-              if (skill.skillPointType === 'core') {
-                return [
-                  'core',
-                  ...(canUseHumanPoint ? (['human'] as SkillPointType[]) : []),
-                ];
-              }
-              if (skill.skillPointType === 'utility') {
-                return [
-                  'utility',
-                  ...(canUseHumanPoint ? (['human'] as SkillPointType[]) : []),
-                ];
-              }
-              return canUseHumanPoint ? ['human'] : [];
-            }}
-            getDefaultSpendType={(tierKey, skill) =>
-              spendTypeByTier[tierKey] ??
-              (skill.skillPointType !== 'human' &&
-              skillRemaining[skill.skillPointType] > 0
-                ? skill.skillPointType
-                : skillRemaining.human > 0
-                ? 'human'
-                : skill.skillPointType)
-            }
-            onSpendTypeChange={(tierKey, value) =>
-              setSpendTypeByTier((prev) => ({ ...prev, [tierKey]: value }))
-            }
-            onAdd={(skillId, tier, spendType) =>
-              handleAddSkill(skillId, tier, spendType)
-            }
-            onRemove={(skillId, tier) => handleRemoveSkill(skillId, tier)}
-          />
+        {/* { Modal for image URL input */}
+        <ImageUrlModal
+          isOpen={showImageModal}
+          imageUrl={imageUrl || ''}
+          setImageUrl={setImageUrl}
+          onClose={() => setShowImageModal(false)}
+          title="Set Character Image URL"
+        />
 
-          {skillValidation && !skillValidation.isValid && (
-            <div className="mt-4 text-xs text-red-600 space-y-1">
-              {skillValidation.errors.map((err, idx) => (
-                <div key={idx}>{err}</div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* { Modal for image URL input */}
-      <ImageUrlModal
-        isOpen={showImageModal}
-        imageUrl={imageUrl || ''}
-        setImageUrl={setImageUrl}
-        onClose={() => setShowImageModal(false)}
-        title="Set Character Image URL"
-      />
-
-      {/* Error & Actions */}
-      {error && <div className="sr-only">{error}</div>}
+        {/* Error & Actions */}
+        {error && <div className="sr-only">{error}</div>}
       <div className="flex justify-between items-center mt-8">
         <div className="flex gap-2">
           <Button variant="outline" onClick={handleCancel}>
@@ -575,6 +618,7 @@ export default function CharacterCreatePage() {
             {ui.finishCreation}
           </Button>
         )}
+      </div>
       </div>
     </div>
   );

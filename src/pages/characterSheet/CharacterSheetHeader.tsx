@@ -19,16 +19,16 @@ export const CharacterSheetHeader = ({
     <div className="flex flex-wrap gap-2">
       {canEdit && (
         <Button variant="outline" onClick={onEdit}>
-          ✏️ Edit Character
+          Edit Character
         </Button>
       )}
       <Button variant="outline" onClick={onBack}>
-        ← Back to Campaign
+        Back to Campaign
       </Button>
     </div>
     {canEdit && (
       <Button variant="outline" onClick={onToggleVisibility}>
-        {visible ? '👁️ Hide from other players' : '🙈 Make visible to players'}
+        {visible ? 'Hide from other players' : 'Make visible to players'}
       </Button>
     )}
   </div>

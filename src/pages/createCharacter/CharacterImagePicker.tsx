@@ -16,15 +16,18 @@ export const CharacterImagePicker = ({
   onEdit,
 }: CharacterImagePickerProps) => (
   <div className="w-40 shrink-0">
-    <h3 className="text-sm font-medium mb-2">Character Image</h3>
+    <div className="flex items-center justify-between mb-2">
+      <h3 className="text-sm font-medium">Character Image</h3>
+      <span className="text-xs text-(--muted)">Optional</span>
+    </div>
     <div
       onClick={onEdit}
       className="relative cursor-pointer w-40 h-40 border rounded-xl overflow-hidden shadow-sm bg-white/80 group"
     >
-      {imageUrl ? (
+      {imageUrl || classId ? (
         <>
           <ImageWithPlaceholder
-            src={getCharacterImage(imageUrl, classId)}
+            src={getCharacterImage(imageUrl ?? '', classId)}
             blurSrc={getCharacterBlurImage(classId)}
             alt={characterName}
             className="w-full h-full object-cover"

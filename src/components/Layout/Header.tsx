@@ -14,14 +14,18 @@ export const Header = () => {
     : 'Not signed in';
 
   return (
-    <header className="w-full flex flex-wrap gap-3 justify-between items-center px-4 py-3 mt-6 mb-6 card">
-      <div className="text-sm text-(--muted)">
-        <span className={session ? 'font-medium' : 'italic text-gray-500'}>
+    <header className="w-full flex items-center gap-6 px-6 py-3 mt-6 mb-6 card min-h-[64px]">
+      <div className="flex-1 flex items-center">
+        <span className="text-xl font-semibold tracking-tight text-(--ink)">
+          Triantos
+        </span>
+      </div>
+      <div className="flex-1 text-center text-sm text-(--muted)">
+        <span className={session ? 'font-medium text-(--ink)' : 'italic text-gray-500'}>
           {displayName}
         </span>
       </div>
-
-      <div className="flex items-center gap-3">
+      <div className="flex-1 flex items-center justify-end gap-3">
         <LanguageSelector />
         {session && <LogoutButton />}
       </div>

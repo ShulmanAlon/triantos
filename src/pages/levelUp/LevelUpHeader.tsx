@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/Button';
+import { ReactNode } from 'react';
 
 type LevelUpHeaderProps = {
   title: string;
@@ -9,6 +10,7 @@ type LevelUpHeaderProps = {
   classId: string;
   raceId: string;
   showMissingProgression: boolean;
+  rightContent?: ReactNode;
 };
 
 export const LevelUpHeader = ({
@@ -20,6 +22,7 @@ export const LevelUpHeader = ({
   classId,
   raceId,
   showMissingProgression,
+  rightContent,
 }: LevelUpHeaderProps) => (
   <>
     <div className="flex items-center justify-between mb-4">
@@ -38,12 +41,19 @@ export const LevelUpHeader = ({
       </div>
     )}
 
-    <div className="mb-4 text-sm text-gray-700 panel p-3">
-      <div>
-        Level: {currentLevel} → {nextLevel}
+    <div className="mb-4 grid gap-4 lg:grid-cols-[1.2fr_0.8fr] items-stretch">
+      <div className="text-base text-gray-800 panel p-3 flex flex-col justify-between">
+        <div>
+          <span className="font-semibold">Level:</span> {currentLevel} → {nextLevel}
+        </div>
+        <div>
+          <span className="font-semibold">Class:</span> {classId}
+        </div>
+        <div>
+          <span className="font-semibold">Race:</span> {raceId}
+        </div>
       </div>
-      <div>Class: {classId}</div>
-      <div>Race: {raceId}</div>
+      {rightContent && <div className="h-full">{rightContent}</div>}
     </div>
   </>
 );
