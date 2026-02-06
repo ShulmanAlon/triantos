@@ -16,6 +16,7 @@ const CharacterSheet = lazy(() => import('@/pages/CharacterSheetPage'));
 const CharacterLevelUpPage = lazy(() => import('@/pages/LevelUpPage'));
 const CampaignHandbookPage = lazy(() => import('@/pages/CampaignHandbookPage'));
 const LoginPage = lazy(() => import('@/pages/LoginPage'));
+const ResetPasswordPage = lazy(() => import('@/pages/ResetPasswordPage'));
 
 const LoadingFallback = () => (
   <div className="p-4 text-sm text-(--muted)">Loading…</div>
@@ -26,12 +27,13 @@ function App() {
     <LanguageProvider>
       <ToastProvider>
         <Router>
-          <main className="w-full max-w-6xl mx-auto px-5 pb-0">
+          <main className="w-full max-w-6xl mx-auto px-5 pb-12">
             <Header />
             <Suspense fallback={<LoadingFallback />}>
               <Routes>
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/login" element={<LoginPage />} />
+                <Route path="/reset-password" element={<ResetPasswordPage />} />
                 <Route
                   path="/dashboard"
                   element={

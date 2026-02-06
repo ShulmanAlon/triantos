@@ -25,7 +25,7 @@ export const ConfirmModal = ({
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
       <div className="bg-white p-6 rounded shadow max-w-sm w-full space-y-4">
         <h3 className="text-lg font-semibold">{title}</h3>
-        <p className="text-sm text-gray-600">{description}</p>
+        <p className="text-sm text-(--muted)">{description}</p>
         <div className="flex justify-end gap-2">
           <Button variant="outline" onClick={onCancel}>
             Cancel

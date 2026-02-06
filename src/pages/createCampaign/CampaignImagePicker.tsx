@@ -10,10 +10,15 @@ export const CampaignImagePicker = ({
   imageUrl,
   onEdit,
 }: CampaignImagePickerProps) => (
-  <div
-    onClick={onEdit}
-    className="relative cursor-pointer w-40 h-40 border rounded overflow-hidden shadow-sm bg-gray-100 group"
-  >
+  <div className="w-40 shrink-0">
+    <div className="flex items-center justify-between mb-2">
+      <h3 className="text-sm font-medium">Campaign Image</h3>
+      <span className="text-xs text-(--muted)">Optional</span>
+    </div>
+    <div
+      onClick={onEdit}
+      className="relative cursor-pointer w-40 h-40 border rounded-xl overflow-hidden shadow-sm bg-white/80 group"
+    >
     {imageUrl ? (
       <>
         <ImageWithPlaceholder
@@ -27,9 +32,10 @@ export const CampaignImagePicker = ({
         </div>
       </>
     ) : (
-      <div className="w-full h-full flex items-center justify-center text-sm text-gray-500">
+      <div className="w-full h-full flex items-center justify-center text-sm text-(--muted)">
         + Add Image
       </div>
     )}
+    </div>
   </div>
 );

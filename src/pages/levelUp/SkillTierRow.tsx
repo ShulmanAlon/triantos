@@ -45,7 +45,7 @@ export const SkillTierRow = ({
             {tier.deltaDescription ?? tier.description}
           </div>
         )}
-        <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-gray-500">
+        <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-(--muted)">
           <span
             className={`rounded-full px-2 py-0.5 font-semibold uppercase tracking-wide ${
               statusLabel === 'Available'
@@ -67,7 +67,7 @@ export const SkillTierRow = ({
           <div className="mt-2 text-xs text-red-600">{pointRequirement}</div>
         )}
         {prereqLabels.length > 0 && (
-          <div className="mt-2 text-xs text-gray-600">
+          <div className="mt-2 text-xs text-(--muted)">
             <div className="font-semibold">Requirements:</div>
             <ul className="list-disc list-inside">
               {prereqLabels.map((req, idx) => (
@@ -91,7 +91,7 @@ export const SkillTierRow = ({
         ) : availability.status === 'available' ? (
           <>
             <select
-              className="border border-gray-300 rounded-md px-2 py-1 text-xs"
+              className="border border-black/10 rounded-lg px-2 py-1 text-xs bg-white/80"
               value={defaultSpendType}
               onChange={(e) => onSpendTypeChange(e.target.value as SkillPointType)}
             >

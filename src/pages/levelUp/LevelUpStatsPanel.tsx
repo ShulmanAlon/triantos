@@ -16,7 +16,7 @@ export const LevelUpStatsPanel = ({
       <p>
         <strong>HP:</strong> {nextStats.hp}
       </p>
-      <p className="text-xs text-gray-600">+{hpGain} HP this level</p>
+      <p className="text-xs text-(--muted)">+{hpGain} HP this level</p>
       <p>
         <strong>Base Attack Bonus:</strong> {nextStats.baseAttackBonus}
       </p>

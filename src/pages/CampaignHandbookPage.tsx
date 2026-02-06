@@ -61,12 +61,30 @@ export default function CampaignHandbookPage() {
   if (!campaign) return <p className="p-6 text-red-600">Campaign not found.</p>;
 
   return (
-    <main className="p-6 space-y-4">
-      <h1 className="text-2xl font-bold">{campaign.name} Handbook</h1>
-      <p className="text-gray-500 italic">Coming soon...</p>
-      <Button variant="outline" onClick={() => navigate(`/campaign/${campaignId}`)}>
-        Back to Campaign
-      </Button>
+    <main className="max-w-6xl mx-auto p-4">
+      <div className="card p-5">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <p className="chip">Campaign Handbook</p>
+            <h1 className="text-2xl font-bold mt-2">
+              {campaign.name} Handbook
+            </h1>
+            <p className="text-sm text-(--muted) mt-1">
+              Rules, lore, and quick references for your campaign.
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            onClick={() => navigate(`/campaign/${campaignId}`)}
+          >
+            Back to Campaign
+          </Button>
+        </div>
+
+        <div className="section-gap panel p-4 text-sm text-(--muted)">
+          Coming soon...
+        </div>
+      </div>
     </main>
   );
 }

@@ -467,7 +467,7 @@ export default function CharacterCreatePage() {
           <div className="section-gap panel p-4 text-sm text-gray-700">
             <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
               <h3 className="section-title">{ui.skills}</h3>
-              <div className="text-xs text-gray-600">
+              <div className="text-xs text-(--muted)">
                 <span className="font-semibold">Pool:</span> Core{' '}
                 {skillRemaining.core}, Utility {skillRemaining.utility}
                 {selectedRaceId === 'Human' && (
@@ -477,7 +477,7 @@ export default function CharacterCreatePage() {
                 )}
               </div>
             </div>
-            <div className="flex flex-wrap gap-4 text-xs text-gray-600 mb-4">
+            <div className="flex flex-wrap gap-4 text-xs text-(--muted) mb-4">
               <label className="flex items-center gap-2">
                 <input
                   type="checkbox"

@@ -26,11 +26,11 @@ export function CampaignListItem({
 
       <div className="flex flex-col gap-1">
         <h2 className="text-xl font-semibold">{campaign.name}</h2>
-        <p className="text-sm text-gray-600">{campaign.description}</p>
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-(--muted)">{campaign.description}</p>
+        <p className="text-sm text-(--muted)">
           DM: <span className="font-medium">{campaign.owner_username}</span>
         </p>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-(--muted)">
           Members:{' '}
           {memberNames.length > 0 ? memberNames.join(', ') : 'None'}
         </p>

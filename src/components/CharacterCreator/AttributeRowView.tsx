@@ -80,9 +80,8 @@ export function AttributeRow({
         <div className="flex items-center justify-center gap-2">
           {/* Decrease */}
           <Button
-            className={
-              'w-8 h-8 border rounded-lg border-gray-300 flex items-center justify-center'
-            }
+            variant="outline"
+            className="w-8 h-8 px-0 py-0 bg-black/5 hover:bg-black/10 flex items-center justify-center disabled:opacity-60 disabled:text-(--muted)"
             onClick={handleDecrease}
             disabled={!canDecrease}
           >
@@ -102,9 +101,8 @@ export function AttributeRow({
 
           {/* Increase */}
           <Button
-            className={
-              'w-8 h-8 border rounded-lg border-gray-300 flex items-center justify-center'
-            }
+            variant="outline"
+            className="w-8 h-8 px-0 py-0 bg-black/5 hover:bg-black/10 flex items-center justify-center disabled:opacity-60 disabled:text-(--muted)"
             onClick={handleIncrease}
             disabled={!canIncrease}
           >

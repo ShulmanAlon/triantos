@@ -6,6 +6,7 @@ import ImageUrlModal from '@/components/ImageUrlModal';
 import { TABLES } from '@/config/dbTables';
 import { useToast } from '@/context/ToastContext';
 import { CampaignImagePicker } from '@/pages/createCampaign/CampaignImagePicker';
+import { Button } from '@/components/ui/Button';
 
 export default function CreateCampaign() {
   const user = useCurrentUser();
@@ -62,49 +63,59 @@ export default function CreateCampaign() {
   };
 
   return (
-    <main className="max-w-xl mx-auto p-6 space-y-4">
-      <h1 className="text-2xl font-bold">Create New Campaign</h1>
-      <div className="section-gap">
-        <CampaignImagePicker
-          imageUrl={imageUrl}
-          onEdit={() => setShowImageModal(true)}
-        />
-      </div>
+    <main className="w-full">
+      <div className="card p-5 w-full">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <p className="chip">Create Campaign</p>
+            <h1 className="text-2xl font-bold mt-2">Create New Campaign</h1>
+            <p className="text-sm text-(--muted) mt-1">
+              Set up a campaign to invite players and manage characters.
+            </p>
+          </div>
+          <Button variant="outline" onClick={() => navigate('/dashboard')}>
+            Back to Dashboard
+          </Button>
+        </div>
 
-      <label className="block section-gap">
-        <span className="text-sm font-medium">Campaign Name</span>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full mt-1 p-2 border rounded"
-        />
-      </label>
+        <div className="mt-4 panel p-4 grid gap-4 lg:grid-cols-[1.4fr_0.6fr] items-start">
+          <div className="space-y-4">
+            <label className="block">
+              <span className="text-sm font-medium">Campaign Name</span>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full mt-1 p-2 border border-black/10 rounded-lg bg-white/80"
+              />
+            </label>
 
-      <label className="block section-gap">
-        <span className="text-sm font-medium">Description (optional)</span>
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="w-full mt-1 p-2 border rounded"
-        />
-      </label>
+            <label className="block">
+              <span className="text-sm font-medium">Description (optional)</span>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full mt-1 p-2 border border-black/10 rounded-lg bg-white/80"
+                rows={4}
+              />
+            </label>
+          </div>
+          <div className="flex justify-end">
+            <CampaignImagePicker
+              imageUrl={imageUrl}
+              onEdit={() => setShowImageModal(true)}
+            />
+          </div>
+        </div>
 
-      <div className="section-gap flex justify-between gap-4 pt-2">
-        <button
-          onClick={() => navigate('/dashboard')}
-          className="text-gray-700 px-4 py-2 border border-gray-300 rounded hover:bg-gray-100"
-        >
-          Cancel
-        </button>
-
-        <button
-          onClick={handleCreate}
-          disabled={!name.trim() || loading}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-        >
-          {loading ? 'Creating...' : 'Create Campaign'}
-        </button>
+        <div className="mt-4 flex justify-between gap-4">
+          <Button variant="outline" onClick={() => navigate('/dashboard')}>
+            Cancel
+          </Button>
+          <Button onClick={handleCreate} disabled={!name.trim() || loading}>
+            {loading ? 'Creating...' : 'Create Campaign'}
+          </Button>
+        </div>
       </div>
 
       {/* { Modal for image URL input */}

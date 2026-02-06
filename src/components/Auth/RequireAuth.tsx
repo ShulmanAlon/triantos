@@ -7,7 +7,7 @@ export const RequireAuth = ({ children }: { children: ReactNode }) => {
 
   if (isLoading) {
     return (
-      <p className="text-center mt-10 text-gray-600">Loading session...</p>
+      <p className="text-center mt-10 text-(--muted)">Loading session...</p>
     );
   }
 

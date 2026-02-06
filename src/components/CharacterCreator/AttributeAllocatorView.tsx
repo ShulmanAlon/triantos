@@ -47,7 +47,7 @@ export const AttributeAllocator: React.FC<AttributeAllocatorProps> = ({
       {/* Attribute Table */}
       <table className="w-full text-sm border-collapse">
         <thead>
-          <tr className="text-gray-600">
+          <tr className="text-(--muted)">
             <th className="text-left font-semibold pb-2 text-xs uppercase tracking-wide">
               {ui.attribute}
             </th>

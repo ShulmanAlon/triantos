@@ -25,7 +25,7 @@ export const AttributePointSection = ({
 }: AttributePointSectionProps) => {
   if (!hasAbilityPoint) {
     return (
-      <div className="text-sm text-gray-600 mb-4 panel p-3">
+      <div className="text-sm text-(--muted) mb-4 panel p-3">
         No attribute points available at this level.
       </div>
     );
@@ -49,7 +49,7 @@ export const AttributePointSection = ({
           selectedClassData={selectedClassData}
         />
       ) : (
-        <div className="text-sm text-gray-600">Loading attributes…</div>
+        <div className="text-sm text-(--muted)">Loading attributes…</div>
       )}
       {hasUnspent && (
         <div className="mt-2 text-xs text-red-600">
