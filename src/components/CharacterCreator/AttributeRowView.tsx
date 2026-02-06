@@ -116,9 +116,9 @@ export function AttributeRow({
         title={attrEffectDesc}
         className={`w-20 text-center font-mono text-sm rounded ${
           modifier > 0
-            ? 'bg-green-100 text-green-700'
+            ? 'bg-[#d6e2dc] text-[#22524b]'
             : modifier < 0
-              ? 'bg-red-100 text-red-700'
+              ? 'bg-[#e5d7d1] text-[#752b20]'
               : ''
         }`}
       >

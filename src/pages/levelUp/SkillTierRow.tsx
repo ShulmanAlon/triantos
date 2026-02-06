@@ -49,11 +49,11 @@ export const SkillTierRow = ({
           <span
             className={`rounded-full px-2 py-0.5 font-semibold uppercase tracking-wide ${
               statusLabel === 'Available'
-                ? 'bg-green-100 text-green-700'
+                ? 'bg-[#d6e2dc] text-[#22524b]'
                 : statusLabel === 'Locked'
                 ? 'bg-yellow-100 text-yellow-700'
                 : statusLabel === 'Ineligible'
-                ? 'bg-red-100 text-red-700'
+                ? 'bg-[#e5d7d1] text-[#752b20]'
                 : 'bg-gray-100 text-gray-700'
             }`}
           >
@@ -73,7 +73,7 @@ export const SkillTierRow = ({
               {prereqLabels.map((req, idx) => (
                 <li
                   key={idx}
-                  className={req.met ? 'text-green-600' : 'text-red-600'}
+                  className={req.met ? 'text-[#22524b]' : 'text-[#752b20]'}
                 >
                   {req.label}
                 </li>

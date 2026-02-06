@@ -21,11 +21,11 @@ export function Button({
     'rounded-lg px-4 py-2 text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--accent)/40 focus-visible:ring-offset-2 active:translate-y-[1px]';
   const variantClasses = {
     primary:
-      'bg-(--accent) text-white hover:bg-(--accent-dark) shadow-[0_6px_12px_rgba(15,123,108,0.22)] border border-(--accent-dark)/20',
+      'bg-(--accent) text-white hover:bg-(--accent-dark) shadow-[0_6px_12px_rgba(48,115,106,0.22)] border border-(--accent-dark)/20',
     outline:
-      'border border-black/10 text-(--ink) hover:bg-black/5',
+      'border border-black/10 text-(--ink) bg-black/5 hover:bg-black/10',
     destructive:
-      'bg-(--warn) text-white hover:bg-[#8d2f1f] shadow-[0_6px_12px_rgba(179,64,42,0.2)] border border-[#8d2f1f]/30',
+      'bg-(--warn) text-white hover:bg-[#5e221a] shadow-[0_6px_12px_rgba(117,43,32,0.22)] border border-[#5e221a]/30',
   }[variant];
 
   return (

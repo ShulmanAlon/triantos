@@ -8,10 +8,10 @@
     --paper: #f7f4ee;
     --panel: #fffaf0;
     --panel-opaque: rgba(255, 250, 240, 0.9);
-    --accent: #0f7b6c;
-    --accent-dark: #0a5a50;
-    --accent-soft: #cde9e4;
-    --warn: #b3402a;
+    --accent: #30736a;
+    --accent-dark: #255c54;
+    --accent-soft: #cfe4df;
+    --warn: #752b20;
     --shadow: 0 12px 30px rgba(19, 19, 16, 0.12);
   }
 

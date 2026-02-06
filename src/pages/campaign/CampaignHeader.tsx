@@ -73,7 +73,7 @@ export const CampaignHeader = ({
                 </Button>
               )}
               <Button
-                variant="primary"
+                variant="outline"
                 onClick={onOpenHandbook}
                 className="w-full justify-center"
               >
