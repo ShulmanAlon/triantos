@@ -10,7 +10,15 @@ export default function CampaignHandbookPage() {
   const navigate = useNavigate();
   const user = useCurrentUser();
 
-  const [campaign, setCampaign] = useState<any>(null);
+  type CampaignMember = { user_id: string };
+  type CampaignData = {
+    campaign_id: string;
+    owner_id: string;
+    members: CampaignMember[];
+    name: string;
+  };
+
+  const [campaign, setCampaign] = useState<CampaignData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -21,7 +29,7 @@ export default function CampaignHandbookPage() {
 
       const { data, error } = await supabase
         .from(TABLES.DASHBOARD_CAMPAIGNS)
-        .select('campaign_id, owner_id, members')
+        .select('campaign_id, owner_id, members, name')
         .eq('campaign_id', campaignId)
         .maybeSingle();
 
@@ -31,7 +39,7 @@ export default function CampaignHandbookPage() {
         return;
       }
 
-      const isMember = data.members.some((m: any) => m.user_id === user.id);
+      const isMember = data.members.some((m: CampaignMember) => m.user_id === user.id);
       const isOwner = data.owner_id === user.id;
       const isAdmin = user.role === USER_ROLES.ADMIN;
 

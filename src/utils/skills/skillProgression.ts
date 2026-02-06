@@ -1,5 +1,5 @@
 import { Attribute } from '@/types/attributes';
-import { ClassId, ClassLevel, GameClass } from '@/types/gameClass';
+import { ClassId, GameClass } from '@/types/gameClass';
 import {
   CharacterSkillSelection,
   LevelUpBucket,

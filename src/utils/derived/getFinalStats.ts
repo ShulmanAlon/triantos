@@ -15,7 +15,7 @@ import { buildMeleeAttackStatBlock } from './buildMeleeAttackStatBlock';
 import { buildRangedAttackStatBlock, RangedType } from './buildRangedAttackStatBlock';
 import { StatModifier } from '@/types/modifiers';
 import { EquipmentACContext } from './buildACStatBlock';
-import { MeleeTypes } from '@/config/constants';
+import { MeleeTypes, ProficiencyId } from '@/config/constants';
 
 export function getFinalStats(
   gameClass: GameClass,
@@ -26,15 +26,22 @@ export function getFinalStats(
   equipmentModifiers: StatModifier[] = [],
   equipmentContext?: {
     ac?: EquipmentACContext;
-    melee?: { id: MeleeTypes; label: string; requiredProficiencyId?: string };
-    ranged?: { id: RangedType; label: string; requiredProficiencyId?: string };
+    melee?: {
+      id: MeleeTypes;
+      label: string;
+      requiredProficiencyId?: ProficiencyId;
+    };
+    ranged?: {
+      id: RangedType;
+      label: string;
+      requiredProficiencyId?: ProficiencyId;
+    };
   },
 ): FinalCharacterStats {
   const base = getBaseDerivedStats(gameClass, attributes, level);
 
   const skillEffects = getCharacterEffects(skillSelections, skillEntities);
   const derivedFromSkills = interpretEffects(skillEffects);
-  const derivedFromEquipment = interpretEffects(equipmentModifiers);
   const derived = interpretEffects([...skillEffects, ...equipmentModifiers]);
   const hpBlock = buildHPStatBlock(gameClass, attributes, level, derived);
   const tempHPBlock = buildTempHPStatBlock(derived);

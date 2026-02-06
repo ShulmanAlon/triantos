@@ -20,7 +20,7 @@ function App() {
     <LanguageProvider>
       <ToastProvider>
         <Router>
-          <main className="w-full max-w-screen-lg mx-auto px-4 pb-10">
+          <main className="w-full max-w-5xl mx-auto px-4 pb-10">
             <Header />
             <Routes>
             <Route path="/" element={<LandingPage />} />

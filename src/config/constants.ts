@@ -68,8 +68,7 @@ export const STAT_TARGETS = [
   'piloting_dodge',
 ] as const;
 
-const FLAG_IDS = ['meleeArmorPiercer'] as const;
-type FlagId = (typeof FLAG_IDS)[number];
+export type FlagId = 'meleeArmorPiercer';
 export type FlagTarget = `flag.${FlagId}`;
 
 export type StatTarget =
@@ -79,24 +78,19 @@ export type StatTarget =
   | WeaponProficiencyTarget
   | FlagTarget;
 
-const WEAPON_PROFICIENCY_IDS = [
-  'basicWeapons',
-  'rangedAdvancedWeapons',
-  'rangedHeavyWeapons',
-  'rangedMounted',
-  'melee2hWeapons',
-  'meleeEnergyWeapons',
-] as const;
-type WeaponProficiencyId = (typeof WEAPON_PROFICIENCY_IDS)[number];
+export type WeaponProficiencyId =
+  | 'basicWeapons'
+  | 'rangedAdvancedWeapons'
+  | 'rangedHeavyWeapons'
+  | 'rangedMounted'
+  | 'melee2hWeapons'
+  | 'meleeEnergyWeapons';
 export type WeaponProficiencyTarget = `proficiency.${WeaponProficiencyId}`;
-export type { WeaponProficiencyId };
 
-export const ARMOR_PROFICIENCY_IDS = [
-  'armorHeavy',
-  'armorLight',
-  'armorPower',
-  'armorUnarmored',
-  'shieldFortress',
-] as const;
-export type ArmorProficiencyId = (typeof ARMOR_PROFICIENCY_IDS)[number];
+export type ArmorProficiencyId =
+  | 'armorHeavy'
+  | 'armorLight'
+  | 'armorPower'
+  | 'armorUnarmored'
+  | 'shieldFortress';
 export type ProficiencyId = WeaponProficiencyId | ArmorProficiencyId;

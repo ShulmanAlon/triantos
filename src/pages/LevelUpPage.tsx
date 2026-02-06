@@ -201,7 +201,7 @@ export default function CharacterLevelUpPage() {
   const handleAttributeChange = (
     attr: Attribute,
     newValue: number,
-    poolDelta: number
+    _poolDelta: number
   ) => {
     if (!character) return;
     const nextAttributes = { ...attributes, [attr]: newValue };

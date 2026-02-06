@@ -17,7 +17,7 @@ import { buildSkillSummary } from '@/utils/domain/skills';
 import { getAcquiredSkillSelectionsUpToLevel } from '@/utils/skills/skillProgression';
 import EquipmentLoadoutModal from '@/components/EquipmentLoadoutModal';
 import { allItems } from '@/data/items/allItems';
-import { EquipmentLoadout, EquipmentLoadouts, EquipmentSlotKey } from '@/types/characters';
+import { EquipmentLoadouts, EquipmentSlotKey } from '@/types/characters';
 import { StatModifier } from '@/types/modifiers';
 import { buildDamageBreakdown } from '@/utils/domain/modifiers';
 import {
@@ -25,7 +25,6 @@ import {
   normalizeLoadouts,
 } from '@/utils/domain/loadouts';
 import { useToast } from '@/context/ToastContext';
-import { SkillId } from '@/types/skills';
 import { ProficiencyId } from '@/config/constants';
 import {
   getArmorType,
@@ -60,7 +59,10 @@ export const CharacterSheet = () => {
       character.campaign_owner_id === user.id ||
       user.role === USER_ROLES.ADMIN);
 
-  const progressionBuckets = character?.progression?.buckets ?? [];
+  const progressionBuckets = useMemo(
+    () => character?.progression?.buckets ?? [],
+    [character?.progression]
+  );
 
   const skillSelections = useMemo(() => {
     if (!character) return [];

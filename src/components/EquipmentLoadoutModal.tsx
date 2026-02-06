@@ -7,7 +7,6 @@ import {
 } from '@/types/characters';
 import { GameItem } from '@/types/items';
 import { Button } from './ui/Button';
-import { ProficiencyId } from '@/config/constants';
 import { getProficiencyToggleKey } from '@/utils/domain/modifiers';
 
 type Props = {

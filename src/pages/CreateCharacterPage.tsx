@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AttributeAllocator } from '@/components/CharacterCreator/AttributeAllocatorView';
 import { CharacterNameForm } from '@/components/CharacterCreator/CharacterNameFormView';
