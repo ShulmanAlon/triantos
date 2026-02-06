@@ -2,8 +2,6 @@ import { useSession } from '@/hooks/useSession';
 import { LanguageSelector } from '../LanguageSelector';
 import { LogoutButton } from '../Auth/LogoutButton';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
-import { Button } from '../ui/Button';
-import { finalStats } from '@/data/mockDataTests';
 
 export const Header = () => {
   const { session } = useSession();
@@ -17,16 +15,6 @@ export const Header = () => {
 
   return (
     <header className="w-full flex flex-wrap gap-3 justify-between items-center px-4 py-3 mt-6 mb-6 card">
-      <div>
-        <Button //TODO remove after tests
-          type="button"
-          onClick={function (): void {
-            console.log('final stats: ', finalStats);
-          }}
-        >
-          Test
-        </Button>
-      </div>
       <div className="text-sm text-(--muted)">
         <span className={session ? 'font-medium' : 'italic text-gray-500'}>
           {displayName}

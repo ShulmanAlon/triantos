@@ -60,18 +60,16 @@ export const AttributeAllocator: React.FC<AttributeAllocatorProps> = ({
           {ATTRIBUTE_ORDER.map((attr) => (
             <AttributeRow
               key={attr}
-              attr={attr as Attribute}
-              value={attributes[attr as Attribute]}
-              baseline={baseline[attr as Attribute]}
+              attr={attr}
+              value={attributes[attr]}
+              baseline={baseline[attr]}
               pool={pool}
               isLevelUpMode={isLevelUpMode}
               usedPoints={usedPoints}
               hasAbilityPointThisLevel={hasAbilityPointThisLevel}
               showNextCost={showNextCost}
               onChange={onChange}
-              requiredValue={
-                selectedClassData?.primaryAttributes?.[attr as Attribute]
-              }
+              requiredValue={selectedClassData?.primaryAttributes?.[attr]}
             />
           ))}
         </tbody>

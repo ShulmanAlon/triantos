@@ -8,6 +8,10 @@ export function CampaignListItem({
 }: {
   campaign: CampaignInterface;
 }) {
+  const memberNames = campaign.members
+    .filter((member) => member.user_id !== campaign.owner_id)
+    .map((member) => member.username);
+
   return (
     <Link
       to={`/campaign/${campaign.campaign_id}`}
@@ -28,10 +32,7 @@ export function CampaignListItem({
         </p>
         <p className="text-sm text-gray-600">
           Members:{' '}
-          {campaign.members
-            .filter((m) => m.user_id !== campaign.owner_id)
-            .map((m) => m.username)
-            .join(', ') || 'None'}
+          {memberNames.length > 0 ? memberNames.join(', ') : 'None'}
         </p>
       </div>
     </Link>

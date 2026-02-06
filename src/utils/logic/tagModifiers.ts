@@ -5,7 +5,7 @@ import { CharacterDerivedStats } from '@/types/characters';
  * Example: ['melee', 'energy', '2h'] ->
  *   ['melee', 'melee.energy', 'melee.energy.2h']
  */
-function generateTagCombos(tags: string[]): string[] {
+const generateTagCombos = (tags: string[]): string[] => {
   const combos: string[] = [];
 
   for (let i = 1; i <= tags.length; i++) {
@@ -13,7 +13,7 @@ function generateTagCombos(tags: string[]): string[] {
   }
 
   return combos;
-}
+};
 
 /**
  * Get cumulative modifier for all matching tag combinations
@@ -23,6 +23,7 @@ export function getTagBasedModifier(
   tags: string[],
   derived: CharacterDerivedStats
 ): number {
+  if (tags.length === 0) return 0;
   const tagCombos = generateTagCombos(tags);
 
   return tagCombos.reduce((sum, combo) => {

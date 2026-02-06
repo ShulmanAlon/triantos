@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from './ui/Button';
 import { CharacterPreview, CharacterWithCampaign } from '@/types/characters';
 
@@ -18,6 +18,13 @@ export default function EditCharacterModal({
   const [name, setName] = useState(character.name);
   const [playerName, setPlayerName] = useState(character.player_name);
   const [imageUrl, setImageUrl] = useState(character.image_url);
+
+  useEffect(() => {
+    if (!open) return;
+    setName(character.name);
+    setPlayerName(character.player_name);
+    setImageUrl(character.image_url);
+  }, [open, character]);
 
   if (!open) return null;
 

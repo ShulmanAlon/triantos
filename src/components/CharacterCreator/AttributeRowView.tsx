@@ -53,6 +53,14 @@ export function AttributeRow({
     : value > min;
 
   const modifier = getModifier(value);
+  const handleDecrease = () => {
+    if (!canDecrease) return;
+    onChange(attr, prevValue, refund);
+  };
+  const handleIncrease = () => {
+    if (!canIncrease) return;
+    onChange(attr, nextValue, isLevelUpMode ? 1 : -cost);
+  };
 
   return (
     <tr className="align-middle">
@@ -75,7 +83,7 @@ export function AttributeRow({
             className={
               'w-8 h-8 border rounded-lg border-gray-300 flex items-center justify-center'
             }
-            onClick={() => canDecrease && onChange(attr, prevValue, refund)}
+            onClick={handleDecrease}
             disabled={!canDecrease}
           >
             -
@@ -83,7 +91,7 @@ export function AttributeRow({
 
           {/* Value */}
           <div
-            className={`w-[30px] h-8 flex items-center justify-center font-mono text-sm ${
+            className={`w-7.5 h-8 flex items-center justify-center font-mono text-sm ${
               requiredValue !== undefined && value < requiredValue
                 ? 'text-red-600'
                 : ''
@@ -97,10 +105,7 @@ export function AttributeRow({
             className={
               'w-8 h-8 border rounded-lg border-gray-300 flex items-center justify-center'
             }
-            onClick={() => {
-              if (!canIncrease) return;
-              onChange(attr, nextValue, isLevelUpMode ? 1 : -cost);
-            }}
+            onClick={handleIncrease}
             disabled={!canIncrease}
           >
             +
@@ -115,8 +120,8 @@ export function AttributeRow({
           modifier > 0
             ? 'bg-green-100 text-green-700'
             : modifier < 0
-            ? 'bg-red-100 text-red-700'
-            : ''
+              ? 'bg-red-100 text-red-700'
+              : ''
         }`}
       >
         {modifier > 0 ? `+${modifier}` : modifier}

@@ -1,3 +1,5 @@
+import { ChangeEvent } from 'react';
+
 type Props = {
   label: string;
   value: string;
@@ -10,15 +12,21 @@ export const LabeledInput: React.FC<Props> = ({
   value,
   onChange,
   disabled,
-}) => (
-  <div className="mb-4">
-    <label className="block mb-1 font-medium">{label}</label>
-    <input
-      type="text"
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      disabled={disabled}
-      className="border px-2 py-1 rounded w-full"
-    />
-  </div>
-);
+}) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    onChange(event.target.value);
+  };
+
+  return (
+    <div className="mb-4">
+      <label className="block mb-1 font-medium">{label}</label>
+      <input
+        type="text"
+        value={value}
+        onChange={handleChange}
+        disabled={disabled}
+        className="border px-2 py-1 rounded w-full"
+      />
+    </div>
+  );
+};

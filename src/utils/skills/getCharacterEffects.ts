@@ -6,9 +6,11 @@ export function getCharacterEffects(
   skillSelections: CharacterSkillSelection[],
   skillEntities: SkillEntity[]
 ): StatModifier[] {
+  const skillsById = new Map(skillEntities.map((skill) => [skill.id, skill]));
+
   return skillSelections
     .map(({ skillId, tier }) => {
-      const skill = skillEntities.find((s) => s.id === skillId);
+      const skill = skillsById.get(skillId);
       if (!skill) return [];
       return skill.tiers
         .filter((t) => t.tier <= tier)

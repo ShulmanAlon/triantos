@@ -1,6 +1,7 @@
 import { CharacterDerivedStats } from '@/types/characters';
 import { StatModifier } from '@/types/modifiers';
 import { ActiveAbilityEffect } from '@/types/skills';
+import { isDiceRoll } from '@/types/modifiers';
 
 export function interpretEffects(
   effects: StatModifier[]
@@ -50,7 +51,19 @@ export function interpretEffects(
         }
         break;
 
-      // You can handle 'multiply' or others later
+      case 'multiply':
+        if (typeof value === 'number') {
+          const current = derived.modifiers[target];
+          const base = typeof current === 'number' ? current : 0;
+          derived.modifiers[target] = base * value;
+        }
+        break;
+
+      default:
+        if (isDiceRoll(value)) {
+          derived.modifiers[target] = value;
+        }
+        break;
     }
   }
 

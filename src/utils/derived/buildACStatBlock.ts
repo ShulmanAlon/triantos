@@ -16,12 +16,30 @@ export type EquipmentACContext = {
   shieldEquipped?: boolean;
 };
 
-const skillLabelMap: Record<string, string> = {
+const SKILL_LABELS: Record<string, string> = {
   ac_with_unarmored: 'Unarmored Skill',
   ac_with_lightArmor: 'Light Armor Skill',
   ac_with_heavyArmor: 'Heavy Armor Skill',
   ac_with_powerArmor: 'Power Armor Skill',
   ac_with_shield: 'Shield Skill',
+};
+
+const sumModifiers = (mods: StatModifier[], target: string): number =>
+  mods
+    .filter((mod) => mod.target === target && typeof mod.value === 'number')
+    .reduce((sum, mod) => sum + (mod.value as number), 0);
+
+const buildArmorLabel = (armorType?: string): string => {
+  switch (armorType) {
+    case 'lightArmor':
+      return 'Light Armor';
+    case 'heavyArmor':
+      return 'Heavy Armor';
+    case 'powerArmor':
+      return 'Power Armor';
+    default:
+      return 'Unarmored';
+  }
 };
 
 export function buildACStatBlock(
@@ -48,16 +66,8 @@ export function buildACStatBlock(
   const shieldSkillBonus =
     (skillDerived ? getModifierValue(skillDerived, 'ac_with_shield') : 0) +
     shieldTagBonus;
-  const shieldBaseBonus = equipmentModifiers
-    .filter(
-      (mod) => mod.target === 'ac_shield_base' && typeof mod.value === 'number'
-    )
-    .reduce((sum, mod) => sum + (mod.value as number), 0);
-  const shieldMagicBonus = equipmentModifiers
-    .filter(
-      (mod) => mod.target === 'ac_shield_magic' && typeof mod.value === 'number'
-    )
-    .reduce((sum, mod) => sum + (mod.value as number), 0);
+  const shieldBaseBonus = sumModifiers(equipmentModifiers, 'ac_shield_base');
+  const shieldMagicBonus = sumModifiers(equipmentModifiers, 'ac_shield_magic');
   const shieldEnabled = equipmentContext
     ? !!equipmentContext.shieldEquipped
     : derived.toggles['ac_with_heavyArmor'] ||
@@ -79,17 +89,8 @@ export function buildACStatBlock(
     const armorTagBonus = getTagBasedModifier('ac', ['armor', armor.id], derived);
     const armorSkillBonus =
       (skillDerived ? getModifierValue(skillDerived, armorKey) : 0) + armorTagBonus;
-    const armorBaseBonus = equipmentModifiers
-      .filter(
-        (mod) => mod.target === 'ac_armor_base' && typeof mod.value === 'number'
-      )
-      .reduce((sum, mod) => sum + (mod.value as number), 0);
-    const armorMagicBonus = equipmentModifiers
-      .filter(
-        (mod) =>
-          mod.target === 'ac_armor_magic' && typeof mod.value === 'number'
-      )
-      .reduce((sum, mod) => sum + (mod.value as number), 0);
+    const armorBaseBonus = sumModifiers(equipmentModifiers, 'ac_armor_base');
+    const armorMagicBonus = sumModifiers(equipmentModifiers, 'ac_armor_magic');
     const armorBonus = armorSkillBonus + armorBaseBonus + armorMagicBonus;
 
     if (!armorEnabled && armorBonus === 0) continue;
@@ -113,7 +114,7 @@ export function buildACStatBlock(
     }
     if (armorEnabled) {
       baseComponents.push({
-        source: skillLabelMap[armorKey] ?? 'Armor Skill Bonus',
+        source: SKILL_LABELS[armorKey] ?? 'Armor Skill Bonus',
         value: armorSkillBonus,
       });
     }
@@ -139,7 +140,7 @@ export function buildACStatBlock(
         });
       }
       shieldComponents.push({
-        source: skillLabelMap['ac_with_shield'],
+        source: SKILL_LABELS['ac_with_shield'],
         value: shieldSkillBonus,
       });
 
@@ -158,7 +159,7 @@ export function buildACStatBlock(
   if (equipmentContext?.armorType) {
     const armorLabel =
       armorTypes.find((armor) => armor.id === equipmentContext.armorType)
-        ?.label ?? 'Unarmored';
+        ?.label ?? buildArmorLabel(equipmentContext.armorType);
     const preferred = equipmentContext.shieldEquipped
       ? `${armorLabel} + Shield`
       : armorLabel;

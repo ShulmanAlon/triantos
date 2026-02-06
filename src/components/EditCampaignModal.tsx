@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from './ui/Button';
 import { CampaignInterface } from '@/types/campaign';
 
@@ -18,6 +18,13 @@ export default function EditCampaignModal({
   const [name, setName] = useState(campaign.name);
   const [description, setDescription] = useState(campaign.description);
   const [imageUrl, setImageUrl] = useState(campaign.image_url);
+
+  useEffect(() => {
+    if (!open) return;
+    setName(campaign.name);
+    setDescription(campaign.description);
+    setImageUrl(campaign.image_url);
+  }, [open, campaign]);
 
   if (!open) return null;
 

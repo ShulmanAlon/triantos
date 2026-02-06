@@ -6,6 +6,8 @@ interface LoadingErrorWrapperProps {
   children: ReactNode;
 }
 
+const LOADING_DELAY_MS = 150;
+
 export function LoadingErrorWrapper({
   loading,
   error,
@@ -18,7 +20,7 @@ export function LoadingErrorWrapper({
       setShowLoading(false);
       return;
     }
-    const timer = setTimeout(() => setShowLoading(true), 150);
+    const timer = setTimeout(() => setShowLoading(true), LOADING_DELAY_MS);
     return () => clearTimeout(timer);
   }, [loading]);
 

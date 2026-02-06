@@ -17,6 +17,20 @@ import { StatModifier } from '@/types/modifiers';
 import { EquipmentACContext } from './buildACStatBlock';
 import { MeleeTypes, ProficiencyId } from '@/config/constants';
 
+type EquipmentContext = {
+  ac?: EquipmentACContext;
+  melee?: {
+    id: MeleeTypes;
+    label: string;
+    requiredProficiencyId?: ProficiencyId;
+  };
+  ranged?: {
+    id: RangedType;
+    label: string;
+    requiredProficiencyId?: ProficiencyId;
+  };
+};
+
 export function getFinalStats(
   gameClass: GameClass,
   attributes: Record<Attribute, number>,
@@ -24,19 +38,7 @@ export function getFinalStats(
   skillSelections: CharacterSkillSelection[],
   skillEntities: SkillEntity[],
   equipmentModifiers: StatModifier[] = [],
-  equipmentContext?: {
-    ac?: EquipmentACContext;
-    melee?: {
-      id: MeleeTypes;
-      label: string;
-      requiredProficiencyId?: ProficiencyId;
-    };
-    ranged?: {
-      id: RangedType;
-      label: string;
-      requiredProficiencyId?: ProficiencyId;
-    };
-  },
+  equipmentContext?: EquipmentContext,
 ): FinalCharacterStats {
   const base = getBaseDerivedStats(gameClass, attributes, level);
 

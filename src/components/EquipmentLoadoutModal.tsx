@@ -71,29 +71,40 @@ export default function EquipmentLoadoutModal({
     });
   };
 
+  const updateActiveLoadout = (
+    updater: (loadout: EquipmentLoadout) => EquipmentLoadout
+  ) => {
+    setLoadouts((prev) =>
+      prev.map((loadout) =>
+        loadout.id === selectedLoadoutId ? updater(loadout) : loadout
+      )
+    );
+  };
+
   const primaryWeaponId = activeLoadout?.items['weapon_primary'] ?? null;
   const primaryWeapon = weaponItems.find((i) => i.id === primaryWeaponId);
   const isTwoHanded = primaryWeapon?.tags.includes('2h') ?? false;
-  const armorItem = armorItems.find((i) => i.id === activeLoadout?.items['armor']);
-  const shieldItem = shieldItems.find((i) => i.id === activeLoadout?.items['shield']);
+  const armorItem = armorItems.find(
+    (i) => i.id === activeLoadout?.items['armor']
+  );
+  const shieldItem = shieldItems.find(
+    (i) => i.id === activeLoadout?.items['shield']
+  );
   const armorInvalid = armorItem && !isProficient(armorItem);
   const shieldInvalid = shieldItem && !isProficient(shieldItem);
 
   const updateLoadoutItem = (slot: EquipmentSlotKey, itemId: string | null) => {
-    setLoadouts((prev) =>
-      prev.map((loadout) => {
-        if (loadout.id !== selectedLoadoutId) return loadout;
-        const nextItems = { ...loadout.items, [slot]: itemId };
-        if (slot === 'weapon_primary' && itemId) {
-          const selected = weaponItems.find((i) => i.id === itemId);
-          if (selected?.tags.includes('2h')) {
-            nextItems['weapon_offhand'] = null;
-            nextItems['shield'] = null;
-          }
+    updateActiveLoadout((loadout) => {
+      const nextItems = { ...loadout.items, [slot]: itemId };
+      if (slot === 'weapon_primary' && itemId) {
+        const selected = weaponItems.find((i) => i.id === itemId);
+        if (selected?.tags.includes('2h')) {
+          nextItems['weapon_offhand'] = null;
+          nextItems['shield'] = null;
         }
-        return { ...loadout, items: nextItems };
-      })
-    );
+      }
+      return { ...loadout, items: nextItems };
+    });
   };
 
   const save = async () => {
@@ -118,13 +129,10 @@ export default function EquipmentLoadoutModal({
             className="border rounded px-2 py-1"
             value={activeLoadout?.name ?? ''}
             onChange={(e) =>
-              setLoadouts((prev) =>
-                prev.map((loadout) =>
-                  loadout.id === selectedLoadoutId
-                    ? { ...loadout, name: e.target.value }
-                    : loadout
-                )
-              )
+              updateActiveLoadout((loadout) => ({
+                ...loadout,
+                name: e.target.value,
+              }))
             }
             placeholder={selectedLoadoutId.replace('-', ' ') || 'Loadout'}
           />

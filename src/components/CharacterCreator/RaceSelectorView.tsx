@@ -1,4 +1,4 @@
-import React from 'react';
+import { ChangeEvent } from 'react';
 import { Race, RaceId } from '@/types/race';
 import { useLanguage } from '@/context/LanguageContext';
 import { uiLabels } from '@/i18n/ui';
@@ -32,6 +32,10 @@ export const RaceSelector: React.FC<RaceSelectorProps> = ({
     language
   );
   const restrictions = getRaceRestrictionsById(selectedRaceId, language);
+  const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
+    onChange(value ? (value as RaceId) : undefined);
+  };
   return (
     <div className="mb-6 space-y-3">
       {/* Race Dropdown */}
@@ -42,7 +46,7 @@ export const RaceSelector: React.FC<RaceSelectorProps> = ({
         <select
           className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
           value={selectedRaceId ?? ''}
-          onChange={(e) => onChange(e.target.value as RaceId)}
+          onChange={handleChange}
           disabled={isDisabled}
         >
           <option value="" disabled hidden>

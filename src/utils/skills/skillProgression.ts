@@ -318,6 +318,7 @@ export const validateLevelSkillSelections = ({
 
   const currentBucket = buckets.find((b) => b.level === level);
   const selections = currentBucket?.skillSelections ?? [];
+  const skillsById = new Map(skillEntities.map((skill) => [skill.id, skill]));
 
   const pool = getSkillPointPoolForLevel(gameClass, raceId, level);
   const used = getSkillPointUsageForLevel(selections);
@@ -349,7 +350,7 @@ export const validateLevelSkillSelections = ({
     }
     seen.add(key);
 
-    const skill = skillEntities.find((s) => s.id === selection.skillId);
+    const skill = skillsById.get(selection.skillId);
     if (!skill) {
       errors.push(`unknown skill ${selection.skillId}`);
       continue;
@@ -408,6 +409,7 @@ export const getInvalidSelectionsForLevel = ({
   const currentBucket = buckets.find((b) => b.level === level);
   const selections = currentBucket?.skillSelections ?? [];
   if (selections.length === 0) return invalid;
+  const skillsById = new Map(skillEntities.map((skill) => [skill.id, skill]));
 
   const acquired = getAcquiredSkillSelectionsUpToLevel(
     buckets,
@@ -418,7 +420,7 @@ export const getInvalidSelectionsForLevel = ({
   );
 
   for (const selection of selections) {
-    const skill = skillEntities.find((s) => s.id === selection.skillId);
+    const skill = skillsById.get(selection.skillId);
     if (!skill) {
       invalid.push({
         skillId: selection.skillId,

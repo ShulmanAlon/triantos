@@ -16,12 +16,11 @@ export function buildHPStatBlock(
   level: number,
   derived: CharacterDerivedStats
 ): StatBlock<number> {
-  const flatBonus = getModifierValue(derived, 'hp_flat');
-
   const conMod = getModifier(attributes.con);
   const base = Math.min(level, NAME_LEVEL) * gameClass.hpPerLevelToNine;
   const fixed = Math.max(level - NAME_LEVEL, 0) * gameClass.hpPerLevelFromTen;
   const con = Math.min(level, NAME_LEVEL) * conMod;
+  const flatBonus = getModifierValue(derived, 'hp_flat');
 
   const components: StatComponent[] = [
     { source: 'Base Class HP', value: base + fixed },

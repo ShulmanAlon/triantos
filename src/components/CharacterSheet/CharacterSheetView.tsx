@@ -17,6 +17,19 @@ import {
   FinalCharacterStats,
 } from '@/types/characters';
 import { getLoadoutDisplayName } from '@/utils/domain/loadouts';
+import { SkillSummary } from '@/utils/domain/skills';
+
+type EquipmentSummary = {
+  armorTypeLabel?: string;
+  rangedTypeLabel?: string;
+  meleeTypeLabel?: string;
+  showRangedSummary?: boolean;
+  showMeleeSummary?: boolean;
+  rangedDamageSummary?: string;
+  rangedDamageParts?: { label: string; value: string }[];
+  meleeDamageSummary?: string;
+  meleeDamageParts?: { label: string; value: string }[];
+};
 
 interface CharacterSheetProps {
   characterName: string;
@@ -31,25 +44,21 @@ interface CharacterSheetProps {
   onLoadoutSelect?: (loadoutId: string) => void;
   onLoadoutEdit?: (loadoutId: string) => void;
   finalStats?: FinalCharacterStats['final'];
-  equipmentSummary?: {
-    armorTypeLabel?: string;
-    rangedTypeLabel?: string;
-    meleeTypeLabel?: string;
-    showRangedSummary?: boolean;
-    showMeleeSummary?: boolean;
-    rangedDamageSummary?: string;
-    rangedDamageParts?: { label: string; value: string }[];
-    meleeDamageSummary?: string;
-    meleeDamageParts?: { label: string; value: string }[];
-  };
-  skills?: {
-    name: string;
-    tier: number;
-    source?: string;
-    totalDescription?: string;
-    skillDescription?: string;
-  }[];
+  equipmentSummary?: EquipmentSummary;
+  skills?: SkillSummary[];
 }
+
+const getStatValue = (block?: StatBlock<number>): number | null => {
+  if (!block) return null;
+  if (block.type === 'simple') return block.value;
+  if (!block.entries || block.entries.length === 0) return null;
+  const filtered = block.selectedLabels?.length
+    ? block.entries.filter((entry) =>
+        block.selectedLabels?.includes(entry.label)
+      )
+    : block.entries;
+  return Math.max(...filtered.map((entry) => entry.total));
+};
 
 export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
   characterName,
@@ -70,52 +79,6 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
   const { language } = useLanguage();
   const ui = uiLabels[language];
   if (!derived) return null;
-  const getStatValue = (block?: StatBlock<number>): number | null => {
-    if (!block) return null;
-    if (block.type === 'simple') return block.value;
-    if (!block.entries || block.entries.length === 0) return null;
-    const filtered = block.selectedLabels?.length
-      ? block.entries.filter((entry) =>
-          block.selectedLabels?.includes(entry.label)
-        )
-      : block.entries;
-    return Math.max(...filtered.map((entry) => entry.total));
-  };
-
-  const renderBreakdown = (block?: StatBlock<number>) => {
-    if (!block || block.type !== 'breakdown') return null;
-    return (
-      <details className="mt-2 text-xs text-(--muted)">
-        <summary className="cursor-pointer">Details</summary>
-        <div className="mt-2 space-y-2">
-          {block.entries.map((entry) => (
-            <div key={entry.label} className="rounded-lg bg-white/70 p-2">
-              <div className="text-(--ink) font-semibold">
-                {entry.label}: {entry.total}
-              </div>
-              <div className="mt-1 space-y-1">
-                {entry.components.map((component) => (
-                  <div
-                    key={`${entry.label}-${component.source}`}
-                    className="flex items-center justify-between"
-                  >
-                    <span>{component.source}</span>
-                    <span>
-                      {component.source === 'Base'
-                        ? component.value
-                        : component.value >= 0
-                        ? `+${component.value}`
-                        : component.value}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </details>
-    );
-  };
 
   return (
     <div className="mt-6 card p-6">
@@ -155,8 +118,6 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
           finalStats={finalStats}
           derived={derived}
           equipmentSummary={equipmentSummary}
-          getStatValue={getStatValue}
-          renderBreakdown={renderBreakdown}
         />
       )}
 
@@ -242,24 +203,10 @@ function CombatSummary({
   finalStats,
   derived,
   equipmentSummary,
-  getStatValue,
-  renderBreakdown,
 }: {
   finalStats: FinalCharacterStats['final'];
   derived: DerivedStats;
-  equipmentSummary?: {
-    armorTypeLabel?: string;
-    rangedTypeLabel?: string;
-    meleeTypeLabel?: string;
-    showRangedSummary?: boolean;
-    showMeleeSummary?: boolean;
-    rangedDamageSummary?: string;
-    rangedDamageParts?: { label: string; value: string }[];
-    meleeDamageSummary?: string;
-    meleeDamageParts?: { label: string; value: string }[];
-  };
-  getStatValue: (block?: StatBlock<number>) => number | null;
-  renderBreakdown: (block?: StatBlock<number>) => React.ReactNode;
+  equipmentSummary?: EquipmentSummary;
 }) {
   return (
     <div className="mt-4 panel p-4">
@@ -272,7 +219,7 @@ function CombatSummary({
           <div className="text-2xl font-bold">
             {getStatValue(finalStats.hpBreakdown) ?? derived.hp}
           </div>
-          {renderBreakdown(finalStats.hpBreakdown)}
+          <StatBreakdown block={finalStats.hpBreakdown} />
         </div>
         <div className="rounded-xl bg-white/80 p-3 border border-black/5">
           <div className="text-xs uppercase tracking-wide text-(--muted)">
@@ -281,7 +228,7 @@ function CombatSummary({
           <div className="text-2xl font-bold">
             {getStatValue(finalStats.hpTemp) ?? 0}
           </div>
-          {renderBreakdown(finalStats.hpTemp)}
+          <StatBreakdown block={finalStats.hpTemp} />
         </div>
         <div className="rounded-xl bg-white/80 p-3 border border-black/5">
           <div className="text-xs uppercase tracking-wide text-(--muted)">
@@ -295,7 +242,7 @@ function CombatSummary({
               {equipmentSummary.armorTypeLabel}
             </div>
           )}
-          {renderBreakdown(finalStats.ac)}
+          <StatBreakdown block={finalStats.ac} />
         </div>
         {equipmentSummary?.showMeleeSummary && (
           <div className="rounded-xl bg-white/80 p-3 border border-black/5">
@@ -310,7 +257,7 @@ function CombatSummary({
                 {equipmentSummary.meleeTypeLabel}
               </div>
             )}
-            {renderBreakdown(finalStats.meleeAttack)}
+            <StatBreakdown block={finalStats.meleeAttack} />
           </div>
         )}
         {equipmentSummary?.showMeleeSummary && (
@@ -323,7 +270,7 @@ function CombatSummary({
             </div>
             {equipmentSummary.meleeDamageParts &&
               equipmentSummary.meleeDamageParts.length > 0 && (
-                <details className="mt-2 text-xs text-(--muted)">
+                <details className="mt-2 text-xs text-(--muted)" open>
                   <summary className="cursor-pointer">Details</summary>
                   <div className="mt-2 space-y-1">
                     {equipmentSummary.meleeDamageParts.map((part, idx) => (
@@ -353,7 +300,7 @@ function CombatSummary({
                 {equipmentSummary.rangedTypeLabel}
               </div>
             )}
-            {renderBreakdown(finalStats.rangedAttack)}
+            <StatBreakdown block={finalStats.rangedAttack} />
           </div>
         )}
         {equipmentSummary?.showRangedSummary && (
@@ -366,7 +313,7 @@ function CombatSummary({
             </div>
             {equipmentSummary.rangedDamageParts &&
               equipmentSummary.rangedDamageParts.length > 0 && (
-                <details className="mt-2 text-xs text-(--muted)">
+                <details className="mt-2 text-xs text-(--muted)" open>
                   <summary className="cursor-pointer">Details</summary>
                   <div className="mt-2 space-y-1">
                     {equipmentSummary.rangedDamageParts.map((part, idx) => (
@@ -447,5 +394,40 @@ function LoadoutList({
         ))}
       </ul>
     </div>
+  );
+}
+
+function StatBreakdown({ block }: { block?: StatBlock<number> }) {
+  if (!block || block.type !== 'breakdown') return null;
+  return (
+    <details className="mt-2 text-xs text-(--muted)" open>
+      <summary className="cursor-pointer">Details</summary>
+      <div className="mt-2 space-y-2">
+        {block.entries.map((entry) => (
+          <div key={entry.label} className="rounded-lg bg-white/70 p-2">
+            <div className="text-(--ink) font-semibold">
+              {entry.label}: {entry.total}
+            </div>
+            <div className="mt-1 space-y-1">
+              {entry.components.map((component) => (
+                <div
+                  key={`${entry.label}-${component.source}`}
+                  className="flex items-center justify-between"
+                >
+                  <span>{component.source}</span>
+                  <span>
+                    {component.source === 'Base'
+                      ? component.value
+                      : component.value >= 0
+                      ? `+${component.value}`
+                      : component.value}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </details>
   );
 }

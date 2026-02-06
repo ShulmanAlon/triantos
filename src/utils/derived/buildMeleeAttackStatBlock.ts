@@ -29,9 +29,8 @@ export function buildMeleeAttackStatBlock(
   const types = selectedType ? [selectedType.id] : MELEE_TYPES;
 
   for (const type of types) {
-    const lowerType = type.toLowerCase();
-    const attackKey = `attack_bonus_melee_${lowerType}`;
-    const tagBonus = getTagBasedModifier('attack_bonus', ['melee', lowerType], derived);
+    const attackKey = `attack_bonus_melee_${type}`;
+    const tagBonus = getTagBasedModifier('attack_bonus', ['melee', type], derived);
     const typeBonus = getModifierValue(derived, attackKey) + tagBonus;
 
     const components: StatComponent[] = [

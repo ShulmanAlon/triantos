@@ -1,8 +1,8 @@
+import { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useSession } from '@/hooks/useSession';
-import { JSX } from 'react';
 
-export const RequireAuth = ({ children }: { children: JSX.Element }) => {
+export const RequireAuth = ({ children }: { children: ReactNode }) => {
   const { session, isLoading } = useSession();
 
   if (isLoading) {

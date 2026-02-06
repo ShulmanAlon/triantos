@@ -1,4 +1,4 @@
-import React from 'react';
+import { ChangeEvent } from 'react';
 import { ClassId, GameClass } from '@/types/gameClass';
 import { getRaceNameById } from '@/utils/raceUtils';
 import { Attribute } from '@/types/attributes';
@@ -9,7 +9,7 @@ import { classDictionary } from '@/i18n/classes';
 import {
   getAllowedRacesByClassId,
   getPrimaryAttributesByClassId,
-} from '../../utils/classUtils';
+} from '@/utils/classUtils';
 
 interface ClassSelectorProps {
   classOptions: GameClass[];
@@ -37,6 +37,10 @@ export const ClassSelector: React.FC<ClassSelectorProps> = ({
 
   const classDescription = localized?.description;
   const specialAbilities = localized?.specialAbilities;
+  const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
+    onChange(value ? (value as ClassId) : undefined);
+  };
 
   return (
     <div className="mb-6 space-y-3">
@@ -48,7 +52,7 @@ export const ClassSelector: React.FC<ClassSelectorProps> = ({
         <select
           className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
           value={selectedClassId ?? ''}
-          onChange={(e) => onChange(e.target.value as ClassId)}
+          onChange={handleChange}
           disabled={isDisabled}
         >
           <option value="" disabled hidden>
