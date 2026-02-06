@@ -5,7 +5,6 @@ import { getClassById } from '@/utils/classUtils';
 import { getBaseDerivedStats } from '@/utils/derived/getBaseDerivedStats';
 import { getFinalStats } from '@/utils/derived/getFinalStats';
 import { Button } from '@/components/ui/Button';
-import EditCharacterModal from '@/components/EditCharacterModal';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { getModifier } from '@/utils/modifier';
@@ -32,31 +31,10 @@ import {
   getWeaponDamageTag,
   getWeaponTypeLabel,
 } from '@/utils/domain/weapons';
-import { ReactNode } from 'react';
 import { GameItem } from '@/types/items';
 import { AttributeMap } from '@/types/attributes';
-
-type CharacterSheetHeaderProps = {
-  canEdit: boolean;
-  visible: boolean;
-  onEdit: () => void;
-  onBack: () => void;
-  onToggleVisibility: () => void;
-};
-
-type CharacterSheetModalsProps = {
-  canEdit: boolean;
-  character: CharacterWithCampaign;
-  showEditModal: boolean;
-  showLevelDownModal: boolean;
-  showDeleteModal: boolean;
-  onEditClose: () => void;
-  onEditSave: (updated: Partial<CharacterWithCampaign>) => Promise<void>;
-  onLevelDownClose: () => void;
-  onLevelDownConfirm: () => void;
-  onDeleteClose: () => void;
-  onDeleteConfirm: () => void;
-};
+import { CharacterSheetHeader } from '@/pages/characterSheet/CharacterSheetHeader';
+import { CharacterSheetModals } from '@/pages/characterSheet/CharacterSheetModals';
 
 const getArmorTypeLabel = (
   armorType: ReturnType<typeof getArmorType>
@@ -105,116 +83,6 @@ const buildWeaponDamageBreakdown = (
   });
 };
 
-const CharacterSheetHeader = ({
-  canEdit,
-  visible,
-  onEdit,
-  onBack,
-  onToggleVisibility,
-}: CharacterSheetHeaderProps) => (
-  <div className="card p-4 flex flex-wrap gap-2 items-center justify-between">
-    <div className="flex flex-wrap gap-2">
-      {canEdit && (
-        <Button variant="outline" onClick={onEdit}>
-          ✏️ Edit Character
-        </Button>
-      )}
-      <Button variant="outline" onClick={onBack}>
-        ← Back to Campaign
-      </Button>
-    </div>
-    {canEdit && (
-      <Button variant="outline" onClick={onToggleVisibility}>
-        {visible ? '👁️ Hide from other players' : '🙈 Make visible to players'}
-      </Button>
-    )}
-  </div>
-);
-
-const CharacterSheetModals = ({
-  canEdit,
-  character,
-  showEditModal,
-  showLevelDownModal,
-  showDeleteModal,
-  onEditClose,
-  onEditSave,
-  onLevelDownClose,
-  onLevelDownConfirm,
-  onDeleteClose,
-  onDeleteConfirm,
-}: CharacterSheetModalsProps) => {
-  const levelDownDescription = character
-    ? `This will remove all level ${character.level} progression choices. Continue?`
-    : 'This will remove the most recent level progression choices. Continue?';
-
-  return (
-    <>
-      <EditCharacterModal
-        open={showEditModal}
-        character={character}
-        onClose={onEditClose}
-        onSave={onEditSave}
-      />
-      {canEdit && (
-        <ConfirmModal
-          open={showLevelDownModal}
-          title="Level Down"
-          description={levelDownDescription}
-          confirmLabel="Level Down"
-          confirmVariant="destructive"
-          onCancel={onLevelDownClose}
-          onConfirm={onLevelDownConfirm}
-        />
-      )}
-      <ConfirmModal
-        open={showDeleteModal}
-        title="Delete Character"
-        description="Are you sure you want to delete this character?"
-        confirmLabel="Delete"
-        confirmVariant="destructive"
-        onCancel={onDeleteClose}
-        onConfirm={onDeleteConfirm}
-      />
-    </>
-  );
-};
-
-const ConfirmModal = ({
-  open,
-  title,
-  description,
-  confirmLabel,
-  confirmVariant = 'outline',
-  onCancel,
-  onConfirm,
-}: {
-  open: boolean;
-  title: string;
-  description: ReactNode;
-  confirmLabel: string;
-  confirmVariant?: 'outline' | 'destructive' | 'primary';
-  onCancel: () => void;
-  onConfirm: () => void;
-}) => {
-  if (!open) return null;
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-      <div className="bg-white p-6 rounded shadow max-w-sm w-full space-y-4">
-        <h3 className="text-lg font-semibold">{title}</h3>
-        <p className="text-sm text-gray-600">{description}</p>
-        <div className="flex justify-end gap-2">
-          <Button variant="outline" onClick={onCancel}>
-            Cancel
-          </Button>
-          <Button variant={confirmVariant} onClick={onConfirm}>
-            {confirmLabel}
-          </Button>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 export const CharacterSheet = () => {
   const { id: characterId } = useParams<{ id: string }>();

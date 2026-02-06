@@ -3,6 +3,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { useRedirectIfLoggedIn } from '@/hooks/useRedirectIfLoggedIn';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/context/ToastContext';
+import { Button } from '@/components/ui/Button';
 
 export const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -31,7 +32,7 @@ export const LoginPage = () => {
   };
 
   return (
-    <div className="max-w-sm mx-auto mt-10 p-6 border rounded bg-white shadow-md">
+    <div className="max-w-sm mx-auto mt-10 p-6 card">
       <h1 className="text-xl font-bold mb-4 text-center">Login</h1>
       <form onSubmit={handleLogin} className="space-y-4">
         <div>
@@ -58,12 +59,9 @@ export const LoginPage = () => {
 
         {errorMsg && <div className="sr-only">{errorMsg}</div>}
 
-        <button
-          type="submit"
-          className="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
+        <Button type="submit" className="w-full">
           Log In
-        </button>
+        </Button>
       </form>
     </div>
   );

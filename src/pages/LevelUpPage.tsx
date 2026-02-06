@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { AttributeAllocator } from '@/components/CharacterCreator/AttributeAllocatorView';
 import { Button } from '@/components/ui/Button';
 import { LoadingErrorWrapper } from '@/components/LoadingErrorWrapper';
 import { useLanguage } from '@/context/LanguageContext';
@@ -32,6 +31,10 @@ import { getBaseDerivedStats } from '@/utils/derived/getBaseDerivedStats';
 import { getRaceById } from '@/utils/raceUtils';
 import { attributeLabels } from '@/i18n/attributes';
 import { useToast } from '@/context/ToastContext';
+import { LevelUpHeader } from '@/pages/levelUp/LevelUpHeader';
+import { LevelUpStatsPanel } from '@/pages/levelUp/LevelUpStatsPanel';
+import { SkillsPanel } from '@/pages/levelUp/SkillsPanel';
+import { AttributePointSection } from '@/pages/levelUp/AttributePointSection';
 
 const ensureNextLevelBucket = (
   buckets: LevelUpBucket[],
@@ -284,6 +287,33 @@ export default function CharacterLevelUpPage() {
   const hasUnspentAbilityPoint = hasAbilityPointThisLevel && usedPoints === 0;
 
   const attributeNames = attributeLabels[language];
+  const hasSkillPoints =
+    skillPool.core + skillPool.utility + skillPool.human > 0;
+
+  const nextBaseStats = useMemo(
+    () =>
+      selectedClassData
+        ? getBaseDerivedStats(selectedClassData, attributes, nextLevel)
+        : null,
+    [selectedClassData, attributes, nextLevel]
+  );
+
+  const currentBaseStats = useMemo(
+    () =>
+      selectedClassData && character
+        ? getBaseDerivedStats(
+            selectedClassData,
+            character.attributes,
+            currentLevel
+          )
+        : null,
+    [selectedClassData, character, currentLevel]
+  );
+
+  const hpGain = Math.max(
+    0,
+    (nextBaseStats?.hp ?? 0) - (currentBaseStats?.hp ?? 0)
+  );
 
   const hasSkillTier = (skillId: SkillId, tier: number): boolean =>
     acquiredSkills.some(
@@ -368,108 +398,33 @@ export default function CharacterLevelUpPage() {
         <p className="p-4 text-red-600">You do not have permission.</p>
       ) : (
         <div className="max-w-3xl mx-auto p-4 card">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <p className="chip">{ui.levelUp}</p>
-              <h2 className="text-2xl font-bold mt-2">{ui.levelUp}</h2>
-            </div>
-            <Button variant="outline" onClick={() => navigate(-1)}>
-              {ui.cancel}
-            </Button>
-          </div>
+          <LevelUpHeader
+            title={ui.levelUp}
+            cancelLabel={ui.cancel}
+            onCancel={() => navigate(-1)}
+            currentLevel={currentLevel}
+            nextLevel={nextLevel}
+            classId={character.class_id}
+            raceId={character.race_id}
+            showMissingProgression={!nextLevelData}
+          />
 
-          {!nextLevelData && (
-            <div className="mb-4 text-sm text-red-600">
-              No class progression data found for level {nextLevel}.
-            </div>
-          )}
-
-          <div className="mb-4 text-sm text-gray-700 panel p-3">
-            <div>
-              {ui.level}: {currentLevel} → {nextLevel}
-            </div>
-            <div>
-              {ui.class}: {character.class_id}
-            </div>
-            <div>
-              {ui.race}: {character.race_id}
-            </div>
-          </div>
-
-          {hasAbilityPointThisLevel ? (
-            <>
-              <div className="text-sm text-gray-700 mb-2">
-                Attribute point available.
-              </div>
-              {Object.keys(attributes).length > 0 ? (
-                <AttributeAllocator
-                  attributes={attributes}
-                  baseline={character.attributes}
-                  pool={0}
-                  isLevelUpMode={true}
-                  usedPoints={usedPoints}
-                  hasAbilityPointThisLevel={hasAbilityPointThisLevel}
-                  showNextCost={false}
-                  onChange={handleAttributeChange}
-                  selectedClassData={selectedClassData}
-                />
-              ) : (
-                <div className="text-sm text-gray-600">Loading attributes…</div>
-              )}
-              {hasUnspentAbilityPoint && (
-                <div className="mt-2 text-xs text-red-600">
-                  You must spend the available attribute point to level up.
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="text-sm text-gray-600 mb-4 panel p-3">
-              No attribute points available at this level.
-            </div>
-          )}
+          <AttributePointSection
+            hasAbilityPoint={hasAbilityPointThisLevel}
+            hasUnspent={hasUnspentAbilityPoint}
+            attributesReady={attributesReady}
+            attributes={attributes}
+            baseline={character.attributes}
+            usedPoints={usedPoints}
+            onChange={handleAttributeChange}
+            selectedClassData={selectedClassData}
+          />
 
           {selectedClassData && attributesReady && (
-            <div className="panel p-3 mt-4 space-y-2 text-sm text-gray-700">
-              <p>
-                <strong>HP:</strong>{' '}
-                {getBaseDerivedStats(selectedClassData, attributes, nextLevel)?.hp}
-              </p>
-              <p className="text-xs text-gray-600">
-                +{Math.max(
-                  0,
-                  (getBaseDerivedStats(
-                    selectedClassData,
-                    attributes,
-                    nextLevel
-                  )?.hp ?? 0) -
-                    (getBaseDerivedStats(
-                      selectedClassData,
-                      character.attributes,
-                      currentLevel
-                    )?.hp ?? 0)
-                )}{' '}
-                HP this level
-              </p>
-              <p>
-                <strong>Base Attack Bonus:</strong>{' '}
-                {
-                  getBaseDerivedStats(selectedClassData, attributes, nextLevel)
-                    ?.baseAttackBonus
-                }
-              </p>
-              <p>
-                <strong>Spells:</strong>{' '}
-                {Object.entries(
-                  getBaseDerivedStats(selectedClassData, attributes, nextLevel)
-                    ?.spellSlots ?? {}
-                )
-                  .map(([lvl, slots]) => `Lvl ${lvl}: ${slots}`)
-                  .join(', ') || 'None'}
-              </p>
-            </div>
+            <LevelUpStatsPanel nextStats={nextBaseStats} hpGain={hpGain} />
           )}
 
-          {skillPool.core + skillPool.utility + skillPool.human > 0 && (
+          {hasSkillPoints && (
             <div className="mb-6 mt-6 panel p-4 text-sm text-gray-700">
               <h3 className="text-sm font-semibold text-gray-700 mb-2">
                 {ui.skills}
@@ -506,248 +461,75 @@ export default function CharacterLevelUpPage() {
                 </label>
               </div>
 
-              <div className="space-y-3">
-                {allSkills
-                  .slice()
-                  .sort((a, b) => a.name.localeCompare(b.name))
-                  .map((skill) => {
-                    const tierRows = skill.tiers
-                      .map((tier) => {
-                        const tierKey = `${skill.id}:${tier.tier}`;
-                        const availability =
-                          selectedClassData && character
-                            ? getSkillTierAvailability({
-                                skill,
-                                tier,
-                                attributes,
-                                classId: selectedClassData.id,
-                                raceId: character.race_id as RaceId,
-                                level: nextLevel,
-                                pool: skillRemaining,
-                                acquired: acquiredSkills,
-                                allowSameLevelForPrereqs: true,
-                              })
-                            : {
-                                status: 'ineligible',
-                                reasons: [],
-                                canAfford: false,
-                              };
-
-                        const isAffordable = availability.canAfford;
-                        const affordableStatus =
-                          availability.status === 'available' && !isAffordable
-                            ? 'locked'
-                            : availability.status;
-
-                        const isSelected = currentSelections.some(
-                          (s) =>
-                            s.skillId === skill.id && s.tier === tier.tier
-                        );
-
-                        if (
-                          affordableStatus === 'acquired' &&
-                          !showAcquiredSkills &&
-                          !isSelected
-                        ) {
-                          return null;
-                        }
-                        if (affordableStatus === 'locked' && !showLockedSkills) {
-                          return null;
-                        }
-                        if (
-                          affordableStatus === 'ineligible' &&
-                          !showIneligibleSkills
-                        ) {
-                          return null;
-                        }
-
-                        const canUseHumanPoint =
-                          character.race_id === 'Human' &&
-                          skillRemaining.human > 0;
-                        const spendOptions: SkillPointType[] =
-                          skill.skillPointType === 'core'
-                            ? [
-                                'core',
-                                ...(canUseHumanPoint
-                                  ? (['human'] as SkillPointType[])
-                                  : []),
-                              ]
-                            : skill.skillPointType === 'utility'
-                            ? [
-                                'utility',
-                                ...(canUseHumanPoint
-                                  ? (['human'] as SkillPointType[])
-                                  : []),
-                              ]
-                            : canUseHumanPoint
-                            ? ['human']
-                            : [];
-
-                        const defaultSpendType =
-                          spendTypeByTier[tierKey] ??
-                          (skill.skillPointType !== 'human' &&
-                          skillRemaining[skill.skillPointType] > 0
-                            ? skill.skillPointType
-                            : skillRemaining.human > 0
-                            ? 'human'
-                            : skill.skillPointType);
-
-                        const canUseSpendType =
-                          defaultSpendType === 'core'
-                            ? skillRemaining.core > 0
-                            : defaultSpendType === 'utility'
-                            ? skillRemaining.utility > 0
-                            : skillRemaining.human > 0;
-
-                        const statusLabel =
-                          affordableStatus === 'available'
-                            ? 'Available'
-                            : affordableStatus === 'locked'
-                            ? 'Locked'
-                            : affordableStatus === 'ineligible'
-                            ? 'Ineligible'
-                            : 'Acquired';
-
-                        const prereqLabels = (tier.prerequisites ?? []).map(
-                          (prereq) => getPrereqLabel(prereq)
-                        );
-                        const pointRequirement =
-                          affordableStatus === 'locked' &&
-                          availability.status === 'available'
-                            ? skill.skillPointType === 'core'
-                              ? ui.requiresCorePoint ??
-                                'Requires a core skill point'
-                              : skill.skillPointType === 'utility'
-                              ? ui.requiresUtilityPoint ??
-                                'Requires a utility skill point'
-                              : ui.requiresHumanPoint ??
-                                'Requires a human skill point'
-                            : null;
-
-                        return (
-                          <div
-                            key={tierKey}
-                            className="flex items-start justify-between gap-4 border rounded-xl p-3 bg-white/80"
-                          >
-                            <div>
-                              <div className="font-medium text-gray-800">
-                                Tier {tier.tier}
-                              </div>
-                              {(tier.deltaDescription ?? tier.description) && (
-                                <div className="text-xs text-gray-600">
-                                  {tier.deltaDescription ?? tier.description}
-                                </div>
-                              )}
-                              <div className="text-xs text-gray-500 mt-1">
-                                {statusLabel}
-                                {availability.reasons.length > 0
-                                  ? ` (${availability.reasons.join(', ')})`
-                                  : ''}
-                              </div>
-                              {pointRequirement && (
-                                <div className="mt-2 text-xs text-red-600">
-                                  {pointRequirement}
-                                </div>
-                              )}
-                              {affordableStatus === 'locked' &&
-                                prereqLabels.length > 0 && (
-                                  <div className="mt-2 text-xs text-gray-600">
-                                    <div className="font-semibold">
-                                      {ui.requirements ?? 'Requirements'}:
-                                    </div>
-                                    <ul className="list-disc list-inside">
-                                      {prereqLabels.map((req, idx) => (
-                                        <li
-                                          key={idx}
-                                          className={
-                                            req.met
-                                              ? 'text-green-600'
-                                              : 'text-red-600'
-                                          }
-                                        >
-                                          {req.label}
-                                        </li>
-                                      ))}
-                                    </ul>
-                                  </div>
-                                )}
-                            </div>
-
-                            <div className="flex items-center gap-2">
-                              {isSelected ? (
-                                <Button
-                                  variant="outline"
-                                  onClick={() =>
-                                    handleRemoveSkill(skill.id, tier.tier)
-                                  }
-                                >
-                                  Remove
-                                </Button>
-                              ) : affordableStatus === 'available' ? (
-                                <>
-                                  <select
-                                    className="border border-gray-300 rounded-md px-2 py-1 text-xs"
-                                    value={defaultSpendType}
-                                    onChange={(e) =>
-                                      setSpendTypeByTier((prev) => ({
-                                        ...prev,
-                                        [tierKey]: e.target.value as SkillPointType,
-                                      }))
-                                    }
-                                  >
-                                    {spendOptions.map((opt) => {
-                                      const disabled =
-                                        (opt === 'core' &&
-                                          skillRemaining.core <= 0) ||
-                                        (opt === 'utility' &&
-                                          skillRemaining.utility <= 0) ||
-                                        (opt === 'human' &&
-                                          skillRemaining.human <= 0);
-                                      return (
-                                        <option
-                                          key={opt}
-                                          value={opt}
-                                          disabled={disabled}
-                                        >
-                                          {opt}
-                                        </option>
-                                      );
-                                    })}
-                                  </select>
-                                  <Button
-                                    onClick={() =>
-                                      handleAddSkill(
-                                        skill.id,
-                                        tier.tier,
-                                        defaultSpendType
-                                      )
-                                    }
-                                    disabled={!availability.canAfford || !canUseSpendType}
-                                  >
-                                    Add
-                                  </Button>
-                                </>
-                              ) : (
-                                <span className="text-xs text-gray-400">—</span>
-                              )}
-                            </div>
-                          </div>
-                        );
+              <SkillsPanel
+                skills={allSkills}
+                showAcquired={showAcquiredSkills}
+                showLocked={showLockedSkills}
+                showIneligible={showIneligibleSkills}
+                skillRemaining={skillRemaining}
+                currentSelections={currentSelections}
+                getTierAvailability={(skill, tierNumber) =>
+                  selectedClassData && character
+                    ? getSkillTierAvailability({
+                        skill,
+                        tier: skill.tiers.find((t) => t.tier === tierNumber)!,
+                        attributes,
+                        classId: selectedClassData.id,
+                        raceId: character.race_id as RaceId,
+                        level: nextLevel,
+                        pool: skillRemaining,
+                        acquired: acquiredSkills,
+                        allowSameLevelForPrereqs: true,
                       })
-                      .filter(Boolean);
-
-                    if (tierRows.length === 0) return null;
-
-                    return (
-                      <div key={skill.id} className="space-y-2">
-                        <div className="text-sm font-semibold text-gray-800">
-                          {skill.name}
-                        </div>
-                        <div className="space-y-2">{tierRows}</div>
-                      </div>
-                    );
-                  })}
-              </div>
+                    : { status: 'ineligible', reasons: [], canAfford: false }
+                }
+                getPrereqLabels={(skill, tierNumber) =>
+                  (skill.tiers.find((t) => t.tier === tierNumber)?.prerequisites ?? [])
+                    .map((prereq) => getPrereqLabel(prereq))
+                }
+                getPointRequirement={(skill, tierNumber, availability) =>
+                  availability.status === 'available' && !availability.canAfford
+                    ? skill.skillPointType === 'core'
+                      ? ui.requiresCorePoint ?? 'Requires a core skill point'
+                      : skill.skillPointType === 'utility'
+                      ? ui.requiresUtilityPoint ?? 'Requires a utility skill point'
+                      : ui.requiresHumanPoint ?? 'Requires a human skill point'
+                    : null
+                }
+                getSpendOptions={(skill) => {
+                  const canUseHumanPoint =
+                    character?.race_id === 'Human' && skillRemaining.human > 0;
+                  if (skill.skillPointType === 'core') {
+                    return [
+                      'core',
+                      ...(canUseHumanPoint ? (['human'] as SkillPointType[]) : []),
+                    ];
+                  }
+                  if (skill.skillPointType === 'utility') {
+                    return [
+                      'utility',
+                      ...(canUseHumanPoint ? (['human'] as SkillPointType[]) : []),
+                    ];
+                  }
+                  return canUseHumanPoint ? ['human'] : [];
+                }}
+                getDefaultSpendType={(tierKey, skill) =>
+                  spendTypeByTier[tierKey] ??
+                  (skill.skillPointType !== 'human' &&
+                  skillRemaining[skill.skillPointType] > 0
+                    ? skill.skillPointType
+                    : skillRemaining.human > 0
+                    ? 'human'
+                    : skill.skillPointType)
+                }
+                onSpendTypeChange={(key, value) =>
+                  setSpendTypeByTier((prev) => ({ ...prev, [key]: value }))
+                }
+                onAdd={(skillId, tier, spendType) =>
+                  handleAddSkill(skillId, tier, spendType)
+                }
+                onRemove={(skillId, tier) => handleRemoveSkill(skillId, tier)}
+              />
 
               {skillValidation && !skillValidation.isValid && (
                 <div className="mt-4 text-xs text-red-600 space-y-1">

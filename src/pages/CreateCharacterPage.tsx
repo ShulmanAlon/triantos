@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { AttributeAllocator } from '@/components/CharacterCreator/AttributeAllocatorView';
 import { CharacterNameForm } from '@/components/CharacterCreator/CharacterNameFormView';
 import { ClassSelector } from '@/components/CharacterCreator/ClassSelectorView';
 import { RaceSelector } from '@/components/CharacterCreator/RaceSelectorView';
@@ -18,8 +17,6 @@ import { getBaseDerivedStats } from '@/utils/derived/getBaseDerivedStats';
 import { getRaceById, getBaseAttributesByRaceId } from '@/utils/raceUtils';
 import { ClassId } from '@/types/gameClass';
 import { RaceId } from '@/types/race';
-import { ImageWithPlaceholder } from '@/components/ImageWithPlaceholder';
-import { getCharacterImage, getCharacterBlurImage } from '@/utils/imageUtils';
 import ImageUrlModal from '@/components/ImageUrlModal';
 import { TABLES } from '@/config/dbTables';
 import { allSkills } from '@/data/skills/allSkills';
@@ -40,6 +37,11 @@ import {
 import { SkillPointType, SkillId } from '@/types/skills';
 import { attributeLabels } from '@/i18n/attributes';
 import { useToast } from '@/context/ToastContext';
+import { CreateCharacterHeader } from '@/pages/createCharacter/CreateCharacterHeader';
+import { CharacterImagePicker } from '@/pages/createCharacter/CharacterImagePicker';
+import { DerivedStatsPanel } from '@/pages/createCharacter/DerivedStatsPanel';
+import { CharacterSkillsPanel } from '@/pages/createCharacter/CharacterSkillsPanel';
+import { AttributeAllocator } from '@/components/CharacterCreator/AttributeAllocatorView';
 
 type CreationStep = 'class' | 'race' | 'attributes' | 'skills';
 
@@ -332,18 +334,12 @@ export default function CharacterCreatePage() {
 
   return (
     <div className="max-w-3xl mx-auto p-4 card">
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-        <div>
-          <p className="chip">{ui.characterCreator}</p>
-          <h2 className="text-2xl font-bold mt-2">{ui.characterCreator}</h2>
-          <p className="text-xs italic text-(--muted)">
-            Created by: {user?.username}
-          </p>
-        </div>
-      </div>
+      <CreateCharacterHeader
+        title={ui.characterCreator}
+        createdBy={user?.username}
+      />
       <div className="flex gap-4 items-start">
         <div className="flex-1">
-          {/* Character name and player name */}
           <CharacterNameForm
             characterName={characterName}
             playerName={playerName}
@@ -352,33 +348,12 @@ export default function CharacterCreatePage() {
           />
         </div>
 
-        {/* Image display & modal trigger */}
-        <div className="w-40 shrink-0">
-          <h3 className="text-sm font-medium mb-2">Character Image</h3>
-          <div
-            onClick={() => setShowImageModal(true)}
-            className="relative cursor-pointer w-40 h-40 border rounded-xl overflow-hidden shadow-sm bg-white/80 group"
-          >
-            {imageUrl ? (
-              <>
-                <ImageWithPlaceholder
-                  src={getCharacterImage(imageUrl, selectedClassId)}
-                  blurSrc={getCharacterBlurImage(selectedClassId)}
-                  alt={characterName}
-                  className="w-full h-full object-cover"
-                />
-                {/* Hover Overlay */}
-                <div className="absolute inset-0 bg-black bg-opacity-30 opacity-0 group-hover:opacity-60 transition-opacity flex items-center justify-center">
-                  <span className="text-white text-sm font-medium">Edit</span>
-                </div>
-              </>
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-sm text-(--muted)">
-                + Add Image
-              </div>
-            )}
-          </div>
-        </div>
+        <CharacterImagePicker
+          imageUrl={imageUrl}
+          classId={selectedClassId}
+          characterName={characterName}
+          onEdit={() => setShowImageModal(true)}
+        />
       </div>
       {creationStep !== 'skills' && (
         <>
@@ -428,24 +403,7 @@ export default function CharacterCreatePage() {
             onChange={handleAttributeChange}
             selectedClassData={selectedClassData}
           />
-          {/* Derived Stats - HP, BAB, Spells */}
-          {selectedClassData && (
-            <div className="panel p-3 mt-4 space-y-2 text-sm text-gray-700">
-              <p>
-                <strong>HP:</strong> {derivedStats?.hp}
-              </p>
-              <p>
-                <strong>Base Attack Bonus:</strong>{' '}
-                {derivedStats?.baseAttackBonus}
-              </p>
-              <p>
-                <strong>Spells:</strong>{' '}
-                {Object.entries(derivedStats?.spellSlots ?? {})
-                  .map(([lvl, slots]) => `Lvl ${lvl}: ${slots}`)
-                  .join(', ') || 'None'}
-              </p>
-            </div>
-          )}
+          {selectedClassData && <DerivedStatsPanel stats={derivedStats} />}
         </>
       )}
       {creationStep === 'skills' && (
@@ -485,228 +443,75 @@ export default function CharacterCreatePage() {
             </label>
           </div>
 
-          <div className="space-y-3">
-            {allSkills
-              .slice()
-              .sort((a, b) => a.name.localeCompare(b.name))
-              .map((skill) => {
-                const tierRows = skill.tiers
-                  .map((tier) => {
-                    const tierKey = `${skill.id}:${tier.tier}`;
-                const availability =
-                  selectedClassData && selectedRaceId
-                    ? getSkillTierAvailability({
-                        skill,
-                        tier,
-                        attributes,
-                            classId: selectedClassData.id,
-                            raceId: selectedRaceId,
-                            level,
-                            pool: skillRemaining,
-                            acquired: acquiredSkills,
-                        allowSameLevelForPrereqs: true,
-                      })
-                    : { status: 'ineligible', reasons: [], canAfford: false };
-
-                const isAffordable = availability.canAfford;
-                const affordableStatus =
-                  availability.status === 'available' && !isAffordable
-                    ? 'locked'
-                    : availability.status;
-
-                const isSelected = currentSelections.some(
-                  (s) => s.skillId === skill.id && s.tier === tier.tier
-                );
-
-                if (
-                  affordableStatus === 'acquired' &&
-                  !showAcquiredSkills &&
-                  !isSelected
-                ) {
-                  return null;
-                }
-                if (affordableStatus === 'locked' && !showLockedSkills) {
-                  return null;
-                }
-                if (affordableStatus === 'ineligible' && !showIneligibleSkills) {
-                  return null;
-                }
-
-                const canUseHumanPoint =
-                  selectedRaceId === 'Human' && skillRemaining.human > 0;
-                const spendOptions: SkillPointType[] =
-                  skill.skillPointType === 'core'
-                    ? [
-                        'core',
-                        ...(canUseHumanPoint ? (['human'] as SkillPointType[]) : []),
-                      ]
-                    : skill.skillPointType === 'utility'
-                    ? [
-                        'utility',
-                        ...(canUseHumanPoint ? (['human'] as SkillPointType[]) : []),
-                      ]
-                    : canUseHumanPoint
-                    ? ['human']
-                    : [];
-
-                const defaultSpendType =
-                  spendTypeByTier[tierKey] ??
-                  (skill.skillPointType !== 'human' &&
-                  skillRemaining[skill.skillPointType] > 0
-                    ? skill.skillPointType
-                    : skillRemaining.human > 0
-                    ? 'human'
-                    : skill.skillPointType);
-
-                const canUseSpendType =
-                  defaultSpendType === 'core'
-                    ? skillRemaining.core > 0
-                    : defaultSpendType === 'utility'
-                    ? skillRemaining.utility > 0
-                    : skillRemaining.human > 0;
-
-                const statusLabel =
-                  affordableStatus === 'available'
-                    ? 'Available'
-                    : affordableStatus === 'locked'
-                    ? 'Locked'
-                    : affordableStatus === 'ineligible'
-                    ? 'Ineligible'
-                    : 'Acquired';
-
-                const prereqLabels = (tier.prerequisites ?? []).map(
-                  (prereq) => getPrereqLabel(prereq)
-                );
-                const pointRequirement =
-                  affordableStatus === 'locked' && availability.status === 'available'
-                    ? skill.skillPointType === 'core'
-                      ? ui.requiresCorePoint ?? 'Requires a core skill point'
-                      : skill.skillPointType === 'utility'
-                      ? ui.requiresUtilityPoint ?? 'Requires a utility skill point'
-                      : ui.requiresHumanPoint ?? 'Requires a human skill point'
-                    : null;
-
-                return (
-                      <div
-                        key={tierKey}
-                        className="flex items-start justify-between gap-4 border rounded-xl p-3 bg-white/80"
-                      >
-                        <div>
-                          <div className="font-medium text-gray-800">
-                            Tier {tier.tier}
-                          </div>
-                      {(tier.deltaDescription ?? tier.description) && (
-                        <div className="text-xs text-gray-600">
-                          {tier.deltaDescription ?? tier.description}
-                        </div>
-                      )}
-                          <div className="text-xs text-gray-500 mt-1">
-                            {statusLabel}
-                            {availability.reasons.length > 0
-                              ? ` (${availability.reasons.join(', ')})`
-                              : ''}
-                          </div>
-                          {pointRequirement && (
-                            <div className="mt-2 text-xs text-red-600">
-                              {pointRequirement}
-                            </div>
-                          )}
-                          {affordableStatus === 'locked' &&
-                            prereqLabels.length > 0 && (
-                              <div className="mt-2 text-xs text-gray-600">
-                                <div className="font-semibold">
-                                  {ui.requirements ?? 'Requirements'}:
-                                </div>
-                                <ul className="list-disc list-inside">
-                                  {prereqLabels.map((req, idx) => (
-                                    <li
-                                      key={idx}
-                                      className={
-                                        req.met ? 'text-green-600' : 'text-red-600'
-                                      }
-                                    >
-                                      {req.label}
-                                    </li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          {isSelected ? (
-                            <Button
-                              variant="outline"
-                              onClick={() =>
-                                handleRemoveSkill(skill.id, tier.tier)
-                              }
-                            >
-                              Remove
-                            </Button>
-                          ) : affordableStatus === 'available' ? (
-                            <>
-                              <select
-                                className="border border-gray-300 rounded-md px-2 py-1 text-xs"
-                                value={defaultSpendType}
-                                onChange={(e) =>
-                                  setSpendTypeByTier((prev) => ({
-                                    ...prev,
-                                    [tierKey]: e.target.value as SkillPointType,
-                                  }))
-                                }
-                              >
-                                {spendOptions.map((opt) => {
-                                  const disabled =
-                                    (opt === 'core' && skillRemaining.core <= 0) ||
-                                    (opt === 'utility' &&
-                                      skillRemaining.utility <= 0) ||
-                                    (opt === 'human' &&
-                                      skillRemaining.human <= 0);
-                                  return (
-                                    <option
-                                      key={opt}
-                                      value={opt}
-                                      disabled={disabled}
-                                    >
-                                      {opt}
-                                    </option>
-                                  );
-                                })}
-                              </select>
-                              <Button
-                                onClick={() =>
-                                  handleAddSkill(
-                                    skill.id,
-                                    tier.tier,
-                                    defaultSpendType
-                                  )
-                                }
-                                disabled={!availability.canAfford || !canUseSpendType}
-                              >
-                                Add
-                              </Button>
-                            </>
-                          ) : (
-                            <span className="text-xs text-gray-400">—</span>
-                          )}
-                        </div>
-                      </div>
-                    );
+          <CharacterSkillsPanel
+            skills={allSkills}
+            skillRemaining={skillRemaining}
+            currentSelections={currentSelections}
+            showAcquired={showAcquiredSkills}
+            showLocked={showLockedSkills}
+            showIneligible={showIneligibleSkills}
+            getAvailability={(skill, tierNumber) =>
+              selectedClassData && selectedRaceId
+                ? getSkillTierAvailability({
+                    skill,
+                    tier: skill.tiers.find((t) => t.tier === tierNumber)!,
+                    attributes,
+                    classId: selectedClassData.id,
+                    raceId: selectedRaceId,
+                    level,
+                    pool: skillRemaining,
+                    acquired: acquiredSkills,
+                    allowSameLevelForPrereqs: true,
                   })
-                  .filter(Boolean);
-
-                if (tierRows.length === 0) return null;
-
-                return (
-                  <div key={skill.id} className="space-y-2">
-                    <div className="text-sm font-semibold text-gray-800">
-                      {skill.name}
-                    </div>
-                    <div className="space-y-2">{tierRows}</div>
-                  </div>
-                );
-              })}
-          </div>
+                : { status: 'ineligible', reasons: [], canAfford: false }
+            }
+            getPrereqLabels={(skill, tierNumber) =>
+              (skill.tiers.find((t) => t.tier === tierNumber)?.prerequisites ?? [])
+                .map((prereq) => getPrereqLabel(prereq))
+            }
+            getPointRequirement={(skill, tierNumber, availability) =>
+              availability.status === 'available' && !availability.canAfford
+                ? skill.skillPointType === 'core'
+                  ? ui.requiresCorePoint ?? 'Requires a core skill point'
+                  : skill.skillPointType === 'utility'
+                  ? ui.requiresUtilityPoint ?? 'Requires a utility skill point'
+                  : ui.requiresHumanPoint ?? 'Requires a human skill point'
+                : null
+            }
+            getSpendOptions={(skill) => {
+              const canUseHumanPoint =
+                selectedRaceId === 'Human' && skillRemaining.human > 0;
+              if (skill.skillPointType === 'core') {
+                return [
+                  'core',
+                  ...(canUseHumanPoint ? (['human'] as SkillPointType[]) : []),
+                ];
+              }
+              if (skill.skillPointType === 'utility') {
+                return [
+                  'utility',
+                  ...(canUseHumanPoint ? (['human'] as SkillPointType[]) : []),
+                ];
+              }
+              return canUseHumanPoint ? ['human'] : [];
+            }}
+            getDefaultSpendType={(tierKey, skill) =>
+              spendTypeByTier[tierKey] ??
+              (skill.skillPointType !== 'human' &&
+              skillRemaining[skill.skillPointType] > 0
+                ? skill.skillPointType
+                : skillRemaining.human > 0
+                ? 'human'
+                : skill.skillPointType)
+            }
+            onSpendTypeChange={(tierKey, value) =>
+              setSpendTypeByTier((prev) => ({ ...prev, [tierKey]: value }))
+            }
+            onAdd={(skillId, tier, spendType) =>
+              handleAddSkill(skillId, tier, spendType)
+            }
+            onRemove={(skillId, tier) => handleRemoveSkill(skillId, tier)}
+          />
 
           {skillValidation && !skillValidation.isValid && (
             <div className="mt-4 text-xs text-red-600 space-y-1">

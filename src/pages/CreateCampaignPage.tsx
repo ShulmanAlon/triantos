@@ -2,11 +2,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabaseClient';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
-import { ImageWithPlaceholder } from '@/components/ImageWithPlaceholder';
-import { getCampaignBlurImage, getCampaignImage } from '@/utils/imageUtils';
 import ImageUrlModal from '@/components/ImageUrlModal';
 import { TABLES } from '@/config/dbTables';
 import { useToast } from '@/context/ToastContext';
+import { CampaignImagePicker } from '@/pages/createCampaign/CampaignImagePicker';
 
 export default function CreateCampaign() {
   const user = useCurrentUser();
@@ -65,29 +64,10 @@ export default function CreateCampaign() {
   return (
     <main className="max-w-xl mx-auto p-6 space-y-4">
       <h1 className="text-2xl font-bold">Create New Campaign</h1>
-      <div
-        onClick={() => setShowImageModal(true)}
-        className="relative cursor-pointer w-40 h-40 border rounded overflow-hidden shadow-sm bg-gray-100 group"
-      >
-        {imageUrl ? (
-          <>
-            <ImageWithPlaceholder
-              src={getCampaignImage(imageUrl)}
-              blurSrc={getCampaignBlurImage()}
-              alt="Campaign preview"
-              className="w-full h-full object-cover"
-            />
-            {/* Hover Overlay */}
-            <div className="absolute inset-0 bg-black bg-opacity-30 opacity-0 group-hover:opacity-60 transition-opacity flex items-center justify-center">
-              <span className="text-white text-sm font-medium">Edit</span>
-            </div>
-          </>
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-sm text-gray-500">
-            + Add Image
-          </div>
-        )}
-      </div>
+      <CampaignImagePicker
+        imageUrl={imageUrl}
+        onEdit={() => setShowImageModal(true)}
+      />
 
       <label className="block">
         <span className="text-sm font-medium">Campaign Name</span>

@@ -2,7 +2,7 @@ import React from 'react';
 
 export type ButtonProps = {
   children: React.ReactNode;
-  onClick: () => void;
+  onClick?: () => void;
   disabled?: boolean;
   className?: string;
   type?: 'button' | 'submit';

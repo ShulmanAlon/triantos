@@ -1,14 +1,10 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
-import type { UserRole } from '@/types/users';
+import type { User } from '@/types/users';
 import { TABLES } from '@/config/dbTables';
 
 export function useCurrentUser() {
-  const [user, setUser] = useState<{
-    id: string;
-    username: string;
-    role: UserRole;
-  } | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const getUserData = async () => {

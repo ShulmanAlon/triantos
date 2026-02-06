@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { TABLES } from '@/config/dbTables';
 import { USER_ROLES } from '@/config/userRoles';
+import { Button } from '@/components/ui/Button';
 
 export default function CampaignHandbookPage() {
   const campaignId = useParams<{ id: string }>().id;
@@ -63,12 +64,9 @@ export default function CampaignHandbookPage() {
     <main className="p-6 space-y-4">
       <h1 className="text-2xl font-bold">📘 {campaign.name} Handbook</h1>
       <p className="text-gray-500 italic">Coming soon...</p>
-      <button
-        className="text-sm text-blue-600 underline"
-        onClick={() => navigate(`/campaign/${campaignId}`)}
-      >
+      <Button variant="outline" onClick={() => navigate(`/campaign/${campaignId}`)}>
         ← Back to Campaign
-      </button>
+      </Button>
     </main>
   );
 }

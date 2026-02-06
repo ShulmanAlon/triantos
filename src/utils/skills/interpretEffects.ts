@@ -60,9 +60,6 @@ export function interpretEffects(
         break;
 
       default:
-        if (isDiceRoll(value)) {
-          derived.modifiers[target] = value;
-        }
         break;
     }
   }

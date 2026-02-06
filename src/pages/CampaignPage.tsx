@@ -2,20 +2,14 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { Button } from '@/components/ui/Button';
-import { ImageWithPlaceholder } from '@/components/ImageWithPlaceholder';
-import {
-  getCampaignBlurImage,
-  getCampaignImage,
-  getCharacterBlurImage,
-  getCharacterImage,
-} from '@/utils/imageUtils';
-import type { ClassId } from '@/types/gameClass';
 import EditCampaignModal from '@/components/EditCampaignModal';
 import { USER_ROLES } from '@/config/userRoles';
 import { useCampaignById } from '@/hooks/useCampaignById';
 import { useCharactersByCampaignId } from '@/hooks/useCharactersByCampaignId';
 import { LoadingErrorWrapper } from '@/components/LoadingErrorWrapper';
 import { useToast } from '@/context/ToastContext';
+import { CampaignHeader } from '@/pages/campaign/CampaignHeader';
+import { CampaignCharacters } from '@/pages/campaign/CampaignCharacters';
 
 export default function CampaignPage() {
   const { id: campaignId } = useParams<{ id: string }>();
@@ -51,125 +45,24 @@ export default function CampaignPage() {
           <p className="p-4 text-red-600">Campaign not found.</p>
         ) : (
           <div>
-            <div className="card p-5 space-y-4">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div>
-                  <h1 className="text-3xl font-bold">{campaign.name}</h1>
-                  {campaign.description && (
-                    <p className="text-sm text-(--muted) mt-1">
-                      {campaign.description}
-                    </p>
-                  )}
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {canEditCampaign && (
-                    <Button
-                      variant="outline"
-                      onClick={() => setShowEditModal(true)}
-                    >
-                      ✏️ Edit Campaign
-                    </Button>
-                  )}
-                  <Button
-                    variant="primary"
-                    onClick={() =>
-                      navigate(`/campaign/${campaign.campaign_id}/handbook`)
-                    }
-                  >
-                    Player’s Handbook
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => navigate('/dashboard')}
-                  >
-                    ← Back to Dashboard
-                  </Button>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap gap-6 items-start">
-                <div className="relative w-40 h-40 rounded-xl overflow-hidden shadow-sm bg-white/80 border border-black/5">
-                  <ImageWithPlaceholder
-                    src={getCampaignImage(campaign.image_url)}
-                    blurSrc={getCampaignBlurImage()}
-                    alt="Campaign preview"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="space-y-2 text-sm text-(--muted)">
-                  <p>
-                    <span className="font-semibold text-(--ink)">
-                      DM:
-                    </span>{' '}
-                    {campaign.owner_username ?? 'Unknown'}
-                  </p>
-                  <p>
-                    <span className="font-semibold text-(--ink)">
-                      Members:
-                    </span>{' '}
-                    {campaign.members
-                      .filter((m) => m.user_id !== campaign.owner_id)
-                      .map((m) => m.username)
-                      .join(', ') || 'None'}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="flex justify-between items-center pt-4 pb-3">
-              <h2 className="text-2xl font-semibold">Characters</h2>
-              <Button
-                variant="outline"
-                onClick={() =>
-                  navigate(`/campaign/${campaign.campaign_id}/create-character`)
-                }
-              >
-                + New Character
-              </Button>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {characters
-                .filter((char) => {
-                  if (!user) return;
-                  const isOwner = char.user_id === user.id;
-                  const isAdmin = user.role === USER_ROLES.ADMIN;
-                  const isDM = campaign.owner_id === user.id;
-
-                  return char.visible || isOwner || isAdmin || isDM;
-                })
-                .map((char) => (
-                  <div
-                    key={char.id}
-                    onClick={() => navigate(`/character/${char.id}`)}
-                    className="cursor-pointer card p-4 transition hover:-translate-y-0.5"
-                  >
-                    <div className="rounded-xl overflow-hidden border border-black/5 bg-white/80">
-                      <ImageWithPlaceholder
-                        src={getCharacterImage(
-                          char.image_url,
-                          char.class_id as ClassId
-                        )}
-                        blurSrc={getCharacterBlurImage(char.class_id as ClassId)}
-                        alt={char.name}
-                      />
-                    </div>
-                    <p className="text-xs italic text-(--muted) mt-2">
-                      Owner: {char.owner_username}
-                    </p>
-                    <h3 className="text-lg font-bold">{char.name}</h3>
-                    <p className="text-sm text-(--muted)">
-                      {char.player_name}
-                    </p>
-                    <p className="text-sm text-(--muted)">
-                      {char.class_id} • {char.race_id} • Level {char.level}
-                    </p>
-                    {!char.visible && (
-                      <div className="absolute text-4xl top-2 right-2 text-gray-500">
-                        👁️‍🗨️
-                      </div>
-                    )}
-                  </div>
-                ))}
-            </div>
+            <CampaignHeader
+              campaign={campaign}
+              canEdit={canEditCampaign}
+              onEdit={() => setShowEditModal(true)}
+              onOpenHandbook={() =>
+                navigate(`/campaign/${campaign.campaign_id}/handbook`)
+              }
+              onBack={() => navigate('/dashboard')}
+            />
+            <CampaignCharacters
+              campaign={campaign}
+              characters={characters}
+              user={user}
+              onSelect={(characterId) => navigate(`/character/${characterId}`)}
+              onCreate={() =>
+                navigate(`/campaign/${campaign.campaign_id}/create-character`)
+              }
+            />
             {canEditCampaign && (
               <Button
                 variant="destructive"
