@@ -44,17 +44,8 @@ export const SkillsPanel = ({
   const sortedSkills = skills.slice().sort((a, b) => a.name.localeCompare(b.name));
 
   return (
-    <div className="mb-6 mt-6 panel p-4 text-sm text-gray-700">
-      <h3 className="text-sm font-semibold text-gray-700 mb-2">Skills</h3>
-      <div className="flex flex-wrap gap-4 text-xs text-gray-600 mb-4">
-        <div>
-          <span className="font-semibold">Pool:</span> Core {skillRemaining.core},
-          Utility {skillRemaining.utility}, Human {skillRemaining.human}
-        </div>
-      </div>
-
-      <div className="space-y-3">
-        {sortedSkills.map((skill) => {
+    <div className="columns-1 lg:columns-2 gap-6">
+      {sortedSkills.map((skill) => {
           const tierRows = skill.tiers
             .map((tier) => {
               const tierKey = `${skill.id}:${tier.tier}`;
@@ -132,13 +123,15 @@ export const SkillsPanel = ({
           if (tierRows.length === 0) return null;
 
           return (
-            <div key={skill.id} className="space-y-2">
+            <div
+              key={skill.id}
+              className="mb-3 break-inside-avoid space-y-2 border-b border-black/10 pb-3 last:border-b-0"
+            >
               <div className="text-sm font-semibold text-gray-800">{skill.name}</div>
               <div className="space-y-2">{tierRows}</div>
             </div>
           );
         })}
-      </div>
     </div>
   );
 };

@@ -453,8 +453,12 @@ export default function CharacterLevelUpPage() {
                 <h3 className="section-title">{ui.skills}</h3>
                 <div className="text-xs text-gray-600">
                   <span className="font-semibold">Pool:</span> Core{' '}
-                  {skillRemaining.core}, Utility {skillRemaining.utility}, Human{' '}
-                  {skillRemaining.human}
+                  {skillRemaining.core}, Utility {skillRemaining.utility}
+                  {character.race_id === 'Human' && (
+                    <>
+                      , Human {skillRemaining.human}
+                    </>
+                  )}
                 </div>
               </div>
               <div className="flex flex-wrap gap-4 text-xs text-gray-600 mb-4">

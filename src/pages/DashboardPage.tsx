@@ -13,28 +13,30 @@ export default function DashboardPage() {
       {!campaigns ? (
         <p className="p-4 text-red-600">Campaigns not found.</p>
       ) : (
-        <main className="p-6 space-y-6">
-          <h1 className="text-2xl font-bold">Your Campaigns</h1>
+        <main className="space-y-6 pt-2">
+          <div className="flex items-center justify-between gap-4">
+            <div className="pl-1">
+              <h1 className="text-2xl font-bold">Your Campaigns</h1>
+              <p className="text-sm text-(--muted) mt-1 mb-1">
+                Manage your active and past campaigns.
+              </p>
+            </div>
+            <Button onClick={() => navigate('/create-campaign')}>
+              Create New Campaign
+            </Button>
+          </div>
 
           {campaigns.length === 0 ? (
-            <p className="text-gray-600">
+            <div className="panel p-4 text-sm text-(--muted)">
               You are not part of any campaigns yet.
-            </p>
+            </div>
           ) : (
-            <div className="space-y-4">
+            <div className="grid gap-4 md:grid-cols-2">
               {campaigns.map((c) => (
                 <CampaignListItem key={c.campaign_id} campaign={c} />
               ))}
             </div>
           )}
-          <div className="pt-6">
-            <Button
-              onClick={() => navigate('/create-campaign')}
-              className="w-full"
-            >
-              + Create New Campaign
-            </Button>
-          </div>
         </main>
       )}
     </LoadingErrorWrapper>

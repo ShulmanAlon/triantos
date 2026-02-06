@@ -70,7 +70,7 @@ export default function CampaignPage() {
             {canEditCampaign && (
               <Button
                 variant="destructive"
-                className="mt-6"
+                className="mt-6 mb-4"
                 onClick={async () => {
                   const confirmed = window.confirm(
                     'Are you sure you want to delete this campaign?'

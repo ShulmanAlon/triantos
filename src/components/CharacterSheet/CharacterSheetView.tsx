@@ -57,7 +57,7 @@ const getStatValue = (block?: StatBlock<number>): number | null => {
   if (!block.entries || block.entries.length === 0) return null;
   const filtered = block.selectedLabels?.length
     ? block.entries.filter((entry) =>
-        block.selectedLabels?.includes(entry.label)
+        block.selectedLabels?.includes(entry.label),
       )
     : block.entries;
   return Math.max(...filtered.map((entry) => entry.total));
@@ -101,7 +101,7 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
             </div>
           )}
         </div>
-        <div className="flex-1 min-w-[240px]">
+        <div className="flex-1 min-w-60">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <p className="chip">{ui.characterSheet}</p>
@@ -223,9 +223,7 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
               >
                 <summary className="cursor-pointer font-medium">
                   {skill.name} — Tier {skill.tier}
-                  {skill.totalDescription
-                    ? ` (${skill.totalDescription})`
-                    : ''}
+                  {skill.totalDescription ? ` (${skill.totalDescription})` : ''}
                 </summary>
                 {skill.skillDescription && (
                   <div className="mt-2 text-xs text-(--muted) whitespace-pre-line">
@@ -265,27 +263,24 @@ function CombatSummary({
       </div>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         <div className="rounded-xl bg-white/80 p-3 border border-black/5">
-          <div className="text-xs font-semibold text-(--ink)">
-            HP
-          </div>
+          <div className="text-xs font-semibold text-(--ink)">HP</div>
           <div className="text-[22px] font-bold">
             {getStatValue(finalStats.hpBreakdown) ?? derived.hp}
           </div>
-          <StatBreakdown block={finalStats.hpBreakdown} showDetails={showDetails} />
+          <StatBreakdown
+            block={finalStats.hpBreakdown}
+            showDetails={showDetails}
+          />
         </div>
         <div className="rounded-xl bg-white/80 p-3 border border-black/5">
-          <div className="text-xs font-semibold text-(--ink)">
-            Temp HP
-          </div>
+          <div className="text-xs font-semibold text-(--ink)">Temp HP</div>
           <div className="text-[22px] font-bold">
             {getStatValue(finalStats.hpTemp) ?? 0}
           </div>
           <StatBreakdown block={finalStats.hpTemp} showDetails={showDetails} />
         </div>
         <div className="rounded-xl bg-white/80 p-3 border border-black/5">
-          <div className="text-xs font-semibold text-(--ink)">
-            AC
-          </div>
+          <div className="text-xs font-semibold text-(--ink)">AC</div>
           <div className="text-[22px] font-bold">
             {getStatValue(finalStats.ac) ?? '—'}
           </div>
@@ -299,7 +294,10 @@ function CombatSummary({
             <div className="text-[22px] font-bold">
               {getStatValue(finalStats.meleeAttack) ?? derived.baseAttackBonus}
             </div>
-            <StatBreakdown block={finalStats.meleeAttack} showDetails={showDetails} />
+            <StatBreakdown
+              block={finalStats.meleeAttack}
+              showDetails={showDetails}
+            />
           </div>
         )}
         {equipmentSummary?.showMeleeSummary && (
@@ -336,7 +334,10 @@ function CombatSummary({
             <div className="text-[22px] font-bold">
               {getStatValue(finalStats.rangedAttack) ?? derived.baseAttackBonus}
             </div>
-            <StatBreakdown block={finalStats.rangedAttack} showDetails={showDetails} />
+            <StatBreakdown
+              block={finalStats.rangedAttack}
+              showDetails={showDetails}
+            />
           </div>
         )}
         {equipmentSummary?.showRangedSummary && (
@@ -478,8 +479,8 @@ function StatBreakdown({
                   {component.source === 'Base'
                     ? component.value
                     : component.value >= 0
-                    ? `+${component.value}`
-                    : component.value}
+                      ? `+${component.value}`
+                      : component.value}
                 </span>
               </div>
             ))}

@@ -14,7 +14,7 @@ export const Header = () => {
     : 'Not signed in';
 
   return (
-    <header className="w-full flex items-center gap-6 px-6 py-3 mt-6 mb-6 card min-h-[64px]">
+    <header className="w-full flex items-center gap-6 px-6 py-3 mt-0 mb-3 card min-h-[64px]">
       <div className="flex-1 flex items-center">
         <span className="text-xl font-semibold tracking-tight text-(--ink)">
           Triantos
