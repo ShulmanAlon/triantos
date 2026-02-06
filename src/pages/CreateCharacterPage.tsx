@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { CharacterNameForm } from '@/components/CharacterCreator/CharacterNameFormView';
 import { ClassSelector } from '@/components/CharacterCreator/ClassSelectorView';
@@ -19,7 +19,7 @@ import { ClassId } from '@/types/gameClass';
 import { RaceId } from '@/types/race';
 import ImageUrlModal from '@/components/ImageUrlModal';
 import { TABLES } from '@/config/dbTables';
-import { allSkills } from '@/data/skills/allSkills';
+import { SkillEntity } from '@/types/skills';
 import { getSkillName } from '@/utils/domain/skills';
 import {
   getAcquiredSkillSelectionsUpToLevel,
@@ -76,6 +76,18 @@ export default function CharacterCreatePage() {
   const [spendTypeByTier, setSpendTypeByTier] = useState<
     Record<string, SkillPointType>
   >({});
+  const [skillsData, setSkillsData] = useState<SkillEntity[] | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    import('@/data/skills/allSkills').then((module) => {
+      if (!isMounted) return;
+      setSkillsData(module.allSkills);
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const level = 1;
   const selectedClassData = getClassById(selectedClassId);
@@ -88,8 +100,9 @@ export default function CharacterCreatePage() {
   const derivedStats = selectedClassData
     ? getBaseDerivedStats(selectedClassData, attributes, level)
     : null;
+  const skills = skillsData ?? [];
   const racialSkillsAtLevel = selectedRaceId
-    ? allSkills.flatMap((skill) => {
+    ? skills.flatMap((skill) => {
         const tiers = skill.tiers
           .filter((tier) =>
             tier.freeForRaces?.some(
@@ -268,10 +281,10 @@ export default function CharacterCreatePage() {
     human: skillPool.human - skillUsed.human,
   };
   const acquiredSkills =
-    selectedClassData && selectedRaceId
+    selectedClassData && selectedRaceId && skillsData
       ? getAcquiredSkillSelectionsUpToLevel(
           skillBuckets,
-          allSkills,
+          skillsData,
           selectedClassData.id,
           selectedRaceId,
           level
@@ -279,14 +292,14 @@ export default function CharacterCreatePage() {
       : [];
 
   const skillValidation =
-    selectedClassData && selectedRaceId
+    selectedClassData && selectedRaceId && skillsData
       ? validateLevelSkillSelections({
           buckets: skillBuckets,
           level,
           gameClass: selectedClassData,
           raceId: selectedRaceId,
           attributes,
-          skillEntities: allSkills,
+          skillEntities: skillsData,
         })
       : null;
 
@@ -406,7 +419,12 @@ export default function CharacterCreatePage() {
           {selectedClassData && <DerivedStatsPanel stats={derivedStats} />}
         </>
       )}
-      {creationStep === 'skills' && (
+      {creationStep === 'skills' && !skillsData && (
+        <div className="mb-6 panel p-4 text-sm text-gray-700">
+          Loading skills...
+        </div>
+      )}
+      {creationStep === 'skills' && skillsData && (
         <div className="mb-6 panel p-4 text-sm text-gray-700">
           <h3 className="text-sm font-semibold text-gray-700 mb-2">
             {ui.skills}
@@ -444,7 +462,7 @@ export default function CharacterCreatePage() {
           </div>
 
           <CharacterSkillsPanel
-            skills={allSkills}
+            skills={skills}
             skillRemaining={skillRemaining}
             currentSelections={currentSelections}
             showAcquired={showAcquiredSkills}

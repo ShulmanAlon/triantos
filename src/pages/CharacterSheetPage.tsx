@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { CharacterSheetView } from '@/components/CharacterSheet/CharacterSheetView';
 import { ClassId, GameClass } from '@/types/gameClass';
 import { getClassById } from '@/utils/classUtils';
@@ -11,11 +11,10 @@ import { getModifier } from '@/utils/modifier';
 import { USER_ROLES } from '@/config/userRoles';
 import { useCharacterById } from '@/hooks/useCharacterById';
 import { LoadingErrorWrapper } from '@/components/LoadingErrorWrapper';
-import { allSkills } from '@/data/skills/allSkills';
+import { SkillEntity } from '@/types/skills';
 import { buildSkillSummary } from '@/utils/domain/skills';
 import { getAcquiredSkillSelectionsUpToLevel } from '@/utils/skills/skillProgression';
 import EquipmentLoadoutModal from '@/components/EquipmentLoadoutModal';
-import { allItems } from '@/data/items/allItems';
 import { EquipmentLoadouts, EquipmentSlotKey, CharacterWithCampaign } from '@/types/characters';
 import { StatModifier } from '@/types/modifiers';
 import { buildDamageBreakdown } from '@/utils/domain/modifiers';
@@ -103,6 +102,24 @@ export const CharacterSheet = () => {
   } = useCharacterById(characterId);
   const { toast } = useToast();
 
+  const [skillsData, setSkillsData] = useState<SkillEntity[] | null>(null);
+  const [itemsData, setItemsData] = useState<GameItem[] | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    Promise.all([
+      import('@/data/skills/allSkills'),
+      import('@/data/items/allItems'),
+    ]).then(([skillsModule, itemsModule]) => {
+      if (!isMounted) return;
+      setSkillsData(skillsModule.allSkills);
+      setItemsData(itemsModule.allItems);
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const canEditCharacter =
     character !== null &&
     user !== null &&
@@ -116,10 +133,10 @@ export const CharacterSheet = () => {
   );
 
   const skillSelections = useMemo(() => {
-    if (!character) return [];
+    if (!character || !skillsData) return [];
     return getAcquiredSkillSelectionsUpToLevel(
       progressionBuckets,
-      allSkills,
+      skillsData,
       character.class_id,
       character.race_id,
       character.level,
@@ -127,6 +144,7 @@ export const CharacterSheet = () => {
   }, [
     character,
     progressionBuckets,
+    skillsData,
   ]);
   const skillSummary = useMemo(
     () => buildSkillSummary(skillSelections),
@@ -136,13 +154,14 @@ export const CharacterSheet = () => {
     return normalizeLoadouts(character?.equipment_loadouts ?? null);
   }, [character?.equipment_loadouts]);
 
+  const items = useMemo(() => itemsData ?? [], [itemsData]);
   const loadouts = normalizedLoadouts.loadouts;
   const activeLoadoutId = normalizedLoadouts.activeId;
   const activeLoadout =
     loadouts.find((loadout) => loadout.id === activeLoadoutId) ?? null;
   const itemsById = useMemo(() => {
-    return new Map(allItems.map((item) => [item.id, item]));
-  }, []);
+    return new Map(items.map((item) => [item.id, item]));
+  }, [items]);
   const getLoadoutItem = (slot: EquipmentSlotKey) => {
     const itemId = getLoadoutItemId(activeLoadout, slot);
     return itemId ? itemsById.get(itemId) ?? null : null;
@@ -205,7 +224,7 @@ export const CharacterSheet = () => {
         character.attributes,
         character.level,
         skillSelections,
-        allSkills,
+        skillsData ?? [],
         equipmentModifiers,
         {
           ac: {
@@ -332,8 +351,10 @@ export const CharacterSheet = () => {
       ? getBaseDerivedStats(classData, character.attributes, character.level)
       : null);
 
+  const dataLoading = skillsData === null || itemsData === null;
+
   return (
-    <LoadingErrorWrapper loading={isLoading} error={hasError}>
+    <LoadingErrorWrapper loading={isLoading || dataLoading} error={hasError}>
       {!character ? (
         <p className="p-4 text-red-600">Character not found.</p>
       ) : (
@@ -369,7 +390,7 @@ export const CharacterSheet = () => {
             isOpen={showLoadoutModal}
             equipmentLoadouts={normalizedLoadouts}
             selectedLoadoutId={selectedLoadoutId}
-            items={allItems}
+            items={items}
             onClose={() => setShowLoadoutModal(false)}
             onSave={handleLoadoutSave}
             derived={finalStats?.derived ?? null}
@@ -424,3 +445,5 @@ export const CharacterSheet = () => {
     </LoadingErrorWrapper>
   );
 };
+
+export default CharacterSheet;

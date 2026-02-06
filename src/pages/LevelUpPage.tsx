@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { LoadingErrorWrapper } from '@/components/LoadingErrorWrapper';
 import { useLanguage } from '@/context/LanguageContext';
-import { allSkills } from '@/data/skills/allSkills';
+import { SkillEntity } from '@/types/skills';
 import { getSkillName } from '@/utils/domain/skills';
 import { uiLabels } from '@/i18n/ui';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
@@ -68,6 +68,19 @@ export default function CharacterLevelUpPage() {
   const ui = uiLabels[language];
   const user = useCurrentUser();
   const { toast } = useToast();
+
+  const [skillsData, setSkillsData] = useState<SkillEntity[] | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    import('@/data/skills/allSkills').then((module) => {
+      if (!isMounted) return;
+      setSkillsData(module.allSkills);
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const {
     character,
@@ -151,7 +164,7 @@ export default function CharacterLevelUpPage() {
   };
 
   const pruneInvalidSelections = (nextAttributes: Record<Attribute, number>) => {
-    if (!selectedClassData || !character) return;
+    if (!selectedClassData || !character || !skillsData) return;
     const tempBuckets = skillBuckets.map((bucket) =>
       bucket.level === nextLevel
         ? { ...bucket, skillSelections: currentSelections }
@@ -163,7 +176,7 @@ export default function CharacterLevelUpPage() {
       gameClass: selectedClassData,
       raceId: character.race_id as RaceId,
       attributes: nextAttributes,
-      skillEntities: allSkills,
+      skillEntities: skillsData,
     });
     if (invalid.length === 0) return;
     const invalidSet = new Set(
@@ -253,10 +266,10 @@ export default function CharacterLevelUpPage() {
   };
 
   const acquiredSkills =
-    selectedClassData && character
+    selectedClassData && character && skillsData
       ? getAcquiredSkillSelectionsUpToLevel(
           skillBuckets,
-          allSkills,
+          skillsData,
           selectedClassData.id,
           character.race_id as RaceId,
           nextLevel
@@ -264,14 +277,14 @@ export default function CharacterLevelUpPage() {
       : [];
 
   const skillValidation =
-    selectedClassData && character
+    selectedClassData && character && skillsData
       ? validateLevelSkillSelections({
           buckets: skillBuckets,
           level: nextLevel,
           gameClass: selectedClassData,
           raceId: character.race_id as RaceId,
           attributes,
-          skillEntities: allSkills,
+          skillEntities: skillsData,
         })
       : null;
 
@@ -390,8 +403,10 @@ export default function CharacterLevelUpPage() {
     }
   };
 
+  const dataLoading = skillsData === null;
+
   return (
-    <LoadingErrorWrapper loading={isLoading} error={hasError}>
+    <LoadingErrorWrapper loading={isLoading || dataLoading} error={hasError}>
       {!character ? (
         <p className="p-4 text-red-600">Character not found.</p>
       ) : !canEditCharacter ? (
@@ -424,7 +439,7 @@ export default function CharacterLevelUpPage() {
             <LevelUpStatsPanel nextStats={nextBaseStats} hpGain={hpGain} />
           )}
 
-          {hasSkillPoints && (
+          {hasSkillPoints && skillsData && (
             <div className="mb-6 mt-6 panel p-4 text-sm text-gray-700">
               <h3 className="text-sm font-semibold text-gray-700 mb-2">
                 {ui.skills}
@@ -462,7 +477,7 @@ export default function CharacterLevelUpPage() {
               </div>
 
               <SkillsPanel
-                skills={allSkills}
+                skills={skillsData}
                 showAcquired={showAcquiredSkills}
                 showLocked={showLockedSkills}
                 showIneligible={showIneligibleSkills}

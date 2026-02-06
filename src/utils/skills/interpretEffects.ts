@@ -1,7 +1,6 @@
 import { CharacterDerivedStats } from '@/types/characters';
 import { StatModifier } from '@/types/modifiers';
 import { ActiveAbilityEffect } from '@/types/skills';
-import { isDiceRoll } from '@/types/modifiers';
 
 export function interpretEffects(
   effects: StatModifier[]
