@@ -1,8 +1,7 @@
 import { Attribute } from './attributes';
 import { ClassId } from './gameClass';
 import { RaceId } from './race';
-import { ActiveAbilityEffect } from './skills';
-import { SkillPointType } from './skills';
+import { ActiveAbilityEffect, SkillId, SkillPointType } from './skills';
 
 interface CharacterBase {
   id: string;
@@ -41,17 +40,23 @@ export type RawCharacter = Omit<CharacterPreview, 'owner_username'> & {
 };
 
 export type CharacterSkillSelection = {
-  skillId: string;
+  skillId: SkillId;
   tier: number;
   acquiredAtLevel: number;
   source?: 'selected' | 'class' | 'race';
   spendType?: SkillPointType;
 };
 
+export type EquipmentSlotKey =
+  | 'armor'
+  | 'weapon_primary'
+  | 'weapon_offhand'
+  | 'shield';
+
 export type EquipmentLoadout = {
   id: string;
   name: string;
-  items: Record<string, string | null>;
+  items: Partial<Record<EquipmentSlotKey, string | null>>;
   toggles?: Record<string, boolean>;
   notes?: string;
 };
@@ -68,7 +73,7 @@ export type SkillPointPool = {
 };
 
 export type SkillSelectionEntry = {
-  skillId: string;
+  skillId: SkillId;
   tier: number;
   spendType: SkillPointType;
 };

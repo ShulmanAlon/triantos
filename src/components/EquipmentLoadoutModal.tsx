@@ -3,9 +3,12 @@ import {
   CharacterDerivedStats,
   EquipmentLoadouts,
   EquipmentLoadout,
+  EquipmentSlotKey,
 } from '@/types/characters';
 import { GameItem } from '@/types/items';
 import { Button } from './ui/Button';
+import { ProficiencyId } from '@/config/constants';
+import { getProficiencyToggleKey } from '@/utils/modifiers';
 
 type Props = {
   isOpen: boolean;
@@ -17,9 +20,7 @@ type Props = {
   derived?: CharacterDerivedStats | null;
 };
 
-type SlotKey = 'armor' | 'weapon_primary' | 'weapon_offhand' | 'shield';
-
-const SLOT_LABELS: Record<SlotKey, string> = {
+const SLOT_LABELS: Record<EquipmentSlotKey, string> = {
   armor: 'Armor',
   weapon_primary: 'Weapon (Primary)',
   weapon_offhand: 'Weapon (Offhand)',
@@ -67,20 +68,7 @@ export default function EquipmentLoadoutModal({
     const requires = item?.requiresProficiency ?? [];
     if (requires.length === 0) return true;
     return requires.every((req) => {
-      switch (req) {
-        case 'armorHeavy':
-          return !!derived?.toggles['ac_with_heavyArmor'];
-        case 'armorLight':
-          return !!derived?.toggles['ac_with_lightArmor'];
-        case 'armorPower':
-          return !!derived?.toggles['ac_with_powerArmor'];
-        case 'armorUnarmored':
-          return !!derived?.toggles['ac_with_unarmored'];
-        case 'shieldFortress':
-          return !!derived?.toggles['ac_with_shield'];
-        default:
-          return !!derived?.toggles[`proficiency.${req}`];
-      }
+      return !!derived?.toggles[getProficiencyToggleKey(req)];
     });
   };
 
@@ -92,7 +80,7 @@ export default function EquipmentLoadoutModal({
   const armorInvalid = armorItem && !isProficient(armorItem);
   const shieldInvalid = shieldItem && !isProficient(shieldItem);
 
-  const updateLoadoutItem = (slot: SlotKey, itemId: string | null) => {
+  const updateLoadoutItem = (slot: EquipmentSlotKey, itemId: string | null) => {
     setLoadouts((prev) =>
       prev.map((loadout) => {
         if (loadout.id !== selectedLoadoutId) return loadout;

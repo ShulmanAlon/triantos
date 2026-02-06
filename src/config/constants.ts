@@ -38,7 +38,7 @@ export const DAMAGE_TYPES = [
   'poison',
 ] as const;
 
-type DamageType = (typeof DAMAGE_TYPES)[number];
+export type DamageType = (typeof DAMAGE_TYPES)[number];
 export type DamageTarget = `damage.${DamageType}`;
 export type ResistTarget = `resist.${DamageType}`;
 
@@ -90,3 +90,13 @@ const WEAPON_PROFICIENCY_IDS = [
 type WeaponProficiencyId = (typeof WEAPON_PROFICIENCY_IDS)[number];
 export type WeaponProficiencyTarget = `proficiency.${WeaponProficiencyId}`;
 export type { WeaponProficiencyId };
+
+export const ARMOR_PROFICIENCY_IDS = [
+  'armorHeavy',
+  'armorLight',
+  'armorPower',
+  'armorUnarmored',
+  'shieldFortress',
+] as const;
+export type ArmorProficiencyId = (typeof ARMOR_PROFICIENCY_IDS)[number];
+export type ProficiencyId = WeaponProficiencyId | ArmorProficiencyId;

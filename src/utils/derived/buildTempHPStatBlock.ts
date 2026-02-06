@@ -4,11 +4,12 @@ import {
   StatComponent,
   StatFormula,
 } from '@/types/characters';
+import { getModifierValue } from '@/utils/modifiers';
 
 export function buildTempHPStatBlock(
   derived: CharacterDerivedStats
 ): StatBlock<number> {
-  const tempHP = derived.modifiers['hp_temp'] ?? 0;
+  const tempHP = getModifierValue(derived, 'hp_temp');
 
   const components: StatComponent[] = [];
 

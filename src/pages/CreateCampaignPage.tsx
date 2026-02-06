@@ -6,6 +6,7 @@ import { ImageWithPlaceholder } from '@/components/ImageWithPlaceholder';
 import { getCampaignBlurImage, getCampaignImage } from '@/utils/imageUtils';
 import ImageUrlModal from '@/components/ImageUrlModal';
 import { TABLES } from '@/config/dbTables';
+import { useToast } from '@/context/ToastContext';
 
 export default function CreateCampaign() {
   const user = useCurrentUser();
@@ -17,6 +18,7 @@ export default function CreateCampaign() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
+  const { toast } = useToast();
 
   const handleCreate = async () => {
     if (!name.trim() || !user) return;
@@ -36,7 +38,9 @@ export default function CreateCampaign() {
       .single();
 
     if (insertError || !campaign) {
-      setError(insertError?.message || 'Failed to create campaign');
+      const message = insertError?.message || 'Failed to create campaign';
+      setError(message);
+      toast.error(message);
       setLoading(false);
       return;
     }
@@ -49,7 +53,9 @@ export default function CreateCampaign() {
       });
 
     if (memberError) {
-      setError('Campaign created, but failed to register as DM.');
+      const message = 'Campaign created, but failed to register as DM.';
+      setError(message);
+      toast.error(message);
     }
 
     setLoading(false);
@@ -127,7 +133,7 @@ export default function CreateCampaign() {
         onClose={() => setShowImageModal(false)}
         title="Set Campaign Image URL"
       />
-      {error && <p className="text-red-600">{error}</p>}
+      {error && <div className="sr-only">{error}</div>}
     </main>
   );
 }

@@ -1,5 +1,5 @@
 import { StatModifier } from './modifiers';
-import { WeaponProficiencyId } from '@/config/constants';
+import { ProficiencyId } from '@/config/constants';
 
 export interface GameItem {
   id: string;
@@ -54,13 +54,6 @@ export type EquipSlot =
   | 'ranged2'
   | 'shield';
 
-export type ProficiencyId =
-  | WeaponProficiencyId
-  | 'armorHeavy'
-  | 'armorLight'
-  | 'armorPower'
-  | 'armorUnarmored'
-  | 'shieldFortress';
 
 export const ITEM_TAGS = [
   'lightArmor',

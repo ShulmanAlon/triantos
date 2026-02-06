@@ -4,7 +4,7 @@ import { AttributeAllocator } from '@/components/CharacterCreator/AttributeAlloc
 import { Button } from '@/components/ui/Button';
 import { LoadingErrorWrapper } from '@/components/LoadingErrorWrapper';
 import { useLanguage } from '@/context/LanguageContext';
-import { allSkills } from '@/data/skills/allSkills';
+import { allSkills, skillsById } from '@/data/skills/allSkills';
 import { uiLabels } from '@/i18n/ui';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useCharacterById } from '@/hooks/useCharacterById';
@@ -25,11 +25,12 @@ import {
   getInvalidSelectionsForLevel,
   validateLevelSkillSelections,
 } from '@/utils/skills/skillProgression';
-import { SkillPointType } from '@/types/skills';
+import { SkillPointType, SkillId } from '@/types/skills';
 import { getClassById, getClassLevelDataById } from '@/utils/classUtils';
 import { getBaseDerivedStats } from '@/utils/derived/getBaseDerivedStats';
 import { getRaceById } from '@/utils/raceUtils';
 import { attributeLabels } from '@/i18n/attributes';
+import { useToast } from '@/context/ToastContext';
 
 const ensureNextLevelBucket = (
   buckets: LevelUpBucket[],
@@ -62,6 +63,7 @@ export default function CharacterLevelUpPage() {
   const { language } = useLanguage();
   const ui = uiLabels[language];
   const user = useCurrentUser();
+  const { toast } = useToast();
 
   const {
     character,
@@ -95,16 +97,7 @@ export default function CharacterLevelUpPage() {
       user.role === USER_ROLES.ADMIN);
 
   const progressionBuckets = useMemo(() => {
-    if (!character?.progression) return [];
-    if (typeof character.progression === 'string') {
-      try {
-        const parsed = JSON.parse(character.progression);
-        return parsed?.buckets ?? [];
-      } catch {
-        return [];
-      }
-    }
-    return character.progression.buckets ?? [];
+    return character?.progression?.buckets ?? [];
   }, [character?.progression]);
 
   const currentLevel = character?.level ?? 1;
@@ -217,7 +210,7 @@ export default function CharacterLevelUpPage() {
   };
 
   const handleAddSkill = (
-    skillId: string,
+    skillId: SkillId,
     tier: number,
     spendType: SkillPointType
   ) => {
@@ -231,7 +224,7 @@ export default function CharacterLevelUpPage() {
     ]);
   };
 
-  const handleRemoveSkill = (skillId: string, tier: number) => {
+  const handleRemoveSkill = (skillId: SkillId, tier: number) => {
     updateCurrentBucketSelections(
       currentSelections.filter(
         (s) => !(s.skillId === skillId && s.tier === tier)
@@ -290,9 +283,8 @@ export default function CharacterLevelUpPage() {
   const hasUnspentAbilityPoint = hasAbilityPointThisLevel && usedPoints === 0;
 
   const attributeNames = attributeLabels[language];
-  const skillById = new Map(allSkills.map((skill) => [skill.id, skill]));
 
-  const hasSkillTier = (skillId: string, tier: number): boolean =>
+  const hasSkillTier = (skillId: SkillId, tier: number): boolean =>
     acquiredSkills.some(
       (selection) =>
         selection.skillId === skillId &&
@@ -322,7 +314,7 @@ export default function CharacterLevelUpPage() {
       };
     }
     if (prereq.type === 'skill' && prereq.skillId && prereq.tier) {
-      const skillName = skillById.get(prereq.skillId)?.name ?? prereq.skillId;
+      const skillName = skillsById.get(prereq.skillId)?.name ?? prereq.skillId;
       return {
         label: `${skillName} Tier ${prereq.tier}`,
         met: hasSkillTier(prereq.skillId, prereq.tier),
@@ -349,11 +341,16 @@ export default function CharacterLevelUpPage() {
     );
 
     try {
-      await updateCharacter({
+      const result = await updateCharacter({
         level: nextLevel,
         attributes: updatedAttributes,
         progression,
       });
+      if (result?.error) {
+        setError(result.error.message ?? 'Failed to level up.');
+        toast.error(result.error.message ?? 'Failed to level up.');
+        return;
+      }
       navigate(`/character/${character.id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to level up.');
@@ -761,7 +758,7 @@ export default function CharacterLevelUpPage() {
             </div>
           )}
 
-          {error && <p className="text-red-600 mt-4">{error}</p>}
+          {error && <div className="sr-only">{error}</div>}
 
           <div className="flex justify-end gap-2">
             <Button variant="outline" onClick={() => navigate(-1)}>

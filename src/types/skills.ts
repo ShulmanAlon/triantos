@@ -7,8 +7,10 @@ import { RaceId } from './race';
 
 export type SkillPointType = 'core' | 'utility' | 'human';
 
+export type SkillId = string;
+
 export type SkillEntity = {
-  id: string; // SkillId
+  id: SkillId;
   name: string;
   family: SkillFamilyId; // SkillFamilyId
   skillPointType: SkillPointType;
@@ -54,7 +56,7 @@ export type TierName =
 export type TierPrerequisite =
   | { type: 'level'; minimum: number }
   | { type: 'attribute'; attribute: Attribute; minimum: number }
-  | { type: 'skill'; skillId: string; tier: number };
+  | { type: 'skill'; skillId: SkillId; tier: number };
 
 export type ActiveAbilityEffect = {
   abilityName: string;

@@ -22,7 +22,7 @@ import { ImageWithPlaceholder } from '@/components/ImageWithPlaceholder';
 import { getCharacterImage, getCharacterBlurImage } from '@/utils/imageUtils';
 import ImageUrlModal from '@/components/ImageUrlModal';
 import { TABLES } from '@/config/dbTables';
-import { allSkills } from '@/data/skills/allSkills';
+import { allSkills, skillsById } from '@/data/skills/allSkills';
 import {
   getAcquiredSkillSelectionsUpToLevel,
   getSkillPointPoolForLevel,
@@ -36,8 +36,9 @@ import {
   LevelUpBucket,
   SkillSelectionEntry,
 } from '@/types/characters';
-import { SkillPointType } from '@/types/skills';
+import { SkillPointType, SkillId } from '@/types/skills';
 import { attributeLabels } from '@/i18n/attributes';
+import { useToast } from '@/context/ToastContext';
 
 type CreationStep = 'class' | 'race' | 'attributes' | 'skills';
 
@@ -62,6 +63,7 @@ export default function CharacterCreatePage() {
   const [showImageModal, setShowImageModal] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
   const [skillBuckets, setSkillBuckets] = useState<LevelUpBucket[]>([
     { level: 1, skillSelections: [] },
   ]);
@@ -191,9 +193,10 @@ export default function CharacterCreatePage() {
       });
 
     if (insertError || upsertError) {
-      setError(
-        (insertError?.message ?? null) || (upsertError?.message ?? null),
-      );
+      const message =
+        (insertError?.message ?? null) || (upsertError?.message ?? null);
+      setError(message);
+      if (message) toast.error(message);
       setSaving(false);
       return;
     }
@@ -228,7 +231,11 @@ export default function CharacterCreatePage() {
     );
   };
 
-  const handleAddSkill = (skillId: string, tier: number, spendType: SkillPointType) => {
+  const handleAddSkill = (
+    skillId: SkillId,
+    tier: number,
+    spendType: SkillPointType
+  ) => {
     const exists = currentSelections.some(
       (s) => s.skillId === skillId && s.tier === tier
     );
@@ -239,7 +246,7 @@ export default function CharacterCreatePage() {
     ]);
   };
 
-  const handleRemoveSkill = (skillId: string, tier: number) => {
+  const handleRemoveSkill = (skillId: SkillId, tier: number) => {
     updateCurrentBucketSelections(
       currentSelections.filter(
         (s) => !(s.skillId === skillId && s.tier === tier)
@@ -284,8 +291,7 @@ export default function CharacterCreatePage() {
     canFinishCharacter && (skillValidation?.isValid ?? false);
 
   const attributeNames = attributeLabels[language];
-  const skillById = new Map(allSkills.map((skill) => [skill.id, skill]));
-  const hasSkillTier = (skillId: string, tier: number): boolean =>
+  const hasSkillTier = (skillId: SkillId, tier: number): boolean =>
     acquiredSkills.some(
       (selection) =>
         selection.skillId === skillId &&
@@ -314,7 +320,7 @@ export default function CharacterCreatePage() {
       };
     }
     if (prereq.type === 'skill' && prereq.skillId && prereq.tier) {
-      const skillName = skillById.get(prereq.skillId)?.name ?? prereq.skillId;
+      const skillName = skillsById.get(prereq.skillId)?.name ?? prereq.skillId;
       return {
         label: `${skillName} Tier ${prereq.tier}`,
         met: hasSkillTier(prereq.skillId, prereq.tier),
@@ -721,7 +727,7 @@ export default function CharacterCreatePage() {
       />
 
       {/* Error & Actions */}
-      {error && <p className="text-red-600 mt-4">{error}</p>}
+      {error && <div className="sr-only">{error}</div>}
       <div className="flex justify-between items-center mt-8">
         <div className="flex gap-2">
           <Button variant="outline" onClick={handleCancel}>

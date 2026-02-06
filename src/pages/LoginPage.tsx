@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { useRedirectIfLoggedIn } from '@/hooks/useRedirectIfLoggedIn';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/context/ToastContext';
 
 export const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -9,6 +10,7 @@ export const LoginPage = () => {
   const [errorMsg, setErrorMsg] = useState('');
 
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   useRedirectIfLoggedIn('/dashboard');
 
@@ -21,6 +23,7 @@ export const LoginPage = () => {
 
     if (error) {
       setErrorMsg(error.message);
+      toast.error(error.message);
     } else {
       setErrorMsg('');
       navigate('/dashboard');
@@ -53,7 +56,7 @@ export const LoginPage = () => {
           />
         </div>
 
-        {errorMsg && <p className="text-red-600 text-sm">{errorMsg}</p>}
+        {errorMsg && <div className="sr-only">{errorMsg}</div>}
 
         <button
           type="submit"

@@ -12,6 +12,7 @@ import {
   TierData,
   TierPrerequisite,
   SkillPointType,
+  SkillId,
 } from '@/types/skills';
 
 export type SkillTierStatus = 'available' | 'locked' | 'ineligible' | 'acquired';
@@ -31,7 +32,7 @@ export type SkillSelectionValidationResult = {
 };
 
 export type InvalidSkillSelection = {
-  skillId: string;
+  skillId: SkillId;
   tier: number;
   reason: string;
 };
@@ -200,7 +201,7 @@ const isSkillForbidden = (
 
 const hasSkillTier = (
   acquired: CharacterSkillSelection[],
-  skillId: string,
+  skillId: SkillId,
   tier: number,
   level: number,
   allowSameLevel: boolean

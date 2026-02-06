@@ -6,6 +6,8 @@ import { LoginPage } from '@/pages/LoginPage';
 import { RequireAuth } from '@/components/Auth/RequireAuth';
 import { Header } from '@/components/Layout/Header';
 import { LanguageProvider } from '@/context/LanguageContext';
+import { ToastProvider } from '@/context/ToastContext';
+import { ToastContainer } from '@/components/ToastContainer';
 import LandingPage from '@/pages';
 import DashboardPage from '@/pages/DashboardPage';
 import CreateCampaign from '@/pages/CreateCampaignPage';
@@ -16,10 +18,11 @@ import CampaignHandbookPage from '@/pages/CampaignHandbookPage';
 function App() {
   return (
     <LanguageProvider>
-      <Router>
-        <main className="w-full max-w-screen-lg mx-auto px-4 pb-10">
-          <Header />
-          <Routes>
+      <ToastProvider>
+        <Router>
+          <main className="w-full max-w-screen-lg mx-auto px-4 pb-10">
+            <Header />
+            <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route
@@ -92,9 +95,11 @@ function App() {
                 </RequireAuth>
               }
             />
-          </Routes>
-        </main>
-      </Router>
+            </Routes>
+          </main>
+          <ToastContainer />
+        </Router>
+      </ToastProvider>
     </LanguageProvider>
   );
 }

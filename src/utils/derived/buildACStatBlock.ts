@@ -9,6 +9,7 @@ import { BASE_AC } from '@/config/constants';
 import { getModifier } from '../modifier';
 import { getTagBasedModifier } from '@/utils/logic/tagModifiers';
 import { StatModifier } from '@/types/modifiers';
+import { getModifierValue } from '@/utils/modifiers';
 
 export type EquipmentACContext = {
   armorType?: 'unarmored' | 'lightArmor' | 'heavyArmor' | 'powerArmor';
@@ -45,7 +46,8 @@ export function buildACStatBlock(
 
   const shieldTagBonus = getTagBasedModifier('ac', ['shield'], derived);
   const shieldSkillBonus =
-    (skillDerived?.modifiers['ac_with_shield'] ?? 0) + shieldTagBonus;
+    (skillDerived ? getModifierValue(skillDerived, 'ac_with_shield') : 0) +
+    shieldTagBonus;
   const shieldBaseBonus = equipmentModifiers
     .filter(
       (mod) => mod.target === 'ac_shield_base' && typeof mod.value === 'number'
@@ -76,7 +78,7 @@ export function buildACStatBlock(
       armorKey in derived.modifiers;
     const armorTagBonus = getTagBasedModifier('ac', ['armor', armor.id], derived);
     const armorSkillBonus =
-      (skillDerived?.modifiers[armorKey] ?? 0) + armorTagBonus;
+      (skillDerived ? getModifierValue(skillDerived, armorKey) : 0) + armorTagBonus;
     const armorBaseBonus = equipmentModifiers
       .filter(
         (mod) => mod.target === 'ac_armor_base' && typeof mod.value === 'number'

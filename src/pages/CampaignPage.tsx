@@ -12,9 +12,10 @@ import {
 import type { ClassId } from '@/types/gameClass';
 import EditCampaignModal from '@/components/EditCampaignModal';
 import { USER_ROLES } from '@/config/userRoles';
-import { useCampaignById } from '@/hooks/useCamapaignById';
+import { useCampaignById } from '@/hooks/useCampaignById';
 import { useCharactersByCampaignId } from '@/hooks/useCharactersByCampaignId';
 import { LoadingErrorWrapper } from '@/components/LoadingErrorWrapper';
+import { useToast } from '@/context/ToastContext';
 
 export default function CampaignPage() {
   const { id: campaignId } = useParams<{ id: string }>();
@@ -22,6 +23,7 @@ export default function CampaignPage() {
   const navigate = useNavigate();
 
   const [showEditModal, setShowEditModal] = useState(false);
+  const { toast } = useToast();
 
   const {
     campaign,
@@ -178,7 +180,13 @@ export default function CampaignPage() {
                   );
                   if (!confirmed) return;
 
-                  await updateCampaign({ deleted: true });
+                  const result = await updateCampaign({ deleted: true });
+                  if (result?.error) {
+                    toast.error(
+                      result.error.message ?? 'Failed to delete campaign.'
+                    );
+                    return;
+                  }
                   navigate('/dashboard');
                 }}
               >
@@ -192,7 +200,13 @@ export default function CampaignPage() {
               campaign={campaign}
               onClose={() => setShowEditModal(false)}
               onSave={async (updated) => {
-                await updateCampaign(updated);
+                const result = await updateCampaign(updated);
+                if (result?.error) {
+                  toast.error(
+                    result.error.message ?? 'Failed to update campaign.'
+                  );
+                  return;
+                }
                 setShowEditModal(false);
               }}
             />

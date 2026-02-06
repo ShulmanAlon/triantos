@@ -1,4 +1,4 @@
-import { SkillEntity } from '@/types/skills';
+import { SkillEntity, SkillId } from '@/types/skills';
 import * as attackSkills from './attackSkills';
 import * as defenseSkills from './defenseSkills';
 import * as pilotingSkills from './pilotingSkills';
@@ -22,3 +22,7 @@ export const allSkills: SkillEntity[] = [
   ...collect(pilotingSkills as Record<string, SkillEntity>).map(normalizeSkill),
   ...collect(racialSkills as Record<string, SkillEntity>).map(normalizeSkill),
 ];
+
+export const skillsById: Map<SkillId, SkillEntity> = new Map(
+  allSkills.map((skill) => [skill.id, skill])
+);

@@ -12,12 +12,17 @@ import { getModifier } from '@/utils/modifier';
 import { USER_ROLES } from '@/config/userRoles';
 import { useCharacterById } from '@/hooks/useCharacterById';
 import { LoadingErrorWrapper } from '@/components/LoadingErrorWrapper';
-import { allSkills } from '@/data/skills/allSkills';
+import { allSkills, skillsById } from '@/data/skills/allSkills';
 import { getAcquiredSkillSelectionsUpToLevel } from '@/utils/skills/skillProgression';
 import EquipmentLoadoutModal from '@/components/EquipmentLoadoutModal';
 import { allItems } from '@/data/items/allItems';
-import { EquipmentLoadout, EquipmentLoadouts } from '@/types/characters';
+import { EquipmentLoadout, EquipmentLoadouts, EquipmentSlotKey } from '@/types/characters';
 import { StatModifier } from '@/types/modifiers';
+import { buildDamageBreakdown } from '@/utils/modifiers';
+import { normalizeLoadouts } from '@/utils/loadouts';
+import { useToast } from '@/context/ToastContext';
+import { SkillId } from '@/types/skills';
+import { ProficiencyId } from '@/config/constants';
 
 export const CharacterSheet = () => {
   const { id: characterId } = useParams<{ id: string }>();
@@ -36,6 +41,7 @@ export const CharacterSheet = () => {
     error: hasError,
     updateCharacter,
   } = useCharacterById(characterId);
+  const { toast } = useToast();
 
   const canEditCharacter =
     character !== null &&
@@ -44,18 +50,7 @@ export const CharacterSheet = () => {
       character.campaign_owner_id === user.id ||
       user.role === USER_ROLES.ADMIN);
 
-  const progressionBuckets = (() => {
-    if (!character?.progression) return [];
-    if (typeof character.progression === 'string') {
-      try {
-        const parsed = JSON.parse(character.progression);
-        return parsed?.buckets ?? [];
-      } catch {
-        return [];
-      }
-    }
-    return character.progression.buckets ?? [];
-  })();
+  const progressionBuckets = character?.progression?.buckets ?? [];
 
   const skillSelections = character
     ? getAcquiredSkillSelectionsUpToLevel(
@@ -66,11 +61,7 @@ export const CharacterSheet = () => {
         character.level,
       )
     : [];
-  const skillById = new Map(allSkills.map((skill) => [skill.id, skill]));
-  const highestBySkill = new Map<
-    string,
-    { tier: number; source?: string }
-  >();
+  const highestBySkill = new Map<SkillId, { tier: number; source?: string }>();
   for (const selection of skillSelections) {
     const current = highestBySkill.get(selection.skillId);
     if (!current || selection.tier > current.tier) {
@@ -82,7 +73,7 @@ export const CharacterSheet = () => {
   }
   const skillSummary = Array.from(highestBySkill.entries()).map(
     ([skillId, data]) => {
-      const skill = skillById.get(skillId);
+      const skill = skillsById.get(skillId);
       const tier = skill?.tiers.find((t) => t.tier === data.tier);
       return {
         name: skill?.name ?? skillId,
@@ -94,56 +85,20 @@ export const CharacterSheet = () => {
     }
   );
   const normalizedLoadouts = useMemo<EquipmentLoadouts>(() => {
-    if (!character?.equipment_loadouts) {
-      return {
-        activeId: 'loadout-1',
-        loadouts: [
-          { id: 'loadout-1', name: 'Loadout 1', items: {} },
-          { id: 'loadout-2', name: 'Loadout 2', items: {} },
-          { id: 'loadout-3', name: 'Loadout 3', items: {} },
-          { id: 'loadout-4', name: 'Loadout 4', items: {} },
-        ],
-      };
-    }
-    const raw =
-      typeof character.equipment_loadouts === 'string'
-        ? (JSON.parse(character.equipment_loadouts) as EquipmentLoadouts)
-        : character.equipment_loadouts;
-    const loadouts = (raw.loadouts ?? []).map((loadout) => ({
-      ...loadout,
-      items: Array.isArray(loadout.items) ? {} : loadout.items,
-    }));
-    const existingIds = new Set(loadouts.map((l) => l.id));
-    const defaults: EquipmentLoadout[] = [
-      { id: 'loadout-1', name: 'Loadout 1', items: {} },
-      { id: 'loadout-2', name: 'Loadout 2', items: {} },
-      { id: 'loadout-3', name: 'Loadout 3', items: {} },
-      { id: 'loadout-4', name: 'Loadout 4', items: {} },
-    ];
-    for (const def of defaults) {
-      if (!existingIds.has(def.id)) {
-        loadouts.push(def);
-      }
-    }
-    return { activeId: raw.activeId ?? 'loadout-1', loadouts };
+    return normalizeLoadouts(character?.equipment_loadouts ?? null);
   }, [character?.equipment_loadouts]);
 
   const loadouts = normalizedLoadouts.loadouts;
   const activeLoadoutId = normalizedLoadouts.activeId;
   const activeLoadout =
     loadouts.find((loadout) => loadout.id === activeLoadoutId) ?? null;
-  const activeArmorItem =
-    allItems.find((item) => item.id === activeLoadout?.items['armor']) ?? null;
-  const activeShieldItem =
-    allItems.find((item) => item.id === activeLoadout?.items['shield']) ?? null;
-  const activePrimaryWeapon =
-    allItems.find(
-      (item) => item.id === activeLoadout?.items['weapon_primary']
-    ) ?? null;
-  const activeOffhandWeapon =
-    allItems.find(
-      (item) => item.id === activeLoadout?.items['weapon_offhand']
-    ) ?? null;
+  const getLoadoutItem = (slot: EquipmentSlotKey) =>
+    allItems.find((item) => item.id === activeLoadout?.items[slot]) ?? null;
+
+  const activeArmorItem = getLoadoutItem('armor');
+  const activeShieldItem = getLoadoutItem('shield');
+  const activePrimaryWeapon = getLoadoutItem('weapon_primary');
+  const activeOffhandWeapon = getLoadoutItem('weapon_offhand');
 
   const armorType = activeArmorItem?.tags.includes('heavyArmor')
     ? 'heavyArmor'
@@ -185,7 +140,7 @@ export const CharacterSheet = () => {
     ) ?? 'blunt') as 'energy' | 'blunt' | 'slash' | 'pierce';
 
   const getRangedAttackType = () => {
-    const profs = rangedWeapon?.requiresProficiency ?? [];
+    const profs: ProficiencyId[] = rangedWeapon?.requiresProficiency ?? [];
     if (profs.includes('rangedAdvancedWeapons')) return 'advanced';
     if (profs.includes('rangedHeavyWeapons')) return 'heavy';
     if (profs.includes('rangedMounted')) return 'mounted';
@@ -199,85 +154,21 @@ export const CharacterSheet = () => {
   const meleeProficiencyId = meleeWeapon?.requiresProficiency?.[0];
   const rangedProficiencyId = rangedWeapon?.requiresProficiency?.[0];
 
-  const buildDamageBreakdown = (
+  const makeDamageBreakdown = (
     weapon: typeof activePrimaryWeapon | null,
     includeStr: boolean
   ) => {
     if (!weapon) return { summary: '—', parts: [] as { label: string; value: string }[] };
-
-    const baseMods = (weapon.baseDamage ?? []).filter(
-      (mod) => mod.target.startsWith('damage.') && mod.operation === 'add'
-    );
-    const enchantMods = (weapon.modifiers ?? []).filter(
-      (mod) => mod.target.startsWith('damage.') && mod.operation === 'add'
-    );
-
-    const formatDamage = (mod: { target: string; value: unknown }) => {
-      const damageType = mod.target.split('.')[1] ?? 'damage';
-      if (typeof mod.value === 'number') {
-        return `${mod.value} ${damageType}`;
-      }
-      if (
-        typeof mod.value === 'object' &&
-        mod.value !== null &&
-        'diceRoll' in mod.value &&
-        'diceType' in mod.value
-      ) {
-        const roll = mod.value as { diceRoll: number; diceType: number };
-        return `${roll.diceRoll}d${roll.diceType} ${damageType}`;
-      }
-      return null;
-    };
-
-    const parts: { label: string; value: string }[] = [];
-
-    for (const mod of baseMods) {
-      const text = formatDamage(mod);
-      if (!text) continue;
-      parts.push({ label: 'weapon', value: text });
-    }
-
-    if (includeStr) {
-      const strMod = getModifier(character?.attributes.str ?? 0);
-      if (strMod !== 0) {
-        parts.push({
-          label: 'STR',
-          value: strMod > 0 ? `+${strMod}` : `${strMod}`,
-        });
-      }
-    }
-
-    for (const mod of enchantMods) {
-      const text = formatDamage(mod);
-      if (!text) continue;
-      parts.push({
-        label: 'enchantment',
-        value: text.startsWith('-') ? text : `+${text}`,
-      });
-    }
-
-    const summaryParts: string[] = [];
-    for (const part of parts) {
-      if (part.label === 'weapon') {
-        summaryParts.push(part.value.split(' ')[0]);
-      } else if (part.label === 'STR') {
-        summaryParts.push(part.value);
-      } else if (part.label === 'enchantment') {
-        summaryParts.push(part.value.split(' ')[0]);
-      } else if (part.label.startsWith('skill')) {
-        summaryParts.push(part.value);
-      }
-    }
-    const summary = summaryParts.length > 0 ? summaryParts.join(' ') : '—';
-
-    return {
-      summary: summary || '—',
-      parts,
-    };
+    const strMod = includeStr ? getModifier(character?.attributes.str ?? 0) : undefined;
+    return buildDamageBreakdown({
+      baseModifiers: weapon.baseDamage ?? [],
+      enchantmentModifiers: weapon.modifiers ?? [],
+      strengthModifier: strMod,
+    });
   };
 
-  const meleeDamageBreakdown = buildDamageBreakdown(meleeWeapon, true);
-  const rangedDamageBreakdown = buildDamageBreakdown(rangedWeapon, false);
+  const meleeDamageBreakdown = makeDamageBreakdown(meleeWeapon, true);
+  const rangedDamageBreakdown = makeDamageBreakdown(rangedWeapon, false);
   const equipmentModifiers: StatModifier[] = activeLoadout
     ? Object.values(activeLoadout.items)
         .filter((itemId): itemId is string => !!itemId)
@@ -338,6 +229,10 @@ export const CharacterSheet = () => {
       level: character.level - 1,
       attributes: nextAttributes,
       progression: { buckets: nextBuckets },
+    }).then((result) => {
+      if (result?.error) {
+        toast.error(result.error.message ?? 'Failed to level down.');
+      }
     });
   };
 
@@ -365,7 +260,13 @@ export const CharacterSheet = () => {
               <Button
                 variant="outline"
                 onClick={() => {
-                  updateCharacter({ visible: !character.visible });
+                  updateCharacter({ visible: !character.visible }).then((result) => {
+                    if (result?.error) {
+                      toast.error(
+                        result.error.message ?? 'Failed to update visibility.'
+                      );
+                    }
+                  });
                 }}
               >
                 {character.visible
@@ -390,7 +291,10 @@ export const CharacterSheet = () => {
                 ...normalizedLoadouts,
                 activeId: loadoutId,
               };
-              await updateCharacter({ equipment_loadouts: next });
+              const result = await updateCharacter({ equipment_loadouts: next });
+              if (result?.error) {
+                toast.error(result.error.message ?? 'Failed to update loadout.');
+              }
             }}
             onLoadoutEdit={(loadoutId) => {
               setSelectedLoadoutId(loadoutId);
@@ -431,7 +335,10 @@ export const CharacterSheet = () => {
             items={allItems}
             onClose={() => setShowLoadoutModal(false)}
             onSave={async (next) => {
-              await updateCharacter({ equipment_loadouts: next });
+              const result = await updateCharacter({ equipment_loadouts: next });
+              if (result?.error) {
+                toast.error(result.error.message ?? 'Failed to update loadout.');
+              }
             }}
             derived={finalStats?.derived ?? null}
           />
@@ -466,7 +373,13 @@ export const CharacterSheet = () => {
             character={character}
             onClose={() => setShowEditModal(false)}
             onSave={async (updated) => {
-              await updateCharacter(updated);
+              const result = await updateCharacter(updated);
+              if (result?.error) {
+                toast.error(
+                  result.error.message ?? 'Failed to update character.'
+                );
+                return;
+              }
               setShowEditModal(false);
             }}
           />
@@ -515,9 +428,16 @@ export const CharacterSheet = () => {
                   <Button
                     variant="destructive"
                     onClick={() => {
-                      updateCharacter({ deleted: true });
+                      updateCharacter({ deleted: true }).then((result) => {
+                        if (result?.error) {
+                          toast.error(
+                            result.error.message ?? 'Failed to delete character.'
+                          );
+                          return;
+                        }
+                        navigate(`/campaign/${character.campaign_id}`);
+                      });
                       setShowDeleteModal(false);
-                      navigate(`/campaign/${character.campaign_id}`);
                     }}
                   >
                     Delete

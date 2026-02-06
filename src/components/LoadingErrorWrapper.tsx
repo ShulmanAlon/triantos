@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 
 interface LoadingErrorWrapperProps {
   loading: boolean;
@@ -11,7 +11,18 @@ export function LoadingErrorWrapper({
   error,
   children,
 }: LoadingErrorWrapperProps) {
-  if (loading) {
+  const [showLoading, setShowLoading] = useState(false);
+
+  useEffect(() => {
+    if (!loading) {
+      setShowLoading(false);
+      return;
+    }
+    const timer = setTimeout(() => setShowLoading(true), 150);
+    return () => clearTimeout(timer);
+  }, [loading]);
+
+  if (loading && showLoading) {
     return <p className="p-4">Loading...</p>;
   }
 

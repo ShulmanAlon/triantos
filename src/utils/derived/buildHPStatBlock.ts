@@ -7,6 +7,7 @@ import {
 import { Attribute } from '@/types/attributes';
 import { GameClass } from '@/types/gameClass';
 import { getModifier } from '../modifier';
+import { getModifierValue } from '@/utils/modifiers';
 import { NAME_LEVEL } from '@/config/constants';
 
 export function buildHPStatBlock(
@@ -15,7 +16,7 @@ export function buildHPStatBlock(
   level: number,
   derived: CharacterDerivedStats
 ): StatBlock<number> {
-  const flatBonus = derived.modifiers['hp_flat'] ?? 0;
+  const flatBonus = getModifierValue(derived, 'hp_flat');
 
   const conMod = getModifier(attributes.con);
   const base = Math.min(level, NAME_LEVEL) * gameClass.hpPerLevelToNine;

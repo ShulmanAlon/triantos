@@ -8,6 +8,7 @@ import { Attribute } from '@/types/attributes';
 import { getModifier } from '../modifier';
 import { MELEE_TYPES, MeleeTypes } from '@/config/constants';
 import { getTagBasedModifier } from '@/utils/logic/tagModifiers';
+import { getModifierValue, getProficiencyToggleKey } from '@/utils/modifiers';
 
 export function buildMeleeAttackStatBlock(
   attributes: Record<Attribute, number>,
@@ -17,9 +18,9 @@ export function buildMeleeAttackStatBlock(
   requiredProficiencyId?: string
 ): StatBlock<number> {
   const strMod = getModifier(attributes.str);
-  const flatBonus = derived.modifiers['attack_bonus_flat'] ?? 0;
+  const flatBonus = getModifierValue(derived, 'attack_bonus_flat');
   const proficiencyKey = requiredProficiencyId
-    ? (`proficiency.${requiredProficiencyId}` as keyof CharacterDerivedStats['toggles'])
+    ? (getProficiencyToggleKey(requiredProficiencyId) as keyof CharacterDerivedStats['toggles'])
     : null;
   const isProficient = proficiencyKey ? derived.toggles[proficiencyKey] : true;
 
@@ -31,7 +32,7 @@ export function buildMeleeAttackStatBlock(
     const lowerType = type.toLowerCase();
     const attackKey = `attack_bonus_melee_${lowerType}`;
     const tagBonus = getTagBasedModifier('attack_bonus', ['melee', lowerType], derived);
-    const typeBonus = (derived.modifiers[attackKey] ?? 0) + tagBonus;
+    const typeBonus = getModifierValue(derived, attackKey) + tagBonus;
 
     const components: StatComponent[] = [
       { source: 'Base Attack Bonus', value: bab },
