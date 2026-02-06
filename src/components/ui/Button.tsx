@@ -18,14 +18,14 @@ export function Button({
   variant = 'primary',
 }: ButtonProps) {
   const baseClasses =
-    'rounded-xl px-4 py-2 text-sm font-semibold transition-all shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]/40 focus-visible:ring-offset-2';
+    'rounded-xl px-4 py-2 text-sm font-semibold transition-all shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--accent)/40 focus-visible:ring-offset-2';
   const variantClasses = {
     primary:
-      'bg-[var(--accent)] text-white hover:bg-[var(--accent-dark)] shadow-[0_10px_18px_rgba(15,123,108,0.25)]',
+      'bg-(--accent) text-white hover:bg-(--accent-dark) shadow-[0_10px_18px_rgba(15,123,108,0.25)]',
     outline:
-      'border border-black/10 text-[var(--ink)] hover:bg-black/5 bg-white/70',
+      'border border-black/10 text-(--ink) hover:bg-black/5 bg-white/70',
     destructive:
-      'bg-[var(--warn)] text-white hover:bg-[#8d2f1f] shadow-[0_10px_18px_rgba(179,64,42,0.2)]',
+      'bg-(--warn) text-white hover:bg-[#8d2f1f] shadow-[0_10px_18px_rgba(179,64,42,0.2)]',
   }[variant];
 
   return (

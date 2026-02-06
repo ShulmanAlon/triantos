@@ -85,12 +85,12 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
   const renderBreakdown = (block?: StatBlock<number>) => {
     if (!block || block.type !== 'breakdown') return null;
     return (
-      <details className="mt-2 text-xs text-[var(--muted)]">
+      <details className="mt-2 text-xs text-(--muted)">
         <summary className="cursor-pointer">Details</summary>
         <div className="mt-2 space-y-2">
           {block.entries.map((entry) => (
             <div key={entry.label} className="rounded-lg bg-white/70 p-2">
-              <div className="text-[var(--ink)] font-semibold">
+              <div className="text-(--ink) font-semibold">
                 {entry.label}: {entry.total}
               </div>
               <div className="mt-1 space-y-1">
@@ -123,11 +123,11 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
         <div>
           <p className="chip">{ui.characterSheet}</p>
           <h2 className="text-2xl font-bold mt-2">{characterName}</h2>
-          <p className="text-sm text-[var(--muted)]">
+          <p className="text-sm text-(--muted)">
             {ui.player}: {playerName}
           </p>
         </div>
-        <div className="panel px-4 py-3 text-sm text-[var(--muted)]">
+        <div className="panel px-4 py-3 text-sm text-(--muted)">
           <div>
             {ui.level}: <span className="font-semibold">{level}</span>
           </div>
@@ -137,13 +137,13 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
           </div>
         </div>
       </div>
-      <p className="text-sm text-[var(--muted)]">
+      <p className="text-sm text-(--muted)">
         {ui.class}:{' '}
         {selectedClassId
           ? getClassNameById(selectedClassId, language)
           : 'Select Class'}
       </p>
-      <p className="text-sm text-[var(--muted)]">
+      <p className="text-sm text-(--muted)">
         {ui.race}:{' '}
         {selectedRaceId
           ? getRaceNameById(selectedRaceId, language)
@@ -176,7 +176,7 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
               const modifier = getModifier(attrValue);
               return (
                 <tr key={attr}>
-                  <td className="pr-4 font-medium text-[var(--ink)]">
+                  <td className="pr-4 font-medium text-(--ink)">
                     {getAttributeNameById(attr, language)}
                   </td>
                   <td className="pr-4 text-center">{attrValue}</td>
@@ -193,7 +193,7 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
       {derived.spellSlots && (
         <div className="mt-4 panel p-4">
           <h3 className="section-title mb-2">{ui.spellSlots}</h3>
-          <ul className="ml-4 list-disc text-sm text-[var(--muted)]">
+          <ul className="ml-4 list-disc text-sm text-(--muted)">
             {Object.entries(derived.spellSlots).map(([level, slots]) => (
               <li key={level}>
                 {ui.levelSpell} {level}: {slots}{' '}
@@ -218,14 +218,14 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
             {skills.map((skill, index) => (
               <details
                 key={`${skill.name}-${skill.tier}-${index}`}
-                className="rounded-xl border border-black/5 bg-white/80 px-3 py-2 text-sm text-[var(--muted)]"
+                className="rounded-xl border border-black/5 bg-white/80 px-3 py-2 text-sm text-(--muted)"
               >
                 <summary className="cursor-pointer font-medium">
                   {skill.name} — Tier {skill.tier}
                   {skill.totalDescription ? ` (${skill.totalDescription})` : ''}
                 </summary>
                 {skill.skillDescription && (
-                  <div className="mt-2 text-xs text-[var(--muted)] whitespace-pre-line">
+                  <div className="mt-2 text-xs text-(--muted) whitespace-pre-line">
                     {skill.skillDescription}
                   </div>
                 )}
@@ -266,7 +266,7 @@ function CombatSummary({
       <h3 className="section-title mb-3">Combat Summary</h3>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-xl bg-white/80 p-3 border border-black/5">
-          <div className="text-xs uppercase tracking-wide text-[var(--muted)]">
+          <div className="text-xs uppercase tracking-wide text-(--muted)">
             HP
           </div>
           <div className="text-2xl font-bold">
@@ -275,7 +275,7 @@ function CombatSummary({
           {renderBreakdown(finalStats.hpBreakdown)}
         </div>
         <div className="rounded-xl bg-white/80 p-3 border border-black/5">
-          <div className="text-xs uppercase tracking-wide text-[var(--muted)]">
+          <div className="text-xs uppercase tracking-wide text-(--muted)">
             Temp HP
           </div>
           <div className="text-2xl font-bold">
@@ -284,14 +284,14 @@ function CombatSummary({
           {renderBreakdown(finalStats.hpTemp)}
         </div>
         <div className="rounded-xl bg-white/80 p-3 border border-black/5">
-          <div className="text-xs uppercase tracking-wide text-[var(--muted)]">
+          <div className="text-xs uppercase tracking-wide text-(--muted)">
             AC
           </div>
           <div className="text-2xl font-bold">
             {getStatValue(finalStats.ac) ?? '—'}
           </div>
           {equipmentSummary?.armorTypeLabel && (
-            <div className="text-xs text-[var(--muted)]">
+            <div className="text-xs text-(--muted)">
               {equipmentSummary.armorTypeLabel}
             </div>
           )}
@@ -299,14 +299,14 @@ function CombatSummary({
         </div>
         {equipmentSummary?.showMeleeSummary && (
           <div className="rounded-xl bg-white/80 p-3 border border-black/5">
-            <div className="text-xs uppercase tracking-wide text-[var(--muted)]">
+            <div className="text-xs uppercase tracking-wide text-(--muted)">
               Melee Attack
             </div>
             <div className="text-2xl font-bold">
               {getStatValue(finalStats.meleeAttack) ?? derived.baseAttackBonus}
             </div>
             {equipmentSummary?.meleeTypeLabel && (
-              <div className="text-xs text-[var(--muted)]">
+              <div className="text-xs text-(--muted)">
                 {equipmentSummary.meleeTypeLabel}
               </div>
             )}
@@ -315,7 +315,7 @@ function CombatSummary({
         )}
         {equipmentSummary?.showMeleeSummary && (
           <div className="rounded-xl bg-white/80 p-3 border border-black/5">
-            <div className="text-xs uppercase tracking-wide text-[var(--muted)]">
+            <div className="text-xs uppercase tracking-wide text-(--muted)">
               Melee Damage
             </div>
             <div className="text-lg font-semibold">
@@ -323,7 +323,7 @@ function CombatSummary({
             </div>
             {equipmentSummary.meleeDamageParts &&
               equipmentSummary.meleeDamageParts.length > 0 && (
-                <details className="mt-2 text-xs text-[var(--muted)]">
+                <details className="mt-2 text-xs text-(--muted)">
                   <summary className="cursor-pointer">Details</summary>
                   <div className="mt-2 space-y-1">
                     {equipmentSummary.meleeDamageParts.map((part, idx) => (
@@ -342,14 +342,14 @@ function CombatSummary({
         )}
         {equipmentSummary?.showRangedSummary && (
           <div className="rounded-xl bg-white/80 p-3 border border-black/5">
-            <div className="text-xs uppercase tracking-wide text-[var(--muted)]">
+            <div className="text-xs uppercase tracking-wide text-(--muted)">
               Ranged Attack
             </div>
             <div className="text-2xl font-bold">
               {getStatValue(finalStats.rangedAttack) ?? derived.baseAttackBonus}
             </div>
             {equipmentSummary?.rangedTypeLabel && (
-              <div className="text-xs text-[var(--muted)]">
+              <div className="text-xs text-(--muted)">
                 {equipmentSummary.rangedTypeLabel}
               </div>
             )}
@@ -358,7 +358,7 @@ function CombatSummary({
         )}
         {equipmentSummary?.showRangedSummary && (
           <div className="rounded-xl bg-white/80 p-3 border border-black/5">
-            <div className="text-xs uppercase tracking-wide text-[var(--muted)]">
+            <div className="text-xs uppercase tracking-wide text-(--muted)">
               Ranged Damage
             </div>
             <div className="text-lg font-semibold">
@@ -366,7 +366,7 @@ function CombatSummary({
             </div>
             {equipmentSummary.rangedDamageParts &&
               equipmentSummary.rangedDamageParts.length > 0 && (
-                <details className="mt-2 text-xs text-[var(--muted)]">
+                <details className="mt-2 text-xs text-(--muted)">
                   <summary className="cursor-pointer">Details</summary>
                   <div className="mt-2 space-y-1">
                     {equipmentSummary.rangedDamageParts.map((part, idx) => (
@@ -402,7 +402,7 @@ function LoadoutList({
   return (
     <div className="mt-4 panel p-4">
       <h3 className="section-title mb-2">Equipment Loadouts</h3>
-      <ul className="text-sm text-[var(--muted)] space-y-2">
+      <ul className="text-sm text-(--muted) space-y-2">
         {(equipmentLoadouts.length > 0
           ? equipmentLoadouts
           : [
@@ -417,14 +417,14 @@ function LoadoutList({
               <div
                 className={
                   loadout.id === activeLoadoutId
-                    ? 'font-semibold text-[var(--ink)]'
-                    : 'text-[var(--muted)]'
+                    ? 'font-semibold text-(--ink)'
+                    : 'text-(--muted)'
                 }
               >
                 {getLoadoutDisplayName(loadout)}
               </div>
               {loadout.id === activeLoadoutId && (
-                <div className="text-xs text-[var(--muted)]">Active</div>
+                <div className="text-xs text-(--muted)">Active</div>
               )}
             </div>
             <div className="flex gap-2">

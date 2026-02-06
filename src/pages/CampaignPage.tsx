@@ -56,7 +56,7 @@ export default function CampaignPage() {
                 <div>
                   <h1 className="text-3xl font-bold">{campaign.name}</h1>
                   {campaign.description && (
-                    <p className="text-sm text-[var(--muted)] mt-1">
+                    <p className="text-sm text-(--muted) mt-1">
                       {campaign.description}
                     </p>
                   )}
@@ -96,15 +96,15 @@ export default function CampaignPage() {
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <div className="space-y-2 text-sm text-[var(--muted)]">
+                <div className="space-y-2 text-sm text-(--muted)">
                   <p>
-                    <span className="font-semibold text-[var(--ink)]">
+                    <span className="font-semibold text-(--ink)">
                       DM:
                     </span>{' '}
                     {campaign.owner_username ?? 'Unknown'}
                   </p>
                   <p>
-                    <span className="font-semibold text-[var(--ink)]">
+                    <span className="font-semibold text-(--ink)">
                       Members:
                     </span>{' '}
                     {campaign.members
@@ -152,14 +152,14 @@ export default function CampaignPage() {
                         alt={char.name}
                       />
                     </div>
-                    <p className="text-xs italic text-[var(--muted)] mt-2">
+                    <p className="text-xs italic text-(--muted) mt-2">
                       Owner: {char.owner_username}
                     </p>
                     <h3 className="text-lg font-bold">{char.name}</h3>
-                    <p className="text-sm text-[var(--muted)]">
+                    <p className="text-sm text-(--muted)">
                       {char.player_name}
                     </p>
-                    <p className="text-sm text-[var(--muted)]">
+                    <p className="text-sm text-(--muted)">
                       {char.class_id} • {char.race_id} • Level {char.level}
                     </p>
                     {!char.visible && (

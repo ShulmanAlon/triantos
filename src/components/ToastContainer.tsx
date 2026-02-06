@@ -14,7 +14,7 @@ export function ToastContainer() {
           className={`rounded-xl px-4 py-3 text-sm shadow-lg text-left border ${
             toast.variant === 'error'
               ? 'bg-red-50 border-red-200 text-red-800'
-              : 'bg-white/90 border-black/10 text-[var(--ink)]'
+              : 'bg-white/90 border-black/10 text-(--ink)'
           }`}
         >
           {toast.message}

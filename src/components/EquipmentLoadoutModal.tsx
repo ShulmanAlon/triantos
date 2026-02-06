@@ -109,7 +109,7 @@ export default function EquipmentLoadoutModal({
       <div className="bg-white p-6 rounded shadow max-w-lg w-full space-y-4">
         <h3 className="text-lg font-semibold">Edit Equipment Loadout</h3>
 
-        <div className="text-sm text-[var(--muted)]">
+        <div className="text-sm text-(--muted)">
           Editing: {activeLoadout?.name ?? 'Loadout'}
         </div>
 

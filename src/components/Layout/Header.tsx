@@ -27,7 +27,7 @@ export const Header = () => {
           Test
         </Button>
       </div>
-      <div className="text-sm text-[var(--muted)]">
+      <div className="text-sm text-(--muted)">
         <span className={session ? 'font-medium' : 'italic text-gray-500'}>
           {displayName}
         </span>

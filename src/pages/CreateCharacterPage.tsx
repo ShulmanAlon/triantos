@@ -336,7 +336,7 @@ export default function CharacterCreatePage() {
         <div>
           <p className="chip">{ui.characterCreator}</p>
           <h2 className="text-2xl font-bold mt-2">{ui.characterCreator}</h2>
-          <p className="text-xs italic text-[var(--muted)]">
+          <p className="text-xs italic text-(--muted)">
             Created by: {user?.username}
           </p>
         </div>
@@ -373,7 +373,7 @@ export default function CharacterCreatePage() {
                 </div>
               </>
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-sm text-[var(--muted)]">
+              <div className="w-full h-full flex items-center justify-center text-sm text-(--muted)">
                 + Add Image
               </div>
             )}
