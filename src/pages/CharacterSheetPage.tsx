@@ -12,17 +12,27 @@ import { getModifier } from '@/utils/modifier';
 import { USER_ROLES } from '@/config/userRoles';
 import { useCharacterById } from '@/hooks/useCharacterById';
 import { LoadingErrorWrapper } from '@/components/LoadingErrorWrapper';
-import { allSkills, skillsById } from '@/data/skills/allSkills';
+import { allSkills } from '@/data/skills/allSkills';
+import { buildSkillSummary } from '@/utils/domain/skills';
 import { getAcquiredSkillSelectionsUpToLevel } from '@/utils/skills/skillProgression';
 import EquipmentLoadoutModal from '@/components/EquipmentLoadoutModal';
 import { allItems } from '@/data/items/allItems';
 import { EquipmentLoadout, EquipmentLoadouts, EquipmentSlotKey } from '@/types/characters';
 import { StatModifier } from '@/types/modifiers';
-import { buildDamageBreakdown } from '@/utils/modifiers';
-import { normalizeLoadouts } from '@/utils/loadouts';
+import { buildDamageBreakdown } from '@/utils/domain/modifiers';
+import {
+  getLoadoutItemId,
+  normalizeLoadouts,
+} from '@/utils/domain/loadouts';
 import { useToast } from '@/context/ToastContext';
 import { SkillId } from '@/types/skills';
 import { ProficiencyId } from '@/config/constants';
+import {
+  getArmorType,
+  getRangedAttackType,
+  getWeaponDamageTag,
+  getWeaponTypeLabel,
+} from '@/utils/domain/weapons';
 
 export const CharacterSheet = () => {
   const { id: characterId } = useParams<{ id: string }>();
@@ -52,37 +62,22 @@ export const CharacterSheet = () => {
 
   const progressionBuckets = character?.progression?.buckets ?? [];
 
-  const skillSelections = character
-    ? getAcquiredSkillSelectionsUpToLevel(
-        progressionBuckets,
-        allSkills,
-        character.class_id,
-        character.race_id,
-        character.level,
-      )
-    : [];
-  const highestBySkill = new Map<SkillId, { tier: number; source?: string }>();
-  for (const selection of skillSelections) {
-    const current = highestBySkill.get(selection.skillId);
-    if (!current || selection.tier > current.tier) {
-      highestBySkill.set(selection.skillId, {
-        tier: selection.tier,
-        source: selection.source,
-      });
-    }
-  }
-  const skillSummary = Array.from(highestBySkill.entries()).map(
-    ([skillId, data]) => {
-      const skill = skillsById.get(skillId);
-      const tier = skill?.tiers.find((t) => t.tier === data.tier);
-      return {
-        name: skill?.name ?? skillId,
-        tier: data.tier,
-        source: data.source,
-        totalDescription: tier?.totalDescription ?? tier?.description,
-        skillDescription: skill?.description,
-      };
-    }
+  const skillSelections = useMemo(() => {
+    if (!character) return [];
+    return getAcquiredSkillSelectionsUpToLevel(
+      progressionBuckets,
+      allSkills,
+      character.class_id,
+      character.race_id,
+      character.level,
+    );
+  }, [
+    character,
+    progressionBuckets,
+  ]);
+  const skillSummary = useMemo(
+    () => buildSkillSummary(skillSelections),
+    [skillSelections]
   );
   const normalizedLoadouts = useMemo<EquipmentLoadouts>(() => {
     return normalizeLoadouts(character?.equipment_loadouts ?? null);
@@ -92,34 +87,20 @@ export const CharacterSheet = () => {
   const activeLoadoutId = normalizedLoadouts.activeId;
   const activeLoadout =
     loadouts.find((loadout) => loadout.id === activeLoadoutId) ?? null;
-  const getLoadoutItem = (slot: EquipmentSlotKey) =>
-    allItems.find((item) => item.id === activeLoadout?.items[slot]) ?? null;
+  const itemsById = useMemo(() => {
+    return new Map(allItems.map((item) => [item.id, item]));
+  }, []);
+  const getLoadoutItem = (slot: EquipmentSlotKey) => {
+    const itemId = getLoadoutItemId(activeLoadout, slot);
+    return itemId ? itemsById.get(itemId) ?? null : null;
+  };
 
   const activeArmorItem = getLoadoutItem('armor');
   const activeShieldItem = getLoadoutItem('shield');
   const activePrimaryWeapon = getLoadoutItem('weapon_primary');
   const activeOffhandWeapon = getLoadoutItem('weapon_offhand');
 
-  const armorType = activeArmorItem?.tags.includes('heavyArmor')
-    ? 'heavyArmor'
-    : activeArmorItem?.tags.includes('lightArmor')
-    ? 'lightArmor'
-    : activeArmorItem?.tags.includes('powerArmor')
-    ? 'powerArmor'
-    : 'unarmored';
-
-  const getWeaponTypeLabel = (item: typeof activePrimaryWeapon | null) => {
-    if (!item) return 'Fists';
-    const isRanged = item.tags.includes('ranged');
-    const isMelee = item.tags.includes('melee');
-    const damageType =
-      item.tags.find((tag) =>
-        ['energy', 'blunt', 'slash', 'pierce'].includes(tag)
-      ) ?? 'physical';
-    if (isRanged) return `${damageType} ranged`;
-    if (isMelee) return `${damageType} melee`;
-    return 'weapon';
-  };
+  const armorType = getArmorType(activeArmorItem);
 
   const meleeWeapon =
     activePrimaryWeapon?.tags.includes('melee')
@@ -134,18 +115,11 @@ export const CharacterSheet = () => {
       ? activeOffhandWeapon
       : null;
 
-  const meleeDamageType =
-    (meleeWeapon?.tags.find((tag) =>
-      ['energy', 'blunt', 'slash', 'pierce'].includes(tag)
-    ) ?? 'blunt') as 'energy' | 'blunt' | 'slash' | 'pierce';
-
-  const getRangedAttackType = () => {
-    const profs: ProficiencyId[] = rangedWeapon?.requiresProficiency ?? [];
-    if (profs.includes('rangedAdvancedWeapons')) return 'advanced';
-    if (profs.includes('rangedHeavyWeapons')) return 'heavy';
-    if (profs.includes('rangedMounted')) return 'mounted';
-    return 'basic';
-  };
+  const meleeDamageType = getWeaponDamageTag(meleeWeapon) as
+    | 'energy'
+    | 'blunt'
+    | 'slash'
+    | 'pierce';
 
   const meleeTypeLabel = getWeaponTypeLabel(meleeWeapon);
   const rangedTypeLabel = getWeaponTypeLabel(rangedWeapon);
@@ -172,7 +146,7 @@ export const CharacterSheet = () => {
   const equipmentModifiers: StatModifier[] = activeLoadout
     ? Object.values(activeLoadout.items)
         .filter((itemId): itemId is string => !!itemId)
-        .map((itemId) => allItems.find((item) => item.id === itemId))
+        .map((itemId) => itemsById.get(itemId))
         .flatMap((item) =>
           (item?.modifiers ?? []).map((modifier) => ({
             ...modifier,
@@ -201,7 +175,9 @@ export const CharacterSheet = () => {
           },
           ranged: rangedWeapon
             ? {
-                id: getRangedAttackType(),
+                id: getRangedAttackType(
+                  (rangedWeapon?.requiresProficiency ?? []) as ProficiencyId[]
+                ),
                 label: rangedTypeLabel,
                 requiredProficiencyId: rangedProficiencyId,
               }

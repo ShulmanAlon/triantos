@@ -7,6 +7,14 @@ export type DamagePart = {
   value: number | DiceRoll;
 };
 
+const makeDamageLabel = (label: string, value: string) => ({
+  label,
+  value,
+});
+
+const formatSignedValue = (value: number): string =>
+  value > 0 ? `+${value}` : `${value}`;
+
 export const isDamageTarget = (target: string): target is DamageTarget =>
   target.startsWith('damage.');
 
@@ -74,22 +82,24 @@ export const buildDamageBreakdown = ({
   const parts: { label: string; value: string }[] = [];
 
   for (const part of baseParts) {
-    parts.push({ label: 'weapon', value: formatDamagePart(part) });
+    parts.push(makeDamageLabel('weapon', formatDamagePart(part)));
   }
 
   if (typeof strengthModifier === 'number' && strengthModifier !== 0) {
     parts.push({
       label: 'STR',
-      value: strengthModifier > 0 ? `+${strengthModifier}` : `${strengthModifier}`,
+      value: formatSignedValue(strengthModifier),
     });
   }
 
   for (const part of enchantParts) {
     const text = formatDamagePart(part);
-    parts.push({
-      label: 'enchantment',
-      value: text.startsWith('-') ? text : `+${text}`,
-    });
+    parts.push(
+      makeDamageLabel(
+        'enchantment',
+        text.startsWith('-') ? text : `+${text}`
+      )
+    );
   }
 
   const summaryParts: string[] = [];

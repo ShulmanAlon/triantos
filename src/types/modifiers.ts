@@ -2,9 +2,16 @@ import { StatTarget } from '@/config/constants';
 import { ActiveAbilityEffect } from './skills';
 import { SkillId } from './skills';
 
+export type StatOperation =
+  | 'add'
+  | 'multiply'
+  | 'enable'
+  | 'grantActive'
+  | 'override';
+
 export interface StatModifier {
   target: StatTarget;
-  operation: 'add' | 'multiply' | 'enable' | 'grantActive' | 'override';
+  operation: StatOperation;
   value: number | boolean | DiceRoll | ActiveAbilityEffect;
   sourceSkill?: SkillId;
   sourceItem?: string;

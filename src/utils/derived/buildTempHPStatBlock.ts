@@ -4,7 +4,7 @@ import {
   StatComponent,
   StatFormula,
 } from '@/types/characters';
-import { getModifierValue } from '@/utils/modifiers';
+import { getModifierValue } from '@/utils/domain/modifiers';
 
 export function buildTempHPStatBlock(
   derived: CharacterDerivedStats

@@ -22,7 +22,8 @@ import { ImageWithPlaceholder } from '@/components/ImageWithPlaceholder';
 import { getCharacterImage, getCharacterBlurImage } from '@/utils/imageUtils';
 import ImageUrlModal from '@/components/ImageUrlModal';
 import { TABLES } from '@/config/dbTables';
-import { allSkills, skillsById } from '@/data/skills/allSkills';
+import { allSkills } from '@/data/skills/allSkills';
+import { getSkillName } from '@/utils/domain/skills';
 import {
   getAcquiredSkillSelectionsUpToLevel,
   getSkillPointPoolForLevel,
@@ -302,7 +303,7 @@ export default function CharacterCreatePage() {
     type: 'level' | 'attribute' | 'skill';
     minimum?: number;
     attribute?: Attribute;
-    skillId?: string;
+    skillId?: SkillId;
     tier?: number;
   }): { label: string; met: boolean } => {
     if (prereq.type === 'level') {
@@ -320,7 +321,7 @@ export default function CharacterCreatePage() {
       };
     }
     if (prereq.type === 'skill' && prereq.skillId && prereq.tier) {
-      const skillName = skillsById.get(prereq.skillId)?.name ?? prereq.skillId;
+      const skillName = getSkillName(prereq.skillId);
       return {
         label: `${skillName} Tier ${prereq.tier}`,
         met: hasSkillTier(prereq.skillId, prereq.tier),

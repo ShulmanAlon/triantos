@@ -6,16 +6,16 @@ import {
 } from '@/types/characters';
 import { Attribute } from '@/types/attributes';
 import { getModifier } from '../modifier';
-import { MELEE_TYPES, MeleeTypes } from '@/config/constants';
+import { MELEE_TYPES, MeleeTypes, ProficiencyId } from '@/config/constants';
 import { getTagBasedModifier } from '@/utils/logic/tagModifiers';
-import { getModifierValue, getProficiencyToggleKey } from '@/utils/modifiers';
+import { getModifierValue, getProficiencyToggleKey } from '@/utils/domain/modifiers';
 
 export function buildMeleeAttackStatBlock(
   attributes: Record<Attribute, number>,
   derived: CharacterDerivedStats,
   bab: number,
   selectedType?: { id: MeleeTypes; label: string },
-  requiredProficiencyId?: string
+  requiredProficiencyId?: ProficiencyId
 ): StatBlock<number> {
   const strMod = getModifier(attributes.str);
   const flatBonus = getModifierValue(derived, 'attack_bonus_flat');

@@ -4,7 +4,8 @@ import { AttributeAllocator } from '@/components/CharacterCreator/AttributeAlloc
 import { Button } from '@/components/ui/Button';
 import { LoadingErrorWrapper } from '@/components/LoadingErrorWrapper';
 import { useLanguage } from '@/context/LanguageContext';
-import { allSkills, skillsById } from '@/data/skills/allSkills';
+import { allSkills } from '@/data/skills/allSkills';
+import { getSkillName } from '@/utils/domain/skills';
 import { uiLabels } from '@/i18n/ui';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useCharacterById } from '@/hooks/useCharacterById';
@@ -296,7 +297,7 @@ export default function CharacterLevelUpPage() {
     type: 'level' | 'attribute' | 'skill';
     minimum?: number;
     attribute?: Attribute;
-    skillId?: string;
+    skillId?: SkillId;
     tier?: number;
   }): { label: string; met: boolean } => {
     if (prereq.type === 'level') {
@@ -314,7 +315,7 @@ export default function CharacterLevelUpPage() {
       };
     }
     if (prereq.type === 'skill' && prereq.skillId && prereq.tier) {
-      const skillName = skillsById.get(prereq.skillId)?.name ?? prereq.skillId;
+      const skillName = getSkillName(prereq.skillId);
       return {
         label: `${skillName} Tier ${prereq.tier}`,
         met: hasSkillTier(prereq.skillId, prereq.tier),

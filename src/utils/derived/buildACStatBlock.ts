@@ -9,7 +9,7 @@ import { BASE_AC } from '@/config/constants';
 import { getModifier } from '../modifier';
 import { getTagBasedModifier } from '@/utils/logic/tagModifiers';
 import { StatModifier } from '@/types/modifiers';
-import { getModifierValue } from '@/utils/modifiers';
+import { getModifierValue } from '@/utils/domain/modifiers';
 
 export type EquipmentACContext = {
   armorType?: 'unarmored' | 'lightArmor' | 'heavyArmor' | 'powerArmor';

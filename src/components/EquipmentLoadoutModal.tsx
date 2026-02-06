@@ -8,7 +8,7 @@ import {
 import { GameItem } from '@/types/items';
 import { Button } from './ui/Button';
 import { ProficiencyId } from '@/config/constants';
-import { getProficiencyToggleKey } from '@/utils/modifiers';
+import { getProficiencyToggleKey } from '@/utils/domain/modifiers';
 
 type Props = {
   isOpen: boolean;

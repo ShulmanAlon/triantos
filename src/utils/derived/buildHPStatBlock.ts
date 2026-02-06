@@ -7,7 +7,7 @@ import {
 import { Attribute } from '@/types/attributes';
 import { GameClass } from '@/types/gameClass';
 import { getModifier } from '../modifier';
-import { getModifierValue } from '@/utils/modifiers';
+import { getModifierValue } from '@/utils/domain/modifiers';
 import { NAME_LEVEL } from '@/config/constants';
 
 export function buildHPStatBlock(

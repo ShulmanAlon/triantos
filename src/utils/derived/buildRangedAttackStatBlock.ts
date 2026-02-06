@@ -7,7 +7,8 @@ import {
 import { Attribute } from '@/types/attributes';
 import { getModifier } from '../modifier';
 import { getTagBasedModifier } from '@/utils/logic/tagModifiers';
-import { getModifierValue, getProficiencyToggleKey } from '@/utils/modifiers';
+import { getModifierValue, getProficiencyToggleKey } from '@/utils/domain/modifiers';
+import { ProficiencyId } from '@/config/constants';
 
 export type RangedType = 'basic' | 'advanced' | 'heavy' | 'mounted';
 
@@ -23,7 +24,7 @@ export function buildRangedAttackStatBlock(
   derived: CharacterDerivedStats,
   bab: number,
   selectedType?: { id: RangedType; label: string },
-  requiredProficiencyId?: string
+  requiredProficiencyId?: ProficiencyId
 ): StatBlock<number> {
   const dexMod = getModifier(attributes.dex);
   const flatBonus = getModifierValue(derived, 'attack_bonus_flat');
