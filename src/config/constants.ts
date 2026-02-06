@@ -89,3 +89,4 @@ const WEAPON_PROFICIENCY_IDS = [
 ] as const;
 type WeaponProficiencyId = (typeof WEAPON_PROFICIENCY_IDS)[number];
 export type WeaponProficiencyTarget = `proficiency.${WeaponProficiencyId}`;
+export type { WeaponProficiencyId };

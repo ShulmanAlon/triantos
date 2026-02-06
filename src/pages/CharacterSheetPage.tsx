@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import EditCharacterModal from '@/components/EditCharacterModal';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { getModifier } from '@/utils/modifier';
 import { USER_ROLES } from '@/config/userRoles';
 import { useCharacterById } from '@/hooks/useCharacterById';
 import { LoadingErrorWrapper } from '@/components/LoadingErrorWrapper';
@@ -179,9 +180,9 @@ export const CharacterSheet = () => {
       : null;
 
   const meleeDamageType =
-    meleeWeapon?.tags.find((tag) =>
+    (meleeWeapon?.tags.find((tag) =>
       ['energy', 'blunt', 'slash', 'pierce'].includes(tag)
-    ) ?? 'blunt';
+    ) ?? 'blunt') as 'energy' | 'blunt' | 'slash' | 'pierce';
 
   const getRangedAttackType = () => {
     const profs = rangedWeapon?.requiresProficiency ?? [];
@@ -197,6 +198,86 @@ export const CharacterSheet = () => {
   const showMeleeSummary = !rangedWeapon;
   const meleeProficiencyId = meleeWeapon?.requiresProficiency?.[0];
   const rangedProficiencyId = rangedWeapon?.requiresProficiency?.[0];
+
+  const buildDamageBreakdown = (
+    weapon: typeof activePrimaryWeapon | null,
+    includeStr: boolean
+  ) => {
+    if (!weapon) return { summary: '—', parts: [] as { label: string; value: string }[] };
+
+    const baseMods = (weapon.baseDamage ?? []).filter(
+      (mod) => mod.target.startsWith('damage.') && mod.operation === 'add'
+    );
+    const enchantMods = (weapon.modifiers ?? []).filter(
+      (mod) => mod.target.startsWith('damage.') && mod.operation === 'add'
+    );
+
+    const formatDamage = (mod: { target: string; value: unknown }) => {
+      const damageType = mod.target.split('.')[1] ?? 'damage';
+      if (typeof mod.value === 'number') {
+        return `${mod.value} ${damageType}`;
+      }
+      if (
+        typeof mod.value === 'object' &&
+        mod.value !== null &&
+        'diceRoll' in mod.value &&
+        'diceType' in mod.value
+      ) {
+        const roll = mod.value as { diceRoll: number; diceType: number };
+        return `${roll.diceRoll}d${roll.diceType} ${damageType}`;
+      }
+      return null;
+    };
+
+    const parts: { label: string; value: string }[] = [];
+
+    for (const mod of baseMods) {
+      const text = formatDamage(mod);
+      if (!text) continue;
+      parts.push({ label: 'weapon', value: text });
+    }
+
+    if (includeStr) {
+      const strMod = getModifier(character?.attributes.str ?? 0);
+      if (strMod !== 0) {
+        parts.push({
+          label: 'STR',
+          value: strMod > 0 ? `+${strMod}` : `${strMod}`,
+        });
+      }
+    }
+
+    for (const mod of enchantMods) {
+      const text = formatDamage(mod);
+      if (!text) continue;
+      parts.push({
+        label: 'enchantment',
+        value: text.startsWith('-') ? text : `+${text}`,
+      });
+    }
+
+    const summaryParts: string[] = [];
+    for (const part of parts) {
+      if (part.label === 'weapon') {
+        summaryParts.push(part.value.split(' ')[0]);
+      } else if (part.label === 'STR') {
+        summaryParts.push(part.value);
+      } else if (part.label === 'enchantment') {
+        summaryParts.push(part.value.split(' ')[0]);
+      } else if (part.label.startsWith('skill')) {
+        summaryParts.push(part.value);
+      }
+    }
+    const summary = summaryParts.length > 0 ? summaryParts.join(' ') : '—';
+
+    return {
+      summary: summary || '—',
+      parts,
+    };
+  };
+
+  const meleeDamageBreakdown = buildDamageBreakdown(meleeWeapon, true);
+  const rangedDamageBreakdown = buildDamageBreakdown(rangedWeapon, false);
   const equipmentModifiers: StatModifier[] = activeLoadout
     ? Object.values(activeLoadout.items)
         .filter((itemId): itemId is string => !!itemId)
@@ -241,7 +322,7 @@ export const CharacterSheet = () => {
   const handleLevelDown = () => {
     if (!character || character.level <= 1) return;
     const currentLevelBucket = progressionBuckets.find(
-      (bucket) => bucket.level === character.level
+      (bucket: { level: number }) => bucket.level === character.level
     );
     const attributeIncreases = currentLevelBucket?.attributeIncreases ?? {};
     const nextAttributes = { ...character.attributes };
@@ -251,7 +332,7 @@ export const CharacterSheet = () => {
       nextAttributes[attr] = (nextAttributes[attr] ?? 0) - value;
     }
     const nextBuckets = progressionBuckets.filter(
-      (bucket) => bucket.level !== character.level
+      (bucket: { level: number }) => bucket.level !== character.level
     );
     updateCharacter({
       level: character.level - 1,
@@ -328,6 +409,10 @@ export const CharacterSheet = () => {
               meleeTypeLabel,
               showRangedSummary,
               showMeleeSummary,
+              rangedDamageSummary: rangedDamageBreakdown.summary,
+              rangedDamageParts: rangedDamageBreakdown.parts,
+              meleeDamageSummary: meleeDamageBreakdown.summary,
+              meleeDamageParts: meleeDamageBreakdown.parts,
             }}
             finalStats={finalStats?.final}
             derived={
@@ -348,6 +433,7 @@ export const CharacterSheet = () => {
             onSave={async (next) => {
               await updateCharacter({ equipment_loadouts: next });
             }}
+            derived={finalStats?.derived ?? null}
           />
           {canEditCharacter && (
             <div className="mt-4 flex items-center justify-between">

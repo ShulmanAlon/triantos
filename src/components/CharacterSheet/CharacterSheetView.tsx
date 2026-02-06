@@ -36,6 +36,10 @@ interface CharacterSheetProps {
     meleeTypeLabel?: string;
     showRangedSummary?: boolean;
     showMeleeSummary?: boolean;
+    rangedDamageSummary?: string;
+    rangedDamageParts?: { label: string; value: string }[];
+    meleeDamageSummary?: string;
+    meleeDamageParts?: { label: string; value: string }[];
   };
   skills?: {
     name: string;
@@ -198,6 +202,33 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
                 {renderBreakdown(finalStats.meleeAttack)}
               </div>
             )}
+            {equipmentSummary?.showMeleeSummary && (
+              <div className="rounded-xl bg-white/80 p-3 border border-black/5">
+                <div className="text-xs uppercase tracking-wide text-[var(--muted)]">
+                  Melee Damage
+                </div>
+                <div className="text-lg font-semibold">
+                  {equipmentSummary.meleeDamageSummary ?? '—'}
+                </div>
+                {equipmentSummary.meleeDamageParts &&
+                  equipmentSummary.meleeDamageParts.length > 0 && (
+                    <details className="mt-2 text-xs text-[var(--muted)]">
+                      <summary className="cursor-pointer">Details</summary>
+                      <div className="mt-2 space-y-1">
+                        {equipmentSummary.meleeDamageParts.map((part, idx) => (
+                          <div
+                            key={`${part.label}-${idx}`}
+                            className="flex items-center justify-between"
+                          >
+                            <span>{part.label}</span>
+                            <span>{part.value}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </details>
+                  )}
+              </div>
+            )}
             {equipmentSummary?.showRangedSummary && (
               <div className="rounded-xl bg-white/80 p-3 border border-black/5">
                 <div className="text-xs uppercase tracking-wide text-[var(--muted)]">
@@ -213,6 +244,33 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
                   </div>
                 )}
                 {renderBreakdown(finalStats.rangedAttack)}
+              </div>
+            )}
+            {equipmentSummary?.showRangedSummary && (
+              <div className="rounded-xl bg-white/80 p-3 border border-black/5">
+                <div className="text-xs uppercase tracking-wide text-[var(--muted)]">
+                  Ranged Damage
+                </div>
+                <div className="text-lg font-semibold">
+                  {equipmentSummary.rangedDamageSummary ?? '—'}
+                </div>
+                {equipmentSummary.rangedDamageParts &&
+                  equipmentSummary.rangedDamageParts.length > 0 && (
+                    <details className="mt-2 text-xs text-[var(--muted)]">
+                      <summary className="cursor-pointer">Details</summary>
+                      <div className="mt-2 space-y-1">
+                        {equipmentSummary.rangedDamageParts.map((part, idx) => (
+                          <div
+                            key={`${part.label}-${idx}`}
+                            className="flex items-center justify-between"
+                          >
+                            <span>{part.label}</span>
+                            <span>{part.value}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </details>
+                  )}
               </div>
             )}
           </div>

@@ -7,6 +7,7 @@ export interface GameItem {
   type: ItemType; // 'armor', 'weapon', 'shield', 'utility', etc.
   slot?: EquipSlot; // 'body', 'hands', 'head', etc.
   tags: ItemTag[]; // 'lightArmor', 'energy', '2h', 'plasma', etc.
+  baseDamage?: StatModifier[]; // Optional base weapon damage (inherited by variants)
   modifiers?: StatModifier[]; // Optional stat effects
   ammo?: AmmoType;
   ammoConsumption?: number;

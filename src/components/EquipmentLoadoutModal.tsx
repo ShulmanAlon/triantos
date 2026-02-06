@@ -1,5 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
-import { EquipmentLoadouts, EquipmentLoadout } from '@/types/characters';
+import {
+  CharacterDerivedStats,
+  EquipmentLoadouts,
+  EquipmentLoadout,
+} from '@/types/characters';
 import { GameItem } from '@/types/items';
 import { Button } from './ui/Button';
 
@@ -10,6 +14,7 @@ type Props = {
   items: GameItem[];
   onClose: () => void;
   onSave: (next: EquipmentLoadouts) => void | Promise<void>;
+  derived?: CharacterDerivedStats | null;
 };
 
 type SlotKey = 'armor' | 'weapon_primary' | 'weapon_offhand' | 'shield';
@@ -28,6 +33,7 @@ export default function EquipmentLoadoutModal({
   items,
   onClose,
   onSave,
+  derived = null,
 }: Props) {
   const [loadouts, setLoadouts] = useState<EquipmentLoadout[]>(
     equipmentLoadouts.loadouts
@@ -57,9 +63,34 @@ export default function EquipmentLoadoutModal({
     [items]
   );
 
+  const isProficient = (item: GameItem | undefined | null) => {
+    const requires = item?.requiresProficiency ?? [];
+    if (requires.length === 0) return true;
+    return requires.every((req) => {
+      switch (req) {
+        case 'armorHeavy':
+          return !!derived?.toggles['ac_with_heavyArmor'];
+        case 'armorLight':
+          return !!derived?.toggles['ac_with_lightArmor'];
+        case 'armorPower':
+          return !!derived?.toggles['ac_with_powerArmor'];
+        case 'armorUnarmored':
+          return !!derived?.toggles['ac_with_unarmored'];
+        case 'shieldFortress':
+          return !!derived?.toggles['ac_with_shield'];
+        default:
+          return !!derived?.toggles[`proficiency.${req}`];
+      }
+    });
+  };
+
   const primaryWeaponId = activeLoadout?.items['weapon_primary'] ?? null;
   const primaryWeapon = weaponItems.find((i) => i.id === primaryWeaponId);
   const isTwoHanded = primaryWeapon?.tags.includes('2h') ?? false;
+  const armorItem = armorItems.find((i) => i.id === activeLoadout?.items['armor']);
+  const shieldItem = shieldItems.find((i) => i.id === activeLoadout?.items['shield']);
+  const armorInvalid = armorItem && !isProficient(armorItem);
+  const shieldInvalid = shieldItem && !isProficient(shieldItem);
 
   const updateLoadoutItem = (slot: SlotKey, itemId: string | null) => {
     setLoadouts((prev) =>
@@ -122,12 +153,21 @@ export default function EquipmentLoadoutModal({
               }
             >
               <option value="">None</option>
-              {armorItems.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ))}
+              {armorItems.map((item) => {
+                const allowed = isProficient(item);
+                return (
+                  <option key={item.id} value={item.id} disabled={!allowed}>
+                    {item.name}
+                    {!allowed ? ' (no proficiency)' : ''}
+                  </option>
+                );
+              })}
             </select>
+            {armorInvalid && (
+              <span className="text-xs text-red-600">
+                No proficiency for selected armor.
+              </span>
+            )}
           </label>
 
           <label className="flex flex-col gap-1">
@@ -141,12 +181,21 @@ export default function EquipmentLoadoutModal({
               disabled={isTwoHanded}
             >
               <option value="">None</option>
-              {shieldItems.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ))}
+              {shieldItems.map((item) => {
+                const allowed = isProficient(item);
+                return (
+                  <option key={item.id} value={item.id} disabled={!allowed}>
+                    {item.name}
+                    {!allowed ? ' (no proficiency)' : ''}
+                  </option>
+                );
+              })}
             </select>
+            {shieldInvalid && (
+              <span className="text-xs text-red-600">
+                No proficiency for selected shield.
+              </span>
+            )}
           </label>
 
           <label className="flex flex-col gap-1">

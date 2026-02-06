@@ -5,7 +5,7 @@ export const powerShotgun: GameItem = {
   name: 'Power Shotgun',
   type: 'weapon',
   tags: ['ranged', 'energy', '2h', 'medium'],
-  modifiers: [
+  baseDamage: [
     {
       target: 'damage.energy',
       operation: 'add',

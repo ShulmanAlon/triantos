@@ -5,7 +5,7 @@ export const plasmaCutter: GameItem = {
   name: 'Plasma Cutter',
   type: 'weapon',
   tags: ['melee', 'energy', '2h', 'medium'],
-  modifiers: [
+  baseDamage: [
     {
       target: 'damage.energy',
       operation: 'add',
