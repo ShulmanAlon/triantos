@@ -53,6 +53,7 @@ export type EquipmentSlotKey =
   | 'weapon_primary'
   | 'weapon_offhand'
   | 'shield';
+// TODO: Add energy shield slot to loadouts.
 
 export type EquipmentLoadout = {
   id: string;

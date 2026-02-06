@@ -22,6 +22,7 @@ export const allSkills: SkillEntity[] = [
   ...collect(pilotingSkills as Record<string, SkillEntity>).map(normalizeSkill),
   ...collect(racialSkills as Record<string, SkillEntity>).map(normalizeSkill),
 ];
+// TODO: Add more skills across categories.
 
 export const skillsById: Map<SkillId, SkillEntity> = new Map(
   allSkills.map((skill) => [skill.id, skill])

@@ -25,6 +25,7 @@ const SLOT_LABELS: Record<EquipmentSlotKey, string> = {
   weapon_offhand: 'Weapon (Offhand)',
   shield: 'Shield',
 };
+// TODO: Add energy shield slot selection in loadouts.
 
 export default function EquipmentLoadoutModal({
   isOpen,

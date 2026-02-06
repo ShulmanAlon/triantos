@@ -12,6 +12,7 @@ export interface GameItem {
   ammo?: AmmoType;
   ammoConsumption?: number;
   requiresProficiency?: ProficiencyId[]; // proficiency id needed
+  // TODO: Add not-allowed constraints (race/class) for item visibility/equip rules.
   activeAbilities?: string[]; // Optional references to active skills granted
   notes?: string; // Optional DM-written description or context
 }

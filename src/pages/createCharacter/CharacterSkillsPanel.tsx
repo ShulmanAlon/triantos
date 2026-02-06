@@ -45,6 +45,9 @@ export const CharacterSkillsPanel = ({
   onAdd,
   onRemove,
 }: CharacterSkillsPanelProps) => {
+  // TODO: Add skill type metadata to split actionable/selected (left) vs passive (right) columns.
+  // TODO: Replace alphabetical sort with a deliberate skill ordering strategy.
+  // TODO: Test soft-locking builds when attributes change and skill requirements are no longer met.
   const sortedSkills = skills.slice().sort((a, b) => a.name.localeCompare(b.name));
 
   return (

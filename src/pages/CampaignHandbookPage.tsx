@@ -82,6 +82,8 @@ export default function CampaignHandbookPage() {
         </div>
 
         <div className="section-gap panel p-4 text-sm text-(--muted)">
+          {/* TODO: Add rules content for the Player's Handbook. */}
+          {/* TODO: Add spells for Cleric and Magic User (no logic needed). */}
           Coming soon...
         </div>
       </div>
