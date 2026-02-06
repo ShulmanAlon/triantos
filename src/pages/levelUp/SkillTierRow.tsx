@@ -37,7 +37,7 @@ export const SkillTierRow = ({
   onRemove,
 }: TierRowProps) => {
   return (
-    <div className="flex items-start justify-between gap-4 border rounded-xl p-3 bg-white/80">
+    <div className="flex items-start justify-between gap-4 border rounded-xl p-3">
       <div>
         <div className="font-medium text-gray-800">Tier {tier.tier}</div>
         {(tier.deltaDescription ?? tier.description) && (
@@ -91,7 +91,7 @@ export const SkillTierRow = ({
         ) : availability.status === 'available' ? (
           <>
             <select
-              className="border border-black/10 rounded-lg px-2 py-1 text-xs bg-white/80"
+              className="border border-black/10 rounded-lg px-2 py-1 text-xs"
               value={defaultSpendType}
               onChange={(e) => onSpendTypeChange(e.target.value as SkillPointType)}
             >

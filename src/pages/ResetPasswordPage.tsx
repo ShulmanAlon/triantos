@@ -46,7 +46,7 @@ export default function ResetPasswordPage() {
           <div>
             <label className="block text-sm font-semibold mb-1">New password</label>
             <input
-              className="w-full border border-black/10 px-3 py-2 rounded-lg bg-white/80"
+              className="w-full border border-black/10 px-3 py-2 rounded-lg"
               type="password"
               required
               value={password}
@@ -58,7 +58,7 @@ export default function ResetPasswordPage() {
               Confirm password
             </label>
             <input
-              className="w-full border border-black/10 px-3 py-2 rounded-lg bg-white/80"
+              className="w-full border border-black/10 px-3 py-2 rounded-lg"
               type="password"
               required
               value={confirm}

@@ -11,13 +11,13 @@ export function ToastContainer() {
         const variantClasses =
           toast.variant === 'error'
             ? 'bg-red-50 border-red-200 text-red-800'
-            : 'bg-white/90 border-black/10 text-(--ink)';
+            : 'border-black/10 text-(--ink)';
 
         return (
           <button
             key={toast.id}
             onClick={() => dismiss(toast.id)}
-            className={`rounded-xl px-4 py-3 text-sm shadow-lg text-left border ${variantClasses}`}
+            className={`rounded-xl px-4 py-3 text-sm shadow-lg text-left border bg-(--panel-opaque) ${variantClasses}`}
           >
             {toast.message}
           </button>

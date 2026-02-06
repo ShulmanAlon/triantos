@@ -23,7 +23,7 @@ export function Button({
     primary:
       'bg-(--accent) text-white hover:bg-(--accent-dark) shadow-[0_6px_12px_rgba(15,123,108,0.22)] border border-(--accent-dark)/20',
     outline:
-      'border border-black/10 text-(--ink) hover:bg-black/5 bg-white/80',
+      'border border-black/10 text-(--ink) hover:bg-black/5',
     destructive:
       'bg-(--warn) text-white hover:bg-[#8d2f1f] shadow-[0_6px_12px_rgba(179,64,42,0.2)] border border-[#8d2f1f]/30',
   }[variant];

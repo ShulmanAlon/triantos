@@ -84,10 +84,16 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
   const ui = uiLabels[language];
   if (!derived) return null;
 
+  const SectionHeader = ({ title }: { title: string }) => (
+    <div className="section-rule">
+      <h3 className="section-title">{title}</h3>
+    </div>
+  );
+
   return (
     <div className="mt-6 card p-5">
       <div className="flex flex-wrap items-start gap-4 mb-4">
-        <div className="w-40 h-40 rounded-xl overflow-hidden border border-black/5 bg-white/80">
+        <div className="w-40 h-40 rounded-xl overflow-hidden border border-black/5">
           {imageUrl || selectedClassId ? (
             <ImageWithPlaceholder
               src={getCharacterImage(imageUrl ?? '', selectedClassId)}
@@ -147,7 +153,7 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
 
       <div className="mt-4 grid gap-4 lg:grid-cols-2 items-stretch">
         <div className="panel p-4">
-          <h3 className="section-title mb-2">{ui.attributes}</h3>
+          <SectionHeader title={ui.attributes} />
           <table className="text-base w-full">
             <thead>
               <tr>
@@ -168,7 +174,7 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
                     <td className="px-2 text-center w-20 font-mono">
                       {attrValue}
                     </td>
-                    <td className="text-gray-500 w-20 font-mono relative text-center">
+                    <td className="text-(--muted) w-20 font-mono relative text-center">
                       <span className="absolute right-1/2 top-1/2 -translate-y-1/2 -translate-x-2 w-3 text-center">
                         {modifier === 0 ? ' ' : modifier > 0 ? '+' : '-'}
                       </span>
@@ -194,7 +200,7 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
       {derived.spellSlots && (
         <div className="mt-4 lg:grid lg:grid-cols-2 lg:gap-4">
           <div className="panel p-4">
-            <h3 className="section-title mb-2">{ui.spellSlots}</h3>
+            <SectionHeader title={ui.spellSlots} />
             <ul className="ml-4 list-disc text-sm text-(--muted)">
               {Object.entries(derived.spellSlots).map(([level, slots]) => (
                 <li key={level}>
@@ -210,7 +216,7 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
       {skills.length > 0 && (
         <div className="mt-4 panel p-4">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="section-title">{ui.skills}</h3>
+            <SectionHeader title={ui.skills} />
             <span className="text-xs text-(--muted)">
               {skills.length} total
             </span>
@@ -219,7 +225,7 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
             {skills.map((skill, index) => (
               <details
                 key={`${skill.name}-${skill.tier}-${index}`}
-                className="mb-2 break-inside-avoid rounded-xl border border-black/10 bg-white/70 px-3 py-2 text-sm text-(--muted)"
+                className="mb-2 break-inside-avoid rounded-xl border border-black/10 px-3 py-2 text-sm text-(--muted)"
               >
                 <summary className="cursor-pointer font-medium">
                   {skill.name} — Tier {skill.tier}
@@ -251,8 +257,10 @@ function CombatSummary({
   const [showDetails, setShowDetails] = React.useState(true);
   return (
     <div className="mt-4 panel p-4">
-      <div className="flex items-center justify-between mb-2">
-        <h3 className="section-title">Combat Summary</h3>
+      <div className="flex items-center justify-between mb-2 gap-3">
+        <div className="section-rule flex-1">
+          <h3 className="section-title">Combat Summary</h3>
+        </div>
         <button
           type="button"
           onClick={() => setShowDetails((prev) => !prev)}
@@ -262,7 +270,7 @@ function CombatSummary({
         </button>
       </div>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-        <div className="rounded-xl bg-white/80 p-3 border border-black/5">
+        <div className="rounded-xl p-3 border border-black/5">
           <div className="text-xs font-semibold text-(--ink)">HP</div>
           <div className="text-[22px] font-bold">
             {getStatValue(finalStats.hpBreakdown) ?? derived.hp}
@@ -272,14 +280,14 @@ function CombatSummary({
             showDetails={showDetails}
           />
         </div>
-        <div className="rounded-xl bg-white/80 p-3 border border-black/5">
+        <div className="rounded-xl p-3 border border-black/5">
           <div className="text-xs font-semibold text-(--ink)">Temp HP</div>
           <div className="text-[22px] font-bold">
             {getStatValue(finalStats.hpTemp) ?? 0}
           </div>
           <StatBreakdown block={finalStats.hpTemp} showDetails={showDetails} />
         </div>
-        <div className="rounded-xl bg-white/80 p-3 border border-black/5">
+        <div className="rounded-xl p-3 border border-black/5">
           <div className="text-xs font-semibold text-(--ink)">AC</div>
           <div className="text-[22px] font-bold">
             {getStatValue(finalStats.ac) ?? '—'}
@@ -287,7 +295,7 @@ function CombatSummary({
           <StatBreakdown block={finalStats.ac} showDetails={showDetails} />
         </div>
         {equipmentSummary?.showMeleeSummary && (
-          <div className="rounded-xl bg-white/80 p-3 border border-black/5">
+          <div className="rounded-xl p-3 border border-black/5">
             <div className="text-xs font-semibold text-(--ink)">
               Melee Attack
             </div>
@@ -301,7 +309,7 @@ function CombatSummary({
           </div>
         )}
         {equipmentSummary?.showMeleeSummary && (
-          <div className="rounded-xl bg-white/80 p-3 border border-black/5">
+          <div className="rounded-xl p-3 border border-black/5">
             <div className="text-xs font-semibold text-(--ink)">
               Melee Damage
             </div>
@@ -311,7 +319,7 @@ function CombatSummary({
             {equipmentSummary.meleeDamageParts &&
               equipmentSummary.meleeDamageParts.length > 0 && (
                 <SummaryDetails showDetails={showDetails}>
-                  <div className="rounded-lg bg-white/70 p-2 space-y-1">
+                  <div className="rounded-lg p-2 space-y-1">
                     {equipmentSummary.meleeDamageParts.map((part, idx) => (
                       <div
                         key={`${part.label}-${idx}`}
@@ -327,7 +335,7 @@ function CombatSummary({
           </div>
         )}
         {equipmentSummary?.showRangedSummary && (
-          <div className="rounded-xl bg-white/80 p-3 border border-black/5">
+          <div className="rounded-xl p-3 border border-black/5">
             <div className="text-xs font-semibold text-(--ink)">
               Ranged Attack
             </div>
@@ -341,7 +349,7 @@ function CombatSummary({
           </div>
         )}
         {equipmentSummary?.showRangedSummary && (
-          <div className="rounded-xl bg-white/80 p-3 border border-black/5">
+          <div className="rounded-xl p-3 border border-black/5">
             <div className="text-xs font-semibold text-(--ink)">
               Ranged Damage
             </div>
@@ -351,7 +359,7 @@ function CombatSummary({
             {equipmentSummary.rangedDamageParts &&
               equipmentSummary.rangedDamageParts.length > 0 && (
                 <SummaryDetails showDetails={showDetails}>
-                  <div className="rounded-lg bg-white/70 p-2 space-y-1">
+                  <div className="rounded-lg p-2 space-y-1">
                     {equipmentSummary.rangedDamageParts.map((part, idx) => (
                       <div
                         key={`${part.label}-${idx}`}
@@ -384,7 +392,9 @@ function LoadoutList({
 }) {
   return (
     <div className="panel p-4 h-full">
-      <h3 className="section-title mb-2">Equipment Loadouts</h3>
+      <div className="section-rule">
+        <h3 className="section-title">Equipment Loadouts</h3>
+      </div>
       <ul className="text-sm text-(--muted) space-y-2">
         {(equipmentLoadouts.length > 0
           ? equipmentLoadouts
@@ -467,7 +477,7 @@ function StatBreakdown({
   return (
     <SummaryDetails showDetails={showDetails}>
       {block.entries.map((entry) => (
-        <div key={entry.label} className="rounded-lg bg-white/70 p-2">
+        <div key={entry.label} className="rounded-lg p-2">
           <div className="space-y-1">
             {entry.components.map((component) => (
               <div

@@ -48,7 +48,7 @@ export const ClassSelector: React.FC<ClassSelectorProps> = ({
       <div>
         <label className="sr-only">{ui.class}</label>
         <select
-          className="w-full border border-black/10 rounded-lg px-3 py-2 text-sm bg-white/80 focus:outline-none focus:ring-2 focus:ring-(--accent)/30 disabled:opacity-50"
+          className="w-full border border-black/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-(--accent)/30 disabled:opacity-50"
           value={selectedClassId ?? ''}
           onChange={handleChange}
           disabled={isDisabled}

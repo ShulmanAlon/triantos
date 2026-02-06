@@ -22,7 +22,7 @@ export const CharacterImagePicker = ({
     </div>
     <div
       onClick={onEdit}
-      className="relative cursor-pointer w-40 h-40 border rounded-xl overflow-hidden shadow-sm bg-white/80 group"
+      className="relative cursor-pointer w-40 h-40 border rounded-xl overflow-hidden shadow-sm group"
     >
       {imageUrl || classId ? (
         <>

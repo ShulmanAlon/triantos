@@ -86,7 +86,7 @@ export default function CreateCampaign() {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full mt-1 p-2 border border-black/10 rounded-lg bg-white/80"
+                className="w-full mt-1 p-2 border border-black/10 rounded-lg"
               />
             </label>
 
@@ -95,7 +95,7 @@ export default function CreateCampaign() {
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full mt-1 p-2 border border-black/10 rounded-lg bg-white/80"
+                className="w-full mt-1 p-2 border border-black/10 rounded-lg"
                 rows={4}
               />
             </label>

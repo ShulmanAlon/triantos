@@ -14,7 +14,7 @@ export const LanguageSelector = () => {
       <select
         value={language}
         onChange={(e) => setLanguage(e.target.value as Language)}
-        className="px-3 py-2 border border-black/10 rounded-xl text-sm bg-white/80"
+        className="px-3 py-2 border border-black/10 rounded-xl text-sm"
       >
         {SUPPORTED_LANGUAGES.map((lang) => (
           <option key={lang} value={lang}>

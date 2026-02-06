@@ -95,7 +95,7 @@ const CharacterCard = ({ character, onSelect, language }: CharacterCardProps) =>
     onClick={() => onSelect(character.id)}
     className="cursor-pointer card p-3 transition hover:-translate-y-0.5 hover:border-(--accent)/30"
   >
-    <div className="rounded-xl overflow-hidden border border-black/5 bg-white/80">
+    <div className="rounded-xl overflow-hidden border border-black/5">
       <ImageWithPlaceholder
         src={getCharacterImage(character.image_url, character.class_id as ClassId)}
         blurSrc={getCharacterBlurImage(character.class_id as ClassId)}

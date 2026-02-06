@@ -65,7 +65,7 @@ export const LoginPage = () => {
         <div>
           <label className="block text-sm font-semibold mb-1">Email</label>
           <input
-            className="w-full border border-black/10 px-3 py-2 rounded-lg bg-white/80"
+            className="w-full border border-black/10 px-3 py-2 rounded-lg"
             type="email"
             required
             value={email}
@@ -76,7 +76,7 @@ export const LoginPage = () => {
         <div>
           <label className="block text-sm font-semibold mb-1">Password</label>
           <input
-            className="w-full border border-black/10 px-3 py-2 rounded-lg bg-white/80"
+            className="w-full border border-black/10 px-3 py-2 rounded-lg"
             type="password"
             required
             value={password}

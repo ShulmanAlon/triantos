@@ -39,7 +39,7 @@ export const CampaignHeader = ({
 
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div className="flex flex-col sm:flex-row gap-4 items-start">
-              <div className="relative w-48 h-48 rounded-xl overflow-hidden shadow-sm bg-white/80 border border-black/10">
+              <div className="relative w-48 h-48 rounded-xl overflow-hidden shadow-sm border border-black/10">
                 <ImageWithPlaceholder
                   src={getCampaignImage(campaign.image_url)}
                   blurSrc={getCampaignBlurImage()}
