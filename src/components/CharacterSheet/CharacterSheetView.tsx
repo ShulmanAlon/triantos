@@ -4,8 +4,9 @@ import { getModifier } from '@/utils/modifier';
 import { XP_TABLE } from '@/config/progression';
 import { ClassId } from '@/types/gameClass';
 import { getClassNameById } from '@/utils/classUtils';
+import { getClassRestrictionsById } from '@/utils/classUtils';
 import { RaceId } from '@/types/race';
-import { getRaceNameById } from '@/utils/raceUtils';
+import { getRaceNameById, getRaceRestrictionsById } from '@/utils/raceUtils';
 import { useLanguage } from '@/context/LanguageContext';
 import { uiLabels } from '@/i18n/ui';
 import { getAttributeNameById } from '@/utils/attributeUtils';
@@ -82,6 +83,8 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
 }) => {
   const { language } = useLanguage();
   const ui = uiLabels[language];
+  const classRestrictions = getClassRestrictionsById(selectedClassId, language).filter(Boolean);
+  const raceRestrictions = getRaceRestrictionsById(selectedRaceId, language).filter(Boolean);
   if (!derived) return null;
 
   const SectionHeader = ({ title }: { title: string }) => (
@@ -140,6 +143,22 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
                 : 'Select Race'}
             </span>
           </div>
+          {classRestrictions.length > 0 && (
+            <div className="text-xs text-(--muted) mt-1">
+              <span className="font-semibold">
+                {ui.class} {ui.restrictions}:
+              </span>{' '}
+              {classRestrictions.join(', ')}
+            </div>
+          )}
+          {raceRestrictions.length > 0 && (
+            <div className="text-xs text-(--muted) mt-1">
+              <span className="font-semibold">
+                {ui.race} {ui.restrictions}:
+              </span>{' '}
+              {raceRestrictions.join(', ')}
+            </div>
+          )}
         </div>
       </div>
 
@@ -268,6 +287,10 @@ function CombatSummary({
         >
           {showDetails ? 'Hide Details' : 'Show Details'}
         </button>
+      </div>
+      <div className="rounded-xl p-3 border border-black/5 mb-3">
+        <div className="text-xs font-semibold text-(--ink)">Attacks / Round</div>
+        <div className="text-[22px] font-bold">{derived.attacksPerRound}</div>
       </div>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         <div className="rounded-xl p-3 border border-black/5">

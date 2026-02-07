@@ -19,10 +19,14 @@ export function buildMeleeAttackStatBlock(
 ): StatBlock<number> {
   const strMod = getModifier(attributes.str);
   const flatBonus = getModifierValue(derived, 'attack_bonus_flat');
+  const basicBonus = getModifierValue(derived, 'attack_bonus_basic');
+  const twoHandedBonus = getModifierValue(derived, 'attack_bonus_melee_2h');
   const proficiencyKey = requiredProficiencyId
     ? (getProficiencyToggleKey(requiredProficiencyId) as keyof CharacterDerivedStats['toggles'])
     : null;
   const isProficient = proficiencyKey ? derived.toggles[proficiencyKey] : true;
+  const applyBasicBonus = requiredProficiencyId === 'basicWeapons';
+  const applyTwoHandedBonus = requiredProficiencyId === 'melee2hWeapons';
 
   const entries: StatFormula[] = [];
 
@@ -32,13 +36,16 @@ export function buildMeleeAttackStatBlock(
     const attackKey = `attack_bonus_melee_${type}`;
     const tagBonus = getTagBasedModifier('attack_bonus', ['melee', type], derived);
     const typeBonus = getModifierValue(derived, attackKey) + tagBonus;
+    const hasTypeSkill =
+      Object.prototype.hasOwnProperty.call(derived.modifiers, attackKey) ||
+      tagBonus !== 0;
 
     const components: StatComponent[] = [
       { source: 'Base Attack', value: bab },
       { source: 'STR Mod', value: strMod },
     ];
 
-    if (selectedType || typeBonus !== 0) {
+    if ((selectedType && hasTypeSkill) || typeBonus !== 0) {
       const displayType =
         type === 'energy'
           ? 'Energy Melee'
@@ -46,6 +53,20 @@ export function buildMeleeAttackStatBlock(
       components.push({
         source: `${displayType} Skill`,
         value: typeBonus,
+      });
+    }
+
+    if (applyBasicBonus && basicBonus !== 0) {
+      components.push({
+        source: 'Basic Weapons Skill',
+        value: basicBonus,
+      });
+    }
+
+    if (applyTwoHandedBonus && twoHandedBonus !== 0) {
+      components.push({
+        source: '2-Handed Skill',
+        value: twoHandedBonus,
       });
     }
 

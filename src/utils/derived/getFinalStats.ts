@@ -46,7 +46,11 @@ export function getFinalStats(
   const derivedFromSkills = interpretEffects(skillEffects);
   const derived = interpretEffects([...skillEffects, ...equipmentModifiers]);
   const hpBlock = buildHPStatBlock(gameClass, attributes, level, derived);
-  const tempHPBlock = buildTempHPStatBlock(derived);
+  const tempHPBlock = buildTempHPStatBlock(
+    derived,
+    derivedFromSkills,
+    equipmentModifiers
+  );
   const acBlock = buildACStatBlock(
     derived,
     attributes,

@@ -50,22 +50,9 @@ const getArmorTypeLabel = (
   }
 };
 
-const deriveLoadoutWeapon = (
-  primary: GameItem | null,
-  offhand: GameItem | null
-) => ({
-  melee:
-    primary?.tags.includes('melee')
-      ? primary
-      : offhand?.tags.includes('melee')
-      ? offhand
-      : null,
-  ranged:
-    primary?.tags.includes('ranged')
-      ? primary
-      : offhand?.tags.includes('ranged')
-      ? offhand
-      : null,
+const deriveLoadoutWeapon = (primary: GameItem | null) => ({
+  melee: primary?.tags.includes('melee') ? primary : null,
+  ranged: primary?.tags.includes('ranged') ? primary : null,
 });
 
 const buildWeaponDamageBreakdown = (
@@ -164,20 +151,20 @@ export const CharacterSheet = () => {
   }, [items]);
   const getLoadoutItem = (slot: EquipmentSlotKey) => {
     const itemId = getLoadoutItemId(activeLoadout, slot);
-    return itemId ? itemsById.get(itemId) ?? null : null;
+    if (itemId) return itemsById.get(itemId) ?? null;
+    if (slot === 'weapon_primary') {
+      return itemsById.get('unarmed') ?? null;
+    }
+    return null;
   };
 
   const activeArmorItem = getLoadoutItem('armor');
   const activeShieldItem = getLoadoutItem('shield');
   const activePrimaryWeapon = getLoadoutItem('weapon_primary');
-  const activeOffhandWeapon = getLoadoutItem('weapon_offhand');
-
   const armorType = getArmorType(activeArmorItem);
 
-  const { melee: meleeWeapon, ranged: rangedWeapon } = deriveLoadoutWeapon(
-    activePrimaryWeapon,
-    activeOffhandWeapon
-  );
+  const { melee: meleeWeapon, ranged: rangedWeapon } =
+    deriveLoadoutWeapon(activePrimaryWeapon);
 
   const meleeDamageType = getWeaponDamageTag(meleeWeapon);
 
@@ -397,6 +384,9 @@ export const CharacterSheet = () => {
             onClose={() => setShowLoadoutModal(false)}
             onSave={handleLoadoutSave}
             derived={finalStats?.derived ?? null}
+            characterClassId={character.class_id}
+            characterRaceId={character.race_id}
+            characterAttributes={character.attributes}
           />
           {canEditCharacter && (
             <div className="section-gap flex items-center justify-between">

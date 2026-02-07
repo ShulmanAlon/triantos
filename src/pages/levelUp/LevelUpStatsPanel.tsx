@@ -21,6 +21,9 @@ export const LevelUpStatsPanel = ({
         <strong>Base Attack Bonus:</strong> {nextStats.baseAttackBonus}
       </p>
       <p>
+        <strong>Attacks / Round:</strong> {nextStats.attacksPerRound}
+      </p>
+      <p>
         <strong>Spells:</strong>{' '}
         {Object.entries(nextStats.spellSlots ?? {})
           .map(([lvl, slots]) => `Lvl ${lvl}: ${slots}`)

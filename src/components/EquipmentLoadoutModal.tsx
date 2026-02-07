@@ -8,6 +8,10 @@ import {
 import { GameItem } from '@/types/items';
 import { Button } from './ui/Button';
 import { getProficiencyToggleKey } from '@/utils/domain/modifiers';
+import { getItemRestrictionReasons, isItemAllowed } from '@/utils/domain/itemRestrictions';
+import { AttributeMap } from '@/types/attributes';
+import { ClassId } from '@/types/gameClass';
+import { RaceId } from '@/types/race';
 
 type Props = {
   isOpen: boolean;
@@ -17,13 +21,16 @@ type Props = {
   onClose: () => void;
   onSave: (next: EquipmentLoadouts) => void | Promise<void>;
   derived?: CharacterDerivedStats | null;
+  characterClassId?: ClassId;
+  characterRaceId?: RaceId;
+  characterAttributes?: AttributeMap;
 };
 
 const SLOT_LABELS: Record<EquipmentSlotKey, string> = {
   armor: 'Armor',
   weapon_primary: 'Weapon (Primary)',
-  weapon_offhand: 'Weapon (Offhand)',
   shield: 'Shield',
+  energy_shield: 'Energy Shield',
 };
 // TODO: Add energy shield slot selection in loadouts.
 
@@ -35,6 +42,9 @@ export default function EquipmentLoadoutModal({
   onClose,
   onSave,
   derived = null,
+  characterClassId,
+  characterRaceId,
+  characterAttributes,
 }: Props) {
   const [loadouts, setLoadouts] = useState<EquipmentLoadout[]>(
     equipmentLoadouts.loadouts
@@ -55,14 +65,19 @@ export default function EquipmentLoadoutModal({
     () => items.filter((i) => i.type === 'weapon'),
     [items]
   );
-  const offhandWeapons = useMemo(
-    () => weaponItems.filter((i) => !i.tags.includes('2h')),
+  const unarmedWeapon = useMemo(
+    () => weaponItems.find((item) => item.id === 'unarmed') ?? null,
     [weaponItems]
   );
   const shieldItems = useMemo(
-    () => items.filter((i) => i.type === 'shield'),
+    () => items.filter((i) => i.type === 'shield' && !i.tags.includes('energyShield')),
     [items]
   );
+  const energyShieldItems = useMemo(
+    () => items.filter((i) => i.tags.includes('energyShield')),
+    [items]
+  );
+  // TODO: Add items order logic (weapons, armor, shield, energy shield).
 
   const isProficient = (item: GameItem | undefined | null) => {
     const requires = item?.requiresProficiency ?? [];
@@ -93,6 +108,12 @@ export default function EquipmentLoadoutModal({
   );
   const armorInvalid = armorItem && !isProficient(armorItem);
   const shieldInvalid = shieldItem && !isProficient(shieldItem);
+  const restrictionContext = {
+    classId: characterClassId,
+    raceId: characterRaceId,
+    attributes: characterAttributes,
+    armorItem,
+  };
 
   const updateLoadoutItem = (slot: EquipmentSlotKey, itemId: string | null) => {
     updateActiveLoadout((loadout) => {
@@ -100,7 +121,6 @@ export default function EquipmentLoadoutModal({
       if (slot === 'weapon_primary' && itemId) {
         const selected = weaponItems.find((i) => i.id === itemId);
         if (selected?.tags.includes('2h')) {
-          nextItems['weapon_offhand'] = null;
           nextItems['shield'] = null;
         }
       }
@@ -148,13 +168,20 @@ export default function EquipmentLoadoutModal({
                 updateLoadoutItem('armor', e.target.value || null)
               }
             >
-              <option value="">None</option>
               {armorItems.map((item) => {
-                const allowed = isProficient(item);
+                const allowedByRules = isItemAllowed(item, restrictionContext);
+                const allowed = allowedByRules && isProficient(item);
+                const restrictionReasons = allowedByRules
+                  ? null
+                  : getItemRestrictionReasons(item, restrictionContext);
                 return (
                   <option key={item.id} value={item.id} disabled={!allowed}>
                     {item.name}
-                    {!allowed ? ' (no proficiency)' : ''}
+                    {!allowed && restrictionReasons
+                      ? ' (restricted)'
+                      : !allowed
+                      ? ' (no proficiency)'
+                      : ''}
                   </option>
                 );
               })}
@@ -178,11 +205,19 @@ export default function EquipmentLoadoutModal({
             >
               <option value="">None</option>
               {shieldItems.map((item) => {
-                const allowed = isProficient(item);
+                const allowedByRules = isItemAllowed(item, restrictionContext);
+                const allowed = allowedByRules && isProficient(item);
+                const restrictionReasons = allowedByRules
+                  ? null
+                  : getItemRestrictionReasons(item, restrictionContext);
                 return (
                   <option key={item.id} value={item.id} disabled={!allowed}>
                     {item.name}
-                    {!allowed ? ' (no proficiency)' : ''}
+                    {!allowed && restrictionReasons
+                      ? ' (restricted)'
+                      : !allowed
+                      ? ' (no proficiency)'
+                      : ''}
                   </option>
                 );
               })}
@@ -192,6 +227,41 @@ export default function EquipmentLoadoutModal({
                 No proficiency for selected shield.
               </span>
             )}
+            {isTwoHanded && (
+              <span className="text-xs text-(--muted)">
+                Not applicable with 2h weapon.
+              </span>
+            )}
+          </label>
+
+          <label className="flex flex-col gap-1">
+            {SLOT_LABELS.energy_shield}
+            <select
+              className="border rounded px-2 py-1"
+              value={activeLoadout?.items['energy_shield'] ?? ''}
+              onChange={(e) =>
+                updateLoadoutItem('energy_shield', e.target.value || null)
+              }
+            >
+              <option value="">None</option>
+              {energyShieldItems.map((item) => {
+                const allowedByRules = isItemAllowed(item, restrictionContext);
+                const allowed = allowedByRules && isProficient(item);
+                const restrictionReasons = allowedByRules
+                  ? null
+                  : getItemRestrictionReasons(item, restrictionContext);
+                return (
+                  <option key={item.id} value={item.id} disabled={!allowed}>
+                    {item.name}
+                    {!allowed && restrictionReasons
+                      ? ' (restricted)'
+                      : !allowed
+                      ? ' (no proficiency)'
+                      : ''}
+                  </option>
+                );
+              })}
+            </select>
           </label>
 
           <label className="flex flex-col gap-1">
@@ -203,33 +273,29 @@ export default function EquipmentLoadoutModal({
                 updateLoadoutItem('weapon_primary', e.target.value || null)
               }
             >
-              <option value="">None</option>
-              {weaponItems.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ))}
+              <option value={unarmedWeapon?.id ?? ''}>
+                {unarmedWeapon?.name ?? 'Unarmed'}
+              </option>
+              {weaponItems.map((item) => {
+                if (item.id === 'unarmed') return null;
+                const allowed = isItemAllowed(item, restrictionContext);
+                const handTag = item.tags.includes('2h')
+                  ? '2h'
+                  : item.tags.includes('1h')
+                  ? '1h'
+                  : null;
+                return (
+                  <option key={item.id} value={item.id} disabled={!allowed}>
+                    {item.name}
+                    {handTag ? ` (${handTag})` : ''}
+                    {!allowed ? ' (restricted)' : ''}
+                  </option>
+                );
+              })}
             </select>
           </label>
 
-          <label className="flex flex-col gap-1">
-            {SLOT_LABELS.weapon_offhand}
-            <select
-              className="border rounded px-2 py-1"
-              value={activeLoadout?.items['weapon_offhand'] ?? ''}
-              onChange={(e) =>
-                updateLoadoutItem('weapon_offhand', e.target.value || null)
-              }
-              disabled={isTwoHanded}
-            >
-              <option value="">None</option>
-              {offhandWeapons.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
-          </label>
+          <div />
         </div>
 
         <div className="flex justify-end gap-2">

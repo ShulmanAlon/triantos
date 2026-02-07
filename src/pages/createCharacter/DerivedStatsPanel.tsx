@@ -16,6 +16,9 @@ export const DerivedStatsPanel = ({ stats }: DerivedStatsPanelProps) => {
         <strong>Base Attack Bonus:</strong> {stats.baseAttackBonus}
       </p>
       <p>
+        <strong>Attacks / Round:</strong> {stats.attacksPerRound}
+      </p>
+      <p>
         <strong>Spells:</strong>{' '}
         {Object.entries(stats.spellSlots ?? {})
           .map(([lvl, slots]) => `Lvl ${lvl}: ${slots}`)

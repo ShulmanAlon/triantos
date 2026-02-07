@@ -40,3 +40,11 @@ export const getClassLevelDataById = (
   if (!classId) return undefined;
   return getClassById(classId)?.progression.find((l) => l.level === level);
 };
+
+export const getClassRestrictionsById = (
+  classId: ClassId | undefined,
+  language: Language
+): string[] => {
+  if (!classId) return [];
+  return classDictionary[classId]?.[language]?.restrictions ?? [];
+};

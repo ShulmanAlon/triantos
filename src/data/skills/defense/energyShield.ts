@@ -17,7 +17,7 @@ export const energyShield: SkillEntity = {
       prerequisites: [{ type: 'level', minimum: 6 }],
       effects: [
         {
-          target: 'hp_temp',
+          target: 'proficiency.energyShield',
           operation: 'enable',
           value: true,
           sourceSkill: 'energyShield',

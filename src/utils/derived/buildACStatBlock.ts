@@ -68,12 +68,7 @@ export function buildACStatBlock(
     shieldTagBonus;
   const shieldBaseBonus = sumModifiers(equipmentModifiers, 'ac_shield_base');
   const shieldMagicBonus = sumModifiers(equipmentModifiers, 'ac_shield_magic');
-  const shieldEnabled = equipmentContext
-    ? !!equipmentContext.shieldEquipped
-    : derived.toggles['ac_with_heavyArmor'] ||
-      'ac_with_heavyArmor' in derived.modifiers ||
-      derived.toggles['ac_with_lightArmor'] ||
-      'ac_with_lightArmor' in derived.modifiers;
+  const shieldEnabled = !!equipmentContext?.shieldEquipped;
 
   const filteredArmorTypes = equipmentContext?.armorType
     ? armorTypes.filter((armor) => armor.id === equipmentContext.armorType)
@@ -118,13 +113,6 @@ export function buildACStatBlock(
         value: armorSkillBonus,
       });
     }
-    entries.push({
-      label: armor.label,
-      components: baseComponents,
-      total: baseComponents.reduce((sum, c) => sum + c.value, 0),
-    });
-
-    // With shield
     if (shieldEnabled) {
       const shieldComponents: StatComponent[] = [...baseComponents];
       if (shieldBaseBonus !== 0) {
@@ -139,15 +127,23 @@ export function buildACStatBlock(
           value: shieldMagicBonus,
         });
       }
-      shieldComponents.push({
-        source: SKILL_LABELS['ac_with_shield'],
-        value: shieldSkillBonus,
-      });
+      if (shieldSkillBonus !== 0) {
+        shieldComponents.push({
+          source: SKILL_LABELS['ac_with_shield'],
+          value: shieldSkillBonus,
+        });
+      }
 
       entries.push({
-        label: `${armor.label} + Shield`,
+        label: armor.label,
         components: shieldComponents,
         total: shieldComponents.reduce((sum, c) => sum + c.value, 0),
+      });
+    } else {
+      entries.push({
+        label: armor.label,
+        components: baseComponents,
+        total: baseComponents.reduce((sum, c) => sum + c.value, 0),
       });
     }
   }

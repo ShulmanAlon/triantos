@@ -23,5 +23,6 @@ export function getBaseDerivedStats(
     hp: hpFromCon + hpFromBase + hpFromFixed,
     spellSlots: levelData?.spells,
     baseAttackBonus: levelData?.baseAttackBonus ?? 0,
+    attacksPerRound: levelData?.attacksPerRound ?? 1,
   };
 }

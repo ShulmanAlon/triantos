@@ -51,8 +51,8 @@ export type CharacterSkillSelection = {
 export type EquipmentSlotKey =
   | 'armor'
   | 'weapon_primary'
-  | 'weapon_offhand'
-  | 'shield';
+  | 'shield'
+  | 'energy_shield';
 // TODO: Add energy shield slot to loadouts.
 
 export type EquipmentLoadout = {
@@ -94,6 +94,7 @@ export interface DerivedStats {
   hp: number;
   spellSlots?: Record<number, number>;
   baseAttackBonus: number;
+  attacksPerRound: number;
 }
 
 export type CharacterDerivedStats = {

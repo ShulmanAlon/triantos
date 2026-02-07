@@ -72,6 +72,8 @@ export const fighter: GameClass = {
       level: 12,
       skill: [{ onlyForRace: 'Human', skillPoints: 1, skillPointType: 'human' }],
       baseAttackBonus: 7,
+      // TODO: Move to intended level when progression is finalized.
+      attacksPerRound: 2,
       abilityPoint: 1,
     },
     // TODO: ... continue through level 18

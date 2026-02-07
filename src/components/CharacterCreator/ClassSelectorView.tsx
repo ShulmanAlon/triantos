@@ -8,6 +8,7 @@ import { attributeLabels } from '@/i18n/attributes';
 import { classDictionary } from '@/i18n/classes';
 import {
   getAllowedRacesByClassId,
+  getClassRestrictionsById,
   getPrimaryAttributesByClassId,
 } from '@/utils/classUtils';
 
@@ -31,6 +32,7 @@ export const ClassSelector: React.FC<ClassSelectorProps> = ({
   const attributeNames = attributeLabels[language];
   const allowedRacesId = getAllowedRacesByClassId(selectedClassId);
   const primaryAttributes = getPrimaryAttributesByClassId(selectedClassId);
+  const classRestrictions = getClassRestrictionsById(selectedClassId, language).filter(Boolean);
   const localized = selectedClassId
     ? classDictionary[selectedClassId]?.[language]
     : undefined;
@@ -88,6 +90,18 @@ export const ClassSelector: React.FC<ClassSelectorProps> = ({
             .map((raceId) => getRaceNameById(raceId, language))
             .join(', ')}
         </p>
+      )}
+
+      {/* Restrictions */}
+      {classRestrictions.length > 0 && (
+        <div className="text-sm text-gray-700">
+          <p className="font-semibold mb-1">{ui.restrictions}:</p>
+          <ul className="list-disc list-inside space-y-1">
+            {classRestrictions.map((restriction, index) => (
+              <li key={index}>{restriction}</li>
+            ))}
+          </ul>
+        </div>
       )}
 
       {/* Attribute Requirements */}

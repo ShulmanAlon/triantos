@@ -23,6 +23,7 @@ export interface ClassLevel {
   }[];
   abilityPoint?: number;
   baseAttackBonus?: number;
+  attacksPerRound?: number;
   feature?: string;
   spells?: SpellSlots;
 }

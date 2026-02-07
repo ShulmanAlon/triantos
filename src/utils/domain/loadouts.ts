@@ -21,8 +21,8 @@ const DEFAULT_LOADOUT_NAMES: Record<(typeof DEFAULT_LOADOUT_IDS)[number], string
 export const EQUIPMENT_SLOT_KEYS: EquipmentSlotKey[] = [
   'armor',
   'weapon_primary',
-  'weapon_offhand',
   'shield',
+  'energy_shield',
 ];
 
 export const normalizeLoadoutItems = (
@@ -31,6 +31,9 @@ export const normalizeLoadoutItems = (
   const next: EquipmentLoadout['items'] = { ...items };
   for (const key of EQUIPMENT_SLOT_KEYS) {
     if (!(key in next)) next[key] = null;
+  }
+  if (!next.weapon_primary) {
+    next.weapon_primary = 'unarmed';
   }
   return next;
 };

@@ -6,7 +6,7 @@ export const basicWeapons: SkillEntity = {
   family: 'attack',
   skillPointType: 'core',
   description:
-    'Improves the use of basic weapons, including: Knife, Dagger, Mace, Hammer, Sword, Axe, Bow, Crossbow, Energy Pistol, Liberator Handgun, Creosant Rifle, Dimple Grenade',
+    'Improves the use of basic weapons, including: Unarmed, Knife, Dagger, Mace, Hammer, Sword, Axe, Bow, Crossbow, Energy Pistol, Liberator Handgun, Creosant Rifle, Dimple Grenade',
   tiers: [
     {
       tier: 1,

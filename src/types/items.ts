@@ -1,5 +1,7 @@
 import { StatModifier } from './modifiers';
 import { ProficiencyId } from '@/config/constants';
+import { ClassId } from './gameClass';
+import { RaceId } from './race';
 
 export interface GameItem {
   id: string;
@@ -13,6 +15,10 @@ export interface GameItem {
   ammoConsumption?: number;
   requiresProficiency?: ProficiencyId[]; // proficiency id needed
   // TODO: Add not-allowed constraints (race/class) for item visibility/equip rules.
+  notAllowedRaces?: RaceId[];
+  notAllowedClasses?: ClassId[];
+  baseItemId?: string;
+  variantTag?: string;
   activeAbilities?: string[]; // Optional references to active skills granted
   notes?: string; // Optional DM-written description or context
 }
@@ -31,6 +37,7 @@ export interface GameItemWithEquipState extends GameItem {
 
 export type ItemType =
   | 'armor'
+  | 'energyShield'
   | 'weapon'
   | 'shield'
   | 'utility'
@@ -61,6 +68,7 @@ export const ITEM_TAGS = [
   'heavyArmor',
   'powerArmor',
   'clothing',
+  'energyShield',
   'melee',
   'ranged',
   '1h',
@@ -73,6 +81,9 @@ export const ITEM_TAGS = [
   'medium',
   'large',
   'heavy',
+  'veryHeavy',
+  'silent',
+  'crit19',
   'custom',
 ] as const;
 

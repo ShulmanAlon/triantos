@@ -28,7 +28,9 @@ export const MELEE_TYPES = ['slash', 'pierce', 'blunt', 'energy'] as const;
 export type MeleeTypes = (typeof MELEE_TYPES)[number];
 
 export const DAMAGE_TYPES = [
-  'physical',
+  'slash',
+  'pierce',
+  'blunt',
   'energy',
   'magic',
   'fire',
@@ -75,7 +77,7 @@ export type StatTarget =
   | (typeof STAT_TARGETS)[number]
   | ResistTarget
   | DamageTarget
-  | WeaponProficiencyTarget
+  | ProficiencyTarget
   | FlagTarget;
 
 export type WeaponProficiencyId =
@@ -92,5 +94,7 @@ export type ArmorProficiencyId =
   | 'armorLight'
   | 'armorPower'
   | 'armorUnarmored'
-  | 'shieldFortress';
+  | 'shieldFortress'
+  | 'energyShield';
 export type ProficiencyId = WeaponProficiencyId | ArmorProficiencyId;
+export type ProficiencyTarget = `proficiency.${ProficiencyId}`;

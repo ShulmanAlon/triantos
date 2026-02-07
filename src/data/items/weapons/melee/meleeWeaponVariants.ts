@@ -1,26 +1,11 @@
 import { GameItem } from '@/types/items';
+import { plasmaCutter } from './standardMeleeWeapons';
+import { makeVariant } from '@/data/items/variants';
 
-export const plasmaCutter: GameItem = {
-  id: 'plasmaCutter',
-  name: 'Plasma Cutter',
-  type: 'weapon',
-  tags: ['melee', 'energy', '2h', 'medium'],
-  baseDamage: [
-    {
-      target: 'damage.energy',
-      operation: 'add',
-      value: { diceRoll: 2, diceType: 8 },
-    },
-  ],
-  requiresProficiency: ['meleeEnergyWeapons'],
-  ammo: 'energy',
-  ammoConsumption: 2,
-};
-
-export const plasmaCutterPlusOne: GameItem = {
-  ...plasmaCutter,
+export const plasmaCutterPlusOne: GameItem = makeVariant(plasmaCutter, {
   id: 'plasmaCutterPlusOne',
   name: '+1 Plasma Cutter',
+  variantTag: '+1',
   modifiers: [
     { target: 'attack_bonus_flat', operation: 'add', value: 1 },
     {
@@ -29,12 +14,12 @@ export const plasmaCutterPlusOne: GameItem = {
       value: 1,
     },
   ],
-};
+});
 
-export const plasmaCutterPlusTwoFiery: GameItem = {
-  ...plasmaCutter,
+export const plasmaCutterPlusTwoFiery: GameItem = makeVariant(plasmaCutter, {
   id: 'plasmaCutterPlusTwoFiery',
   name: 'Fiery +2 Plasma Cutter',
+  variantTag: 'Fiery +2',
   modifiers: [
     { target: 'attack_bonus_flat', operation: 'add', value: 2 },
     {
@@ -48,4 +33,4 @@ export const plasmaCutterPlusTwoFiery: GameItem = {
       value: { diceRoll: 1, diceType: 6 },
     },
   ],
-};
+});

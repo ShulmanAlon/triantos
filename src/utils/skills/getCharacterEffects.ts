@@ -7,9 +7,14 @@ export function getCharacterEffects(
   skillEntities: SkillEntity[]
 ): StatModifier[] {
   const skillsById = new Map(skillEntities.map((skill) => [skill.id, skill]));
+  const maxTierBySkill = new Map<string, number>();
+  for (const { skillId, tier } of skillSelections) {
+    const current = maxTierBySkill.get(skillId) ?? 0;
+    if (tier > current) maxTierBySkill.set(skillId, tier);
+  }
 
-  return skillSelections
-    .map(({ skillId, tier }) => {
+  return Array.from(maxTierBySkill.entries())
+    .map(([skillId, tier]) => {
       const skill = skillsById.get(skillId);
       if (!skill) return [];
       return skill.tiers
