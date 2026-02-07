@@ -118,7 +118,7 @@ export function AttributeRow({
           modifier > 0
             ? 'bg-[#d6e2dc] text-[#22524b]'
             : modifier < 0
-              ? 'bg-[#e5d7d1] text-[#752b20]'
+              ? 'bg-[#ead2cc] text-[#8a1e0e]'
               : ''
         }`}
       >

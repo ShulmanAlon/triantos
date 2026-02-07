@@ -53,7 +53,7 @@ export const SkillTierRow = ({
                 : statusLabel === 'Locked'
                 ? 'bg-yellow-100 text-yellow-700'
                 : statusLabel === 'Ineligible'
-                ? 'bg-[#e5d7d1] text-[#752b20]'
+                ? 'bg-[#ead2cc] text-[#8a1e0e]'
                 : 'bg-gray-100 text-gray-700'
             }`}
           >
@@ -73,7 +73,7 @@ export const SkillTierRow = ({
               {prereqLabels.map((req, idx) => (
                 <li
                   key={idx}
-                  className={req.met ? 'text-[#22524b]' : 'text-[#752b20]'}
+                  className={req.met ? 'text-[#22524b]' : 'text-[#8a1e0e]'}
                 >
                   {req.label}
                 </li>

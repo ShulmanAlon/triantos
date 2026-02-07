@@ -23,9 +23,9 @@ export function Button({
     primary:
       'bg-(--accent) text-white hover:bg-(--accent-dark) shadow-[0_6px_12px_rgba(48,115,106,0.22)] border border-(--accent-dark)/20',
     outline:
-      'border border-black/10 text-(--ink) bg-black/5 hover:bg-black/10',
+      'border border-black/10 text-(--ink) bg-black/7 hover:bg-black/11',
     destructive:
-      'bg-(--warn) text-white hover:bg-[#5e221a] shadow-[0_6px_12px_rgba(117,43,32,0.22)] border border-[#5e221a]/30',
+      'bg-(--warn) text-white hover:bg-[#6f160a] shadow-[0_6px_12px_rgba(138,30,14,0.24)] border border-[#6f160a]/30',
   }[variant];
 
   return (

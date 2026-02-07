@@ -116,7 +116,7 @@ export const buildDamageBreakdown = ({
     if (part.label === 'Weapon') {
       summaryParts.push(part.value.split(' ')[0]);
     } else if (part.label === 'STR Mod') {
-      summaryParts.push(part.value);
+      summaryParts.push(part.value.split(' ')[0]);
     } else if (part.label === 'Enchantment') {
       summaryParts.push(part.value.split(' ')[0]);
     } else if (part.label.startsWith('Skill')) {

@@ -4,14 +4,14 @@
 @layer base {
   :root {
     --ink: #1b1a17;
-    --muted: #5b5b55;
+    --muted: #575242;
     --paper: #f7f4ee;
     --panel: #fffaf0;
     --panel-opaque: rgba(255, 250, 240, 0.9);
     --accent: #30736a;
     --accent-dark: #255c54;
     --accent-soft: #cfe4df;
-    --warn: #752b20;
+    --warn: #8a1e0e;
     --shadow: 0 12px 30px rgba(19, 19, 16, 0.12);
   }
 
