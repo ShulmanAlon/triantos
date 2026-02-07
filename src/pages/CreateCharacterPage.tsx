@@ -70,7 +70,7 @@ export default function CharacterCreatePage() {
   const [skillBuckets, setSkillBuckets] = useState<LevelUpBucket[]>([
     { level: 1, skillSelections: [] },
   ]);
-  const [showAcquiredSkills, setShowAcquiredSkills] = useState(true);
+  const [showAcquiredSkills] = useState(true);
   const [showLockedSkills, setShowLockedSkills] = useState(false);
   const [showIneligibleSkills, setShowIneligibleSkills] = useState(false);
   const [spendTypeByTier, setSpendTypeByTier] = useState<

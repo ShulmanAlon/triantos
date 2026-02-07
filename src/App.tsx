@@ -27,6 +27,7 @@ function App() {
     <LanguageProvider>
       <ToastProvider>
         <Router>
+          {/* TODO: Add dedicated mobile layout support. */}
           <main className="w-full max-w-6xl mx-auto px-5 pb-12">
             <Header />
             <Suspense fallback={<LoadingFallback />}>

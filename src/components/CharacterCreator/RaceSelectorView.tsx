@@ -6,7 +6,6 @@ import {
   getRaceDescriptionById,
   getRaceNameById,
   getRaceRestrictionsById,
-  getRaceSpecialAbilitiesById,
 } from '@/utils/raceUtils';
 
 interface RaceSelectorProps {
