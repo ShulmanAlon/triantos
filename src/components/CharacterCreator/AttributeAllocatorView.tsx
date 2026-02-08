@@ -57,6 +57,11 @@ export const AttributeAllocator: React.FC<AttributeAllocatorProps> = ({
             <th className="text-center font-semibold pb-2 text-xs uppercase tracking-wide">
               {ui.value}
             </th>
+            {isLevelUpMode && (
+              <th className="text-center font-semibold pb-2 text-xs uppercase tracking-wide">
+                Gain
+              </th>
+            )}
             <th className="text-center font-semibold pb-2 text-xs uppercase tracking-wide">
               {ui.modifier}
             </th>
@@ -80,6 +85,7 @@ export const AttributeAllocator: React.FC<AttributeAllocatorProps> = ({
               usedPoints={usedPoints}
               hasAbilityPointThisLevel={hasAbilityPointThisLevel}
               showNextCost={showNextCost}
+              showDelta={isLevelUpMode}
               onChange={onChange}
               requiredValue={selectedClassData?.primaryAttributes?.[attr]}
             />

@@ -42,7 +42,7 @@ export function buildMeleeAttackStatBlock(
 
     const components: StatComponent[] = [
       { source: 'Base Attack', value: bab },
-      { source: 'STR Mod', value: strMod },
+      { source: 'STR Modifier', value: strMod },
     ];
 
     if ((selectedType && hasTypeSkill) || typeBonus !== 0) {

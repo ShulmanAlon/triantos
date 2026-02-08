@@ -9,6 +9,10 @@ export type SkillPointType = 'core' | 'utility' | 'human';
 
 export type SkillId = string;
 
+export type SkillGroup = 'basic' | 'actionable' | 'passive';
+export type SkillCategoryId = string;
+export type SkillSubcategoryId = string;
+
 export type SkillEntity = {
   id: SkillId;
   name: string;
@@ -16,6 +20,11 @@ export type SkillEntity = {
   skillPointType: SkillPointType;
   description: string;
   abilityModifier?: Attribute;
+  group?: SkillGroup;
+  category?: SkillCategoryId;
+  subcategory?: SkillSubcategoryId;
+  categoryOrder?: number;
+  sortOrder?: number;
   forbiddenClasses?: ClassId[];
   forbiddenRaces?: RaceId[];
   tiers: TierData[];

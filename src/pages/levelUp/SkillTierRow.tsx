@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/Button';
 
 type TierRowProps = {
   tier: TierData;
+  hasMultipleTiers: boolean;
   statusLabel: string;
   isSelected: boolean;
   availability: {
@@ -23,6 +24,7 @@ type TierRowProps = {
 
 export const SkillTierRow = ({
   tier,
+  hasMultipleTiers,
   statusLabel,
   isSelected,
   availability,
@@ -36,10 +38,13 @@ export const SkillTierRow = ({
   onAdd,
   onRemove,
 }: TierRowProps) => {
+  const tierLabel = hasMultipleTiers
+    ? `${tier.name} (Tier ${tier.tier})`
+    : `Tier ${tier.tier}`;
   return (
     <div className="flex items-start justify-between gap-4 border rounded-xl p-3">
       <div>
-        <div className="font-medium text-gray-800">Tier {tier.tier}</div>
+        <div className="font-medium text-gray-800">{tierLabel}</div>
         {(tier.deltaDescription ?? tier.description) && (
           <div className="text-xs text-gray-600">
             {tier.deltaDescription ?? tier.description}

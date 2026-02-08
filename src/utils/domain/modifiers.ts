@@ -96,7 +96,7 @@ export const buildDamageBreakdown = ({
 
   if (typeof strengthModifier === 'number' && strengthModifier !== 0) {
     parts.push({
-      label: 'STR Mod',
+      label: 'STR Modifier',
       value: `${formatSignedValue(strengthModifier)} Physical`,
     });
   }
@@ -115,7 +115,7 @@ export const buildDamageBreakdown = ({
   for (const part of parts) {
     if (part.label === 'Weapon') {
       summaryParts.push(part.value.split(' ')[0]);
-    } else if (part.label === 'STR Mod') {
+    } else if (part.label === 'STR Modifier') {
       summaryParts.push(part.value.split(' ')[0]);
     } else if (part.label === 'Enchantment') {
       summaryParts.push(part.value.split(' ')[0]);

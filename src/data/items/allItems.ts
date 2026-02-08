@@ -19,4 +19,3 @@ export const allItems: GameItem[] = [
   ...collect(meleeItems as Record<string, GameItem>),
   ...collect(rangedItems as Record<string, GameItem>),
 ];
-// TODO: Add more items (armor, weapons, utility) to expand loadout options.

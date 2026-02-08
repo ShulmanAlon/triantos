@@ -1,4 +1,6 @@
+import React from 'react';
 import { SkillEntity, SkillId, SkillPointType } from '@/types/skills';
+import { getSkillGroup, sortSkillsForDisplay } from '@/utils/domain/skills';
 import { SkillSelectionEntry, SkillPointPool } from '@/types/characters';
 import { SkillTierRow } from '@/pages/levelUp/SkillTierRow';
 
@@ -48,11 +50,62 @@ export const CharacterSkillsPanel = ({
   // TODO: Add skill type metadata to split actionable/selected (left) vs passive (right) columns.
   // TODO: Replace alphabetical sort with a deliberate skill ordering strategy.
   // TODO: Test soft-locking builds when attributes change and skill requirements are no longer met.
-  const sortedSkills = skills.slice().sort((a, b) => a.name.localeCompare(b.name));
+  const sortedSkills = sortSkillsForDisplay(skills);
+  const [collapsedSections, setCollapsedSections] = React.useState({
+    basic: false,
+    actionable: false,
+    passive: false,
+  });
+  const groupedSkills = sortedSkills.reduce(
+    (acc, skill) => {
+      const group = getSkillGroup(skill);
+      acc[group].push(skill);
+      return acc;
+    },
+    { basic: [], actionable: [], passive: [] } as Record<
+      'basic' | 'actionable' | 'passive',
+      SkillEntity[]
+    >
+  );
+
+  const formatAbilityModifier = (ability?: SkillEntity['abilityModifier']) =>
+    ability ? `${ability.toUpperCase()} Modifier` : null;
 
   return (
-    <div className="columns-1 lg:columns-2 gap-6">
-      {sortedSkills.map((skill) => {
+    <div className="space-y-6">
+      {(
+        [
+          { key: 'basic', title: 'Basic Skills' },
+          { key: 'actionable', title: 'Actionable Skills' },
+          { key: 'passive', title: 'Passive Skills' },
+        ] as const
+      ).map(({ key, title }) => {
+        const groupSkills = groupedSkills[key];
+        if (groupSkills.length === 0) return null;
+        const isCollapsed = collapsedSections[key];
+
+        return (
+          <div key={key} className="panel p-4">
+            <div className="flex items-center justify-between gap-3">
+              <div className="section-rule flex-1">
+                <h3 className="section-title">{title}</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() =>
+                  setCollapsedSections((prev) => ({
+                    ...prev,
+                    [key]: !prev[key],
+                  }))
+                }
+                className="text-[11px] font-semibold uppercase tracking-wide rounded-full border border-black/10 px-3 py-1 hover:bg-black/5"
+              >
+                {isCollapsed ? 'Expand' : 'Minimize'}
+              </button>
+            </div>
+            {!isCollapsed && (
+              <div className="columns-1 lg:columns-2 gap-6 mt-4">
+              {groupSkills.map((skill) => {
         const tierRows = skill.tiers
           .map((tier) => {
             const tierKey = `${skill.id}:${tier.tier}`;
@@ -106,6 +159,7 @@ export const CharacterSkillsPanel = ({
               <SkillTierRow
                 key={tierKey}
                 tier={tier}
+                hasMultipleTiers={skill.tiers.length > 1}
                 statusLabel={statusLabel}
                 isSelected={isSelected}
                 availability={availability}
@@ -136,8 +190,18 @@ export const CharacterSkillsPanel = ({
           >
             <div className="text-sm font-semibold text-gray-800">
               {skill.name}
+              {key === 'basic' && skill.abilityModifier && (
+                <span className="ml-2 text-[11px] font-semibold text-(--muted)">
+                  {formatAbilityModifier(skill.abilityModifier)}
+                </span>
+              )}
             </div>
             <div className="space-y-2">{tierRows}</div>
+          </div>
+        );
+              })}
+              </div>
+            )}
           </div>
         );
       })}

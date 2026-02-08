@@ -20,7 +20,12 @@ import {
   FinalCharacterStats,
 } from '@/types/characters';
 import { getLoadoutDisplayName } from '@/utils/domain/loadouts';
-import { SkillSummary } from '@/utils/domain/skills';
+import {
+  getSkillGroup,
+  getSkillById,
+  sortSkillsForDisplay,
+  SkillSummary,
+} from '@/utils/domain/skills';
 
 type EquipmentSummary = {
   armorTypeLabel?: string;
@@ -85,6 +90,11 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
   const ui = uiLabels[language];
   const classRestrictions = getClassRestrictionsById(selectedClassId, language).filter(Boolean);
   const raceRestrictions = getRaceRestrictionsById(selectedRaceId, language).filter(Boolean);
+  const [skillDetailsOpen, setSkillDetailsOpen] = React.useState({
+    basic: false,
+    actionable: false,
+    passive: false,
+  });
   if (!derived) return null;
 
   const SectionHeader = ({ title }: { title: string }) => (
@@ -233,31 +243,108 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
       )}
 
       {skills.length > 0 && (
-        <div className="mt-4 panel p-4">
-          <div className="flex items-center justify-between mb-2">
+        <div className="mt-4 space-y-6">
+          <div className="flex items-center justify-between">
             <SectionHeader title={ui.skills} />
             <span className="text-xs text-(--muted)">
               {skills.length} total
             </span>
           </div>
-          <div className="mt-2 columns-1 sm:columns-2 gap-4">
-            {skills.map((skill, index) => (
-              <details
-                key={`${skill.name}-${skill.tier}-${index}`}
-                className="mb-2 break-inside-avoid rounded-xl border border-black/10 px-3 py-2 text-sm text-(--muted)"
-              >
-                <summary className="cursor-pointer font-medium">
-                  {skill.name} — Tier {skill.tier}
-                  {skill.totalDescription ? ` (${skill.totalDescription})` : ''}
-                </summary>
-                {skill.skillDescription && (
-                  <div className="mt-2 text-xs text-(--muted) whitespace-pre-line">
-                    {skill.skillDescription}
+          {(
+            [
+              { key: 'basic', title: 'Basic Skills' },
+              { key: 'actionable', title: 'Actionable Skills' },
+              { key: 'passive', title: 'Passive Skills' },
+            ] as const
+          ).map(({ key, title }) => {
+            const groupedSkills = skills.filter((skill) => {
+              const entity = getSkillById(skill.id);
+              if (!entity) return false;
+              return getSkillGroup(entity) === key;
+            });
+            if (groupedSkills.length === 0) return null;
+            const isExpanded = skillDetailsOpen[key];
+
+            const sortedEntities = sortSkillsForDisplay(
+              groupedSkills
+                .map((skill) => getSkillById(skill.id))
+                .filter((skill): skill is NonNullable<typeof skill> => !!skill)
+            );
+            const sortedGroup = sortedEntities.map(
+              (entity) => groupedSkills.find((s) => s.id === entity.id)!
+            );
+
+            return (
+              <div key={key} className="panel p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="section-rule flex-1">
+                    <h3 className="section-title">{title}</h3>
                   </div>
-                )}
-              </details>
-            ))}
-          </div>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setSkillDetailsOpen((prev) => ({
+                        ...prev,
+                        [key]: !prev[key],
+                      }))
+                    }
+                    className="text-[11px] font-semibold uppercase tracking-wide rounded-full border border-black/10 px-3 py-1 hover:bg-black/5"
+                  >
+                    {isExpanded ? 'Hide Details' : 'Show Details'}
+                  </button>
+                </div>
+                <div className="mt-4 columns-1 sm:columns-2 gap-4">
+                  {sortedGroup.map((skill, index) => (
+                    <details
+                      key={`${skill.name}-${skill.tier}-${index}`}
+                      className="mb-2 break-inside-avoid rounded-xl border border-black/10 px-3 py-2 text-sm text-(--muted)"
+                      open={isExpanded ? true : undefined}
+                    >
+                      <summary className="cursor-pointer font-medium">
+                        {(() => {
+                          const entity = getSkillById(skill.id);
+                          const hasMultipleTiers =
+                            entity && entity.tiers.length > 1;
+                          const tierLabel = skill.tierName ?? 'Tier';
+                          const tierText = hasMultipleTiers
+                            ? `${tierLabel} (Tier ${skill.tier})`
+                            : '';
+                          const abilityLabel =
+                            key === 'basic' && entity?.abilityModifier
+                              ? `${entity.abilityModifier.toUpperCase()} Modifier`
+                              : null;
+                          return (
+                            <>
+                              {skill.name}
+                              {abilityLabel && (
+                                <span className="ml-2 text-[11px] font-semibold text-(--muted)">
+                                  {abilityLabel}
+                                </span>
+                              )}
+                              {tierText && (
+                                <span className="text-(--muted)">
+                                  {' '}
+                                  — {tierText}
+                                </span>
+                              )}
+                              {skill.totalDescription && (
+                                <span>, {skill.totalDescription}</span>
+                              )}
+                            </>
+                          );
+                        })()}
+                      </summary>
+                      {skill.skillDescription && (
+                        <div className="mt-2 text-xs text-(--muted) whitespace-pre-line">
+                          {skill.skillDescription}
+                        </div>
+                      )}
+                    </details>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

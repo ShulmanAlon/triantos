@@ -47,7 +47,7 @@ export function buildRangedAttackStatBlock(
 
     const components: StatComponent[] = [
       { source: 'Base Attack', value: bab },
-      { source: 'DEX Mod', value: dexMod },
+      { source: 'DEX Modifier', value: dexMod },
     ];
 
     if ((selectedType && hasTypeSkill) || typeBonus !== 0) {

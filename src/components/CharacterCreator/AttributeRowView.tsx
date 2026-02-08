@@ -20,6 +20,7 @@ interface AttributeRowProps {
   hasAbilityPointThisLevel: boolean;
   requiredValue?: number;
   showNextCost?: boolean;
+  showDelta?: boolean;
 }
 
 export function AttributeRow({
@@ -33,6 +34,7 @@ export function AttributeRow({
   hasAbilityPointThisLevel,
   requiredValue,
   showNextCost = true,
+  showDelta = false,
 }: AttributeRowProps) {
   const nextValue = value + 1;
   const prevValue = value - 1;
@@ -53,6 +55,7 @@ export function AttributeRow({
     : value > min;
 
   const modifier = getModifier(value);
+  const delta = value - baseline;
   const handleDecrease = () => {
     if (!canDecrease) return;
     onChange(attr, prevValue, refund);
@@ -88,28 +91,38 @@ export function AttributeRow({
             -
           </Button>
 
-          {/* Value */}
-          <div
-            className={`w-7.5 h-8 flex items-center justify-center font-mono text-sm ${
-              requiredValue !== undefined && value < requiredValue
-                ? 'text-red-600'
-                : ''
-            }`}
-          >
-            {value}
-          </div>
+      {/* Value */}
+      <div
+        className={`w-7.5 h-8 flex items-center justify-center font-mono text-sm ${
+          requiredValue !== undefined && value < requiredValue
+            ? 'text-red-600'
+            : ''
+        }`}
+      >
+        {value}
+      </div>
 
-          {/* Increase */}
-          <Button
-            variant="outline"
-            className="w-8 h-8 px-0 py-0 bg-black/5 hover:bg-black/10 flex items-center justify-center disabled:opacity-60 disabled:text-(--muted)"
-            onClick={handleIncrease}
-            disabled={!canIncrease}
-          >
-            +
-          </Button>
-        </div>
-      </td>
+      {/* Increase */}
+      <Button
+        variant="outline"
+        className="w-8 h-8 px-0 py-0 bg-black/5 hover:bg-black/10 flex items-center justify-center disabled:opacity-60 disabled:text-(--muted)"
+        onClick={handleIncrease}
+        disabled={!canIncrease}
+      >
+        +
+      </Button>
+    </div>
+  </td>
+
+      {showDelta && (
+        <td
+          className={`w-20 text-center font-mono text-sm ${
+            delta > 0 ? 'text-[#22524b] font-semibold' : 'text-(--muted)'
+          }`}
+        >
+          {delta > 0 ? `+${delta}` : '—'}
+        </td>
+      )}
 
       {/* Modifier */}
       <td

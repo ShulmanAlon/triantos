@@ -6,3 +6,9 @@ export { rangedHeavyWeapons as heavyRangedWeapons } from './attack/rangedHeavyWe
 export { melee2hWeapons } from './attack/melee2hWeapons';
 export { meleeEnergyWeapons } from './attack/meleeEnergyWeapons';
 export { meleeArmorPiercer } from './attack/meleeArmorPiercer';
+export {
+  meleeEnergyOverdrive,
+  rangedEnergyOverdrive,
+  meleeFury,
+  rangedCarefulAim,
+} from './attack/attackActions';
