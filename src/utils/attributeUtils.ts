@@ -12,12 +12,21 @@ export function getPointCostChange(
   to: number,
   baseline: number
 ): number {
-  const distanceLow = from < to ? from - baseline : to - baseline;
-  const distanceHigh = from < to ? to - baseline : from - baseline;
-
+  if (from === to) return 0;
+  const step = from < to ? 1 : -1;
   let cost = 0;
-  for (let offset = distanceLow + 1; offset <= distanceHigh; offset++) {
-    cost += getPoolPointCostAtOffset(Math.abs(offset));
+
+  const costForValue = (value: number): number => {
+    const offset = value - baseline;
+    if (offset <= 0) return 1;
+    return getPoolPointCostAtOffset(offset);
+  };
+
+  for (let value = from; value !== to; value += step) {
+    const next = value + step;
+    const referenceValue = step > 0 ? next : value;
+    const delta = costForValue(referenceValue);
+    cost += step > 0 ? delta : -delta;
   }
 
   return cost;
