@@ -5,10 +5,12 @@ export { armorLight } from './defense/armorLight';
 export { armorPower } from './defense/armorPower';
 export { strongVitality } from './defense/strongVitality';
 export { energyShield } from './defense/energyShield';
+export { energyShieldCombatCharge } from './defense/energyShieldCombatCharge';
 export {
   resistanceFire,
   resistanceCold,
   resistanceElectricity,
   resistanceAcid,
   resistancePoison,
+  resistanceRadiation,
 } from './defense/resistances';

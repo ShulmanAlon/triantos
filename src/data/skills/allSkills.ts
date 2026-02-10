@@ -192,6 +192,12 @@ const SKILL_METADATA: Record<SkillId, Partial<SkillEntity>> = {
     categoryOrder: 20,
     sortOrder: 1,
   },
+  energyShieldCombatCharge: {
+    group: 'passive',
+    category: 'shield',
+    categoryOrder: 20,
+    sortOrder: 3,
+  },
   shieldFortress: {
     group: 'passive',
     category: 'shield',
@@ -233,6 +239,12 @@ const SKILL_METADATA: Record<SkillId, Partial<SkillEntity>> = {
     category: 'resistance',
     categoryOrder: 40,
     sortOrder: 5,
+  },
+  resistanceRadiation: {
+    group: 'passive',
+    category: 'resistance',
+    categoryOrder: 40,
+    sortOrder: 6,
   },
 
   // Piloting

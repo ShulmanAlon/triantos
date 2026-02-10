@@ -30,3 +30,7 @@ export const resistanceElectricity = makeResistance(
 );
 export const resistanceAcid = makeResistance('resistanceAcid', 'Resistance - Acid');
 export const resistancePoison = makeResistance('resistancePoison', 'Resistance - Poison');
+export const resistanceRadiation = makeResistance(
+  'resistanceRadiation',
+  'Resistance - Radiation'
+);

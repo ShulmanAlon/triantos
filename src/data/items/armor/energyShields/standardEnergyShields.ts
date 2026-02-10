@@ -14,7 +14,7 @@ export const officersEnergyShield: GameItem = {
   name: "Officer's Energy Shield",
   type: 'energyShield',
   tags: ['energyShield'],
-  modifiers: [{ target: 'hp_temp', operation: 'add', value: 20 }],
+  modifiers: [{ target: 'hp_temp', operation: 'add', value: 15 }],
   requiresProficiency: ['energyShield'],
 };
 
@@ -23,6 +23,6 @@ export const commandersEnergyShield: GameItem = {
   name: "Commander's Energy Shield",
   type: 'energyShield',
   tags: ['energyShield'],
-  modifiers: [{ target: 'hp_temp', operation: 'add', value: 30 }],
+  modifiers: [{ target: 'hp_temp', operation: 'add', value: 20 }],
   requiresProficiency: ['energyShield'],
 };
