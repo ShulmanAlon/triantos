@@ -306,8 +306,13 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
                           const hasMultipleTiers =
                             entity && entity.tiers.length > 1;
                           const tierLabel = skill.tierName ?? 'Tier';
+                          const isNumericTierName = /^Tier\s+\d+$/i.test(
+                            tierLabel
+                          );
                           const tierText = hasMultipleTiers
-                            ? `${tierLabel} (Tier ${skill.tier})`
+                            ? isNumericTierName
+                              ? tierLabel
+                              : `${tierLabel} (Tier ${skill.tier})`
                             : '';
                           const abilityLabel =
                             key === 'basic' && entity?.abilityModifier

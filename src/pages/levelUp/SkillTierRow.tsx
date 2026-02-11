@@ -38,8 +38,11 @@ export const SkillTierRow = ({
   onAdd,
   onRemove,
 }: TierRowProps) => {
+  const isNumericTierName = /^Tier\s+\d+$/i.test(tier.name);
   const tierLabel = hasMultipleTiers
-    ? `${tier.name} (Tier ${tier.tier})`
+    ? isNumericTierName
+      ? tier.name
+      : `${tier.name} (Tier ${tier.tier})`
     : `Tier ${tier.tier}`;
   return (
     <div className="flex items-start justify-between gap-4 border rounded-xl p-3">

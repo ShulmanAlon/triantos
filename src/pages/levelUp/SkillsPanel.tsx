@@ -13,6 +13,7 @@ type SkillAvailability = {
 type SkillsPanelProps = {
   skills: SkillEntity[];
   showAcquired: boolean;
+  acquiredThisLevel: Set<string>;
   showLocked: boolean;
   showIneligible: boolean;
   skillRemaining: SkillPointPool;
@@ -30,6 +31,7 @@ type SkillsPanelProps = {
 export const SkillsPanel = ({
   skills,
   showAcquired,
+  acquiredThisLevel,
   showLocked,
   showIneligible,
   skillRemaining,
@@ -116,7 +118,14 @@ export const SkillsPanel = ({
                   ? 'locked'
                   : availability.status;
 
-              if (affordableStatus === 'acquired' && !showAcquired && !isSelected) {
+              const isAcquiredThisLevel = acquiredThisLevel.has(tierKey);
+
+              if (
+                affordableStatus === 'acquired' &&
+                !showAcquired &&
+                !isSelected &&
+                !isAcquiredThisLevel
+              ) {
                 return null;
               }
               if (affordableStatus === 'locked' && !showLocked) {

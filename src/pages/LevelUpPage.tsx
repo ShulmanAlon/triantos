@@ -278,6 +278,22 @@ export default function CharacterLevelUpPage() {
         )
       : [];
 
+  const acquiredThisLevel = useMemo(() => {
+    if (!skillsData || !selectedClassData || !character) return [];
+    return acquiredSkills.filter(
+      (selection) =>
+        selection.acquiredAtLevel === nextLevel &&
+        (selection.source === 'race' || selection.source === 'class')
+    );
+  }, [acquiredSkills, character, nextLevel, selectedClassData, skillsData]);
+
+  const acquiredThisLevelSet = useMemo(() => {
+    return new Set(
+      acquiredThisLevel.map((selection) => `${selection.skillId}:${selection.tier}`)
+    );
+  }, [acquiredThisLevel]);
+
+
   const skillValidation =
     selectedClassData && character && skillsData
       ? validateLevelSkillSelections({
@@ -491,6 +507,7 @@ export default function CharacterLevelUpPage() {
               <SkillsPanel
                 skills={skillsData}
                 showAcquired={showAcquiredSkills}
+                acquiredThisLevel={acquiredThisLevelSet}
                 showLocked={showLockedSkills}
                 showIneligible={showIneligibleSkills}
                 skillRemaining={skillRemaining}
