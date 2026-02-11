@@ -36,7 +36,7 @@ export const armorUnarmored: SkillEntity = {
       totalDescription: '+1 AC when unarmored.',
       prerequisites: [
         { type: 'skill', skillId: 'armorUnarmored', tier: 1 },
-        { type: 'level', minimum: 3 },
+        { type: 'level', minimum: 2 },
       ],
       effects: [
         {
@@ -56,7 +56,7 @@ export const armorUnarmored: SkillEntity = {
       totalDescription: '+2 AC when unarmored.',
       prerequisites: [
         { type: 'skill', skillId: 'armorUnarmored', tier: 2 },
-        { type: 'level', minimum: 6 },
+        { type: 'level', minimum: 8 },
       ],
       effects: [
         {

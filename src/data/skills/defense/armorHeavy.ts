@@ -35,7 +35,7 @@ export const armorHeavy: SkillEntity = {
       totalDescription: '+1 AC when using heavy armor.',
       prerequisites: [
         { type: 'skill', skillId: 'armorHeavy', tier: 1 },
-        { type: 'level', minimum: 3 },
+        { type: 'level', minimum: 5 },
       ],
       effects: [
         {
@@ -55,7 +55,7 @@ export const armorHeavy: SkillEntity = {
       totalDescription: '+2 AC when using heavy armor.',
       prerequisites: [
         { type: 'skill', skillId: 'armorHeavy', tier: 2 },
-        { type: 'level', minimum: 6 },
+        { type: 'level', minimum: 11 },
       ],
       effects: [
         {

@@ -10,7 +10,7 @@ const makeTier = (
   tier: number,
   name: 'Initial' | 'Basic' | 'Advanced' | 'Expert' | 'Master',
   description: string,
-  prerequisites?: TierPrerequisite[]
+  prerequisites?: TierPrerequisite[],
 ) => ({
   tier,
   name,
@@ -38,12 +38,12 @@ export const overpower: SkillEntity = {
     ]),
     makeTier(3, 'Expert', '+6 total to overpower checks.', [
       { type: 'skill', skillId: 'overpower', tier: 2 },
-      { type: 'level', minimum: 3 },
+      { type: 'level', minimum: 4 },
       { type: 'attribute', attribute: 'str', minimum: 13 },
     ]),
     makeTier(4, 'Master', '+9 total to overpower checks.', [
       { type: 'skill', skillId: 'overpower', tier: 3 },
-      { type: 'level', minimum: 6 },
+      { type: 'level', minimum: 7 },
       { type: 'attribute', attribute: 'str', minimum: 15 },
     ]),
   ],
@@ -66,12 +66,12 @@ export const athletics: SkillEntity = {
     ]),
     makeTier(3, 'Expert', '+6 total to athletics checks.', [
       { type: 'skill', skillId: 'athletics', tier: 2 },
-      { type: 'level', minimum: 3 },
+      { type: 'level', minimum: 4 },
       { type: 'attribute', attribute: 'dex', minimum: 13 },
     ]),
     makeTier(4, 'Master', '+9 total to athletics checks.', [
       { type: 'skill', skillId: 'athletics', tier: 3 },
-      { type: 'level', minimum: 6 },
+      { type: 'level', minimum: 7 },
       { type: 'attribute', attribute: 'dex', minimum: 15 },
     ]),
   ],
@@ -100,12 +100,12 @@ export const hide: SkillEntity = {
     ]),
     makeTier(4, 'Expert', '+6 total to hide checks.', [
       { type: 'skill', skillId: 'hide', tier: 3 },
-      { type: 'level', minimum: 8 },
+      { type: 'level', minimum: 7 },
       { type: 'attribute', attribute: 'dex', minimum: 15 },
     ]),
     makeTier(5, 'Master', '+9 total to hide checks.', [
       { type: 'skill', skillId: 'hide', tier: 4 },
-      { type: 'level', minimum: 12 },
+      { type: 'level', minimum: 10 },
       { type: 'attribute', attribute: 'dex', minimum: 17 },
     ]),
   ],
@@ -134,13 +134,13 @@ export const thieving: SkillEntity = {
     ]),
     makeTier(4, 'Expert', '+6 total to thieving checks.', [
       { type: 'skill', skillId: 'thieving', tier: 3 },
-      { type: 'level', minimum: 8 },
+      { type: 'level', minimum: 7 },
       { type: 'attribute', attribute: 'dex', minimum: 15 },
       { type: 'attribute', attribute: 'cha', minimum: 11 },
     ]),
     makeTier(5, 'Master', '+9 total to thieving checks.', [
       { type: 'skill', skillId: 'thieving', tier: 4 },
-      { type: 'level', minimum: 12 },
+      { type: 'level', minimum: 10 },
       { type: 'attribute', attribute: 'dex', minimum: 17 },
       { type: 'attribute', attribute: 'cha', minimum: 15 },
     ]),
@@ -164,12 +164,12 @@ export const willpower: SkillEntity = {
     ]),
     makeTier(3, 'Expert', '+6 total to willpower checks.', [
       { type: 'skill', skillId: 'willpower', tier: 2 },
-      { type: 'level', minimum: 3 },
+      { type: 'level', minimum: 4 },
       { type: 'attribute', attribute: 'wis', minimum: 13 },
     ]),
     makeTier(4, 'Master', '+9 total to willpower checks.', [
       { type: 'skill', skillId: 'willpower', tier: 3 },
-      { type: 'level', minimum: 6 },
+      { type: 'level', minimum: 7 },
       { type: 'attribute', attribute: 'wis', minimum: 15 },
     ]),
   ],
@@ -192,12 +192,12 @@ export const detect: SkillEntity = {
     ]),
     makeTier(3, 'Expert', '+6 total to detect checks.', [
       { type: 'skill', skillId: 'detect', tier: 2 },
-      { type: 'level', minimum: 3 },
+      { type: 'level', minimum: 4 },
       { type: 'attribute', attribute: 'wis', minimum: 13 },
     ]),
     makeTier(4, 'Master', '+9 total to detect checks.', [
       { type: 'skill', skillId: 'detect', tier: 3 },
-      { type: 'level', minimum: 6 },
+      { type: 'level', minimum: 7 },
       { type: 'attribute', attribute: 'wis', minimum: 15 },
     ]),
   ],
@@ -226,13 +226,13 @@ export const medicine: SkillEntity = {
     ]),
     makeTier(4, 'Expert', '+6 total to medicine checks.', [
       { type: 'skill', skillId: 'medicine', tier: 3 },
-      { type: 'level', minimum: 8 },
+      { type: 'level', minimum: 7 },
       { type: 'attribute', attribute: 'wis', minimum: 15 },
       { type: 'attribute', attribute: 'int', minimum: 11 },
     ]),
     makeTier(5, 'Master', '+9 total to medicine checks.', [
       { type: 'skill', skillId: 'medicine', tier: 4 },
-      { type: 'level', minimum: 12 },
+      { type: 'level', minimum: 10 },
       { type: 'attribute', attribute: 'wis', minimum: 17 },
       { type: 'attribute', attribute: 'int', minimum: 13 },
     ]),
@@ -256,12 +256,12 @@ export const knowledge: SkillEntity = {
     ]),
     makeTier(3, 'Expert', '+6 total to knowledge checks.', [
       { type: 'skill', skillId: 'knowledge', tier: 2 },
-      { type: 'level', minimum: 3 },
+      { type: 'level', minimum: 4 },
       { type: 'attribute', attribute: 'int', minimum: 13 },
     ]),
     makeTier(4, 'Master', '+9 total to knowledge checks.', [
       { type: 'skill', skillId: 'knowledge', tier: 3 },
-      { type: 'level', minimum: 6 },
+      { type: 'level', minimum: 7 },
       { type: 'attribute', attribute: 'int', minimum: 15 },
     ]),
   ],
@@ -289,12 +289,12 @@ export const mechanic: SkillEntity = {
     ]),
     makeTier(4, 'Expert', '+6 total to mechanic checks.', [
       { type: 'skill', skillId: 'mechanic', tier: 3 },
-      { type: 'level', minimum: 8 },
+      { type: 'level', minimum: 7 },
       { type: 'attribute', attribute: 'int', minimum: 15 },
     ]),
     makeTier(5, 'Master', '+9 total to mechanic checks.', [
       { type: 'skill', skillId: 'mechanic', tier: 4 },
-      { type: 'level', minimum: 12 },
+      { type: 'level', minimum: 10 },
       { type: 'attribute', attribute: 'int', minimum: 17 },
     ]),
   ],
@@ -317,12 +317,12 @@ export const toughness: SkillEntity = {
     ]),
     makeTier(3, 'Expert', '+6 total to toughness checks.', [
       { type: 'skill', skillId: 'toughness', tier: 2 },
-      { type: 'level', minimum: 3 },
+      { type: 'level', minimum: 4 },
       { type: 'attribute', attribute: 'con', minimum: 13 },
     ]),
     makeTier(4, 'Master', '+9 total to toughness checks.', [
       { type: 'skill', skillId: 'toughness', tier: 3 },
-      { type: 'level', minimum: 6 },
+      { type: 'level', minimum: 7 },
       { type: 'attribute', attribute: 'con', minimum: 15 },
     ]),
   ],
@@ -346,12 +346,12 @@ export const negotiate: SkillEntity = {
     ]),
     makeTier(3, 'Expert', '+6 total to negotiate checks.', [
       { type: 'skill', skillId: 'negotiate', tier: 2 },
-      { type: 'level', minimum: 3 },
+      { type: 'level', minimum: 4 },
       { type: 'attribute', attribute: 'cha', minimum: 13 },
     ]),
     makeTier(4, 'Master', '+9 total to negotiate checks.', [
       { type: 'skill', skillId: 'negotiate', tier: 3 },
-      { type: 'level', minimum: 6 },
+      { type: 'level', minimum: 7 },
       { type: 'attribute', attribute: 'cha', minimum: 15 },
     ]),
   ],
@@ -375,12 +375,12 @@ export const intimidate: SkillEntity = {
     ]),
     makeTier(3, 'Expert', '+6 total to intimidate checks.', [
       { type: 'skill', skillId: 'intimidate', tier: 2 },
-      { type: 'level', minimum: 3 },
+      { type: 'level', minimum: 4 },
       { type: 'attribute', attribute: 'cha', minimum: 13 },
     ]),
     makeTier(4, 'Master', '+9 total to intimidate checks.', [
       { type: 'skill', skillId: 'intimidate', tier: 3 },
-      { type: 'level', minimum: 6 },
+      { type: 'level', minimum: 7 },
       { type: 'attribute', attribute: 'cha', minimum: 15 },
     ]),
   ],

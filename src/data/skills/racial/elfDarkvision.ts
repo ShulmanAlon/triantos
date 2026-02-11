@@ -2,7 +2,7 @@ import { SkillEntity } from '@/types/skills';
 
 export const elfDarkvision: SkillEntity = {
   id: 'elfDarkvision',
-  name: 'Darkvision',
+  name: 'Darkvision (Elf)',
   family: 'utility',
   skillPointType: 'utility',
   description: 'Elves can see in the dark.',

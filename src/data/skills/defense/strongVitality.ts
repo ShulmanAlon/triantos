@@ -13,7 +13,7 @@ export const strongVitality: SkillEntity = {
       description: 'Gain 5 additional HP',
       deltaDescription: '+5 HP.',
       totalDescription: '+5 HP.',
-      prerequisites: [{ type: 'level', minimum: 3 }],
+      prerequisites: [{ type: 'level', minimum: 2 }],
       effects: [
         {
           target: 'hp_flat',
@@ -32,8 +32,7 @@ export const strongVitality: SkillEntity = {
       totalDescription: '+15 HP.',
       prerequisites: [
         { type: 'skill', skillId: 'strongVitality', tier: 1 },
-        { type: 'level', minimum: 6 },
-        { type: 'attribute', attribute: 'con', minimum: 13 },
+        { type: 'level', minimum: 8 },
       ],
       effects: [
         {

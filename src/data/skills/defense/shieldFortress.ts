@@ -15,7 +15,7 @@ export const shieldFortress: SkillEntity = {
       deltaDescription: '+1 AC when using a shield.',
       totalDescription: '+1 AC when using a shield.',
       prerequisites: [
-        { type: 'level', minimum: 4 },
+        { type: 'level', minimum: 2 },
         { type: 'attribute', attribute: 'con', minimum: 13 },
       ],
       effects: [
@@ -36,8 +36,7 @@ export const shieldFortress: SkillEntity = {
       totalDescription: '+2 AC when using a shield.',
       prerequisites: [
         { type: 'skill', skillId: 'shieldFortress', tier: 1 },
-        { type: 'level', minimum: 10 },
-        { type: 'attribute', attribute: 'con', minimum: 15 },
+        { type: 'level', minimum: 8 },
       ],
       effects: [
         {
@@ -57,8 +56,8 @@ export const shieldFortress: SkillEntity = {
       totalDescription: '+3 AC when using a shield.',
       prerequisites: [
         { type: 'skill', skillId: 'shieldFortress', tier: 2 },
-        { type: 'level', minimum: 16 },
-        { type: 'attribute', attribute: 'con', minimum: 17 },
+        { type: 'level', minimum: 14 },
+        { type: 'attribute', attribute: 'con', minimum: 15 },
       ],
       effects: [
         {

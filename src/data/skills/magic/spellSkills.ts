@@ -4,7 +4,7 @@ export const spellPenetration: SkillEntity = {
   id: 'spellPenetration',
   name: 'Spell Penetration',
   family: 'magic',
-  skillPointType: 'utility',
+  skillPointType: 'core',
   description: 'Spells are harder to resist against.',
   forbiddenClasses: ['Fighter'],
   tiers: [
@@ -15,7 +15,7 @@ export const spellPenetration: SkillEntity = {
       deltaDescription: '-2 to target resistance checks.',
       totalDescription: '-2 to target resistance checks.',
       prerequisites: [
-        { type: 'level', minimum: 6 },
+        { type: 'level', minimum: 8 },
         { type: 'attribute', attribute: 'int', minimum: 13 },
       ],
       effects: [],
@@ -41,7 +41,7 @@ export const spellPenetration: SkillEntity = {
       totalDescription: '-6 total to target resistance checks.',
       prerequisites: [
         { type: 'skill', skillId: 'spellPenetration', tier: 2 },
-        { type: 'level', minimum: 16 },
+        { type: 'level', minimum: 14 },
         { type: 'attribute', attribute: 'int', minimum: 17 },
       ],
       effects: [],
@@ -135,7 +135,7 @@ export const turnUndead: SkillEntity = {
   id: 'turnUndead',
   name: 'Turn Undead',
   family: 'magic',
-  skillPointType: 'utility',
+  skillPointType: 'core',
   description: 'Ability to try to turn undead (see turn mechanics).',
   forbiddenClasses: ['Fighter', 'MagicUser'],
   tiers: [
@@ -155,7 +155,7 @@ export const turnAbyssal: SkillEntity = {
   id: 'turnAbyssal',
   name: 'Turn Abyssal',
   family: 'magic',
-  skillPointType: 'utility',
+  skillPointType: 'core',
   description: 'Ability to try to turn abyssal creatures (see turn mechanics).',
   forbiddenClasses: ['Fighter', 'MagicUser'],
   tiers: [
@@ -166,7 +166,7 @@ export const turnAbyssal: SkillEntity = {
       deltaDescription: 'Turn abyssal creatures (cleric feature).',
       totalDescription: 'Turn abyssal creatures (cleric feature).',
       prerequisites: [
-        { type: 'level', minimum: 8 },
+        { type: 'level', minimum: 11 },
         { type: 'attribute', attribute: 'wis', minimum: 17 },
       ],
       effects: [],
@@ -178,7 +178,7 @@ export const turnIntensity: SkillEntity = {
   id: 'turnIntensity',
   name: 'Turn Intensity',
   family: 'magic',
-  skillPointType: 'utility',
+  skillPointType: 'core',
   description: 'Increase total HD affected by turning.',
   forbiddenClasses: ['Fighter', 'MagicUser'],
   tiers: [
@@ -199,7 +199,7 @@ export const turnIntensity: SkillEntity = {
       totalDescription: 'Turn intensity 2d6 HD.',
       prerequisites: [
         { type: 'skill', skillId: 'turnIntensity', tier: 1 },
-        { type: 'level', minimum: 4 },
+        { type: 'level', minimum: 5 },
       ],
       effects: [],
     },
@@ -211,7 +211,7 @@ export const turnIntensity: SkillEntity = {
       totalDescription: 'Turn intensity 4d6 HD.',
       prerequisites: [
         { type: 'skill', skillId: 'turnIntensity', tier: 2 },
-        { type: 'level', minimum: 10 },
+        { type: 'level', minimum: 11 },
         { type: 'attribute', attribute: 'wis', minimum: 15 },
       ],
       effects: [],
@@ -224,7 +224,7 @@ export const turnIntensity: SkillEntity = {
       totalDescription: 'Turn intensity 6d6 HD.',
       prerequisites: [
         { type: 'skill', skillId: 'turnIntensity', tier: 3 },
-        { type: 'level', minimum: 16 },
+        { type: 'level', minimum: 17 },
         { type: 'attribute', attribute: 'wis', minimum: 17 },
       ],
       effects: [],
@@ -236,7 +236,7 @@ export const turnAreaOfEffect: SkillEntity = {
   id: 'turnAreaOfEffect',
   name: 'Turn Area of Effect',
   family: 'magic',
-  skillPointType: 'utility',
+  skillPointType: 'core',
   description: 'Increase turning radius around the cleric.',
   forbiddenClasses: ['Fighter', 'MagicUser'],
   tiers: [
@@ -270,23 +270,23 @@ export const turnAreaOfEffect: SkillEntity = {
       totalDescription: '60m radius around the cleric.',
       prerequisites: [
         { type: 'skill', skillId: 'turnAreaOfEffect', tier: 2 },
-        { type: 'level', minimum: 16 },
+        { type: 'level', minimum: 17 },
         { type: 'attribute', attribute: 'wis', minimum: 19 },
       ],
       effects: [],
     },
-    {
-      tier: 4,
-      name: 'Master',
-      description: '80m radius around the cleric.',
-      deltaDescription: '80m radius around the cleric.',
-      totalDescription: '80m radius around the cleric.',
-      prerequisites: [
-        { type: 'skill', skillId: 'turnAreaOfEffect', tier: 3 },
-        { type: 'level', minimum: 24 },
-      ],
-      effects: [],
-    },
+    // {
+    //   tier: 4,
+    //   name: 'Master',
+    //   description: '80m radius around the cleric.',
+    //   deltaDescription: '80m radius around the cleric.',
+    //   totalDescription: '80m radius around the cleric.',
+    //   prerequisites: [
+    //     { type: 'skill', skillId: 'turnAreaOfEffect', tier: 3 },
+    //     { type: 'level', minimum: 24 },
+    //   ],
+    //   effects: [],
+    // },
   ],
 };
 

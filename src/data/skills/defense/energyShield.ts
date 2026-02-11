@@ -14,7 +14,10 @@ export const energyShield: SkillEntity = {
       description: 'Enables using energy shield',
       deltaDescription: 'Unlock Energy Shield use.',
       totalDescription: 'Can use Energy Shield.',
-      prerequisites: [{ type: 'level', minimum: 6 }],
+      prerequisites: [
+        { type: 'level', minimum: 6 },
+        { type: 'attribute', attribute: 'int', minimum: 11 },
+      ],
       effects: [
         {
           target: 'proficiency.energyShield',
@@ -33,7 +36,7 @@ export const energyShield: SkillEntity = {
       totalDescription: 'Energy Shield grants +10 temporary HP.',
       prerequisites: [
         { type: 'skill', skillId: 'energyShield', tier: 1 },
-        { type: 'level', minimum: 10 },
+        { type: 'level', minimum: 11 },
       ],
       effects: [
         {

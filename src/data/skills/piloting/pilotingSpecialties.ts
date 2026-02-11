@@ -55,7 +55,7 @@ export const pilotingInterplanetaryShips: SkillEntity = {
       deltaDescription: 'Pilot interplanetary ships.',
       totalDescription: 'Pilot interplanetary ships.',
       prerequisites: [
-        { type: 'level', minimum: 6 },
+        { type: 'level', minimum: 7 },
         { type: 'skill', skillId: 'pilotingPlanetaryShips', tier: 1 },
         { type: 'skill', skillId: 'piloting', tier: 3 },
       ],

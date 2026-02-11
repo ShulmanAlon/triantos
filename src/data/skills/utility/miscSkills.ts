@@ -14,7 +14,7 @@ export const solarGenerator: SkillEntity = {
       description: 'Charges 1 energy per turn in sunlight.',
       deltaDescription: 'Charges 1 energy per turn in sunlight.',
       totalDescription: 'Charges 1 energy per turn in sunlight.',
-      prerequisites: [{ type: 'level', minimum: 6 }],
+      prerequisites: [{ type: 'level', minimum: 7 }],
       effects: [],
     },
     {
@@ -25,6 +25,7 @@ export const solarGenerator: SkillEntity = {
       totalDescription: 'Charges 2 energy per turn in sunlight.',
       prerequisites: [
         { type: 'skill', skillId: 'solarGenerator', tier: 1 },
+        { type: 'level', minimum: 10 },
       ],
       effects: [],
     },
@@ -36,6 +37,7 @@ export const solarGenerator: SkillEntity = {
       totalDescription: 'Charges 3 energy per turn in sunlight.',
       prerequisites: [
         { type: 'skill', skillId: 'solarGenerator', tier: 2 },
+        { type: 'level', minimum: 13 },
       ],
       effects: [],
     },

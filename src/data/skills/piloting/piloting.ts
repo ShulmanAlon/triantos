@@ -38,6 +38,7 @@ export const piloting: SkillEntity = {
       totalDescription: 'Piloting checks with no penalty.',
       prerequisites: [
         { type: 'skill', skillId: 'piloting', tier: 1 },
+        { type: 'level', minimum: 1 },
         { type: 'attribute', attribute: 'int', minimum: 9 },
         { type: 'attribute', attribute: 'wis', minimum: 9 },
       ],
@@ -80,7 +81,7 @@ export const piloting: SkillEntity = {
       totalDescription: '+6 to piloting checks.',
       prerequisites: [
         { type: 'skill', skillId: 'piloting', tier: 3 },
-        { type: 'level', minimum: 8 },
+        { type: 'level', minimum: 7 },
         { type: 'attribute', attribute: 'dex', minimum: 15 },
       ],
       effects: [
@@ -101,7 +102,7 @@ export const piloting: SkillEntity = {
       totalDescription: '+9 to piloting checks.',
       prerequisites: [
         { type: 'skill', skillId: 'piloting', tier: 4 },
-        { type: 'level', minimum: 12 },
+        { type: 'level', minimum: 10 },
         { type: 'attribute', attribute: 'dex', minimum: 17 },
         { type: 'attribute', attribute: 'wis', minimum: 13 },
       ],

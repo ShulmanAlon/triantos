@@ -6,7 +6,7 @@ export const energyShieldCombatCharge: SkillEntity = {
   family: 'defense',
   skillPointType: 'core',
   description:
-    'After your Energy Shield is depleted, it recharges fully 2 rounds later at double energy cost.',
+    'After your Energy Shield is depleted, it recharges fully 2 rounds later at double energy cost (once per battle).',
   tiers: [
     {
       tier: 1,
@@ -19,7 +19,7 @@ export const energyShieldCombatCharge: SkillEntity = {
         '2 rounds after shield depletion, shield recharges fully at double energy cost.',
       prerequisites: [
         { type: 'skill', skillId: 'energyShield', tier: 1 },
-        { type: 'level', minimum: 10 },
+        { type: 'level', minimum: 11 },
       ],
       effects: [],
     },

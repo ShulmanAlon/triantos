@@ -2,7 +2,7 @@ import { SkillEntity } from '@/types/skills';
 
 export const elfMagicAffinity: SkillEntity = {
   id: 'elfMagicAffinity',
-  name: 'Magic Affinity',
+  name: 'Magic Affinity (Elf)',
   family: 'utility',
   skillPointType: 'utility',
   description: 'Elves have a natural affinity for magic.',

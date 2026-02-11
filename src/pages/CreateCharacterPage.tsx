@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { CharacterNameForm } from '@/components/CharacterCreator/CharacterNameFormView';
 import { ClassSelector } from '@/components/CharacterCreator/ClassSelectorView';
@@ -77,6 +77,7 @@ export default function CharacterCreatePage() {
     Record<string, SkillPointType>
   >({});
   const [skillsData, setSkillsData] = useState<SkillEntity[] | null>(null);
+  const skillsPanelRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -88,6 +89,12 @@ export default function CharacterCreatePage() {
       isMounted = false;
     };
   }, []);
+
+  useEffect(() => {
+    if (creationStep !== 'skills') return;
+    if (!skillsPanelRef.current) return;
+    skillsPanelRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [creationStep, skillsData]);
 
   const level = 1;
   const selectedClassData = getClassById(selectedClassId);
@@ -464,7 +471,10 @@ export default function CharacterCreatePage() {
           </div>
         )}
         {creationStep === 'skills' && skillsData && (
-          <div className="section-gap panel p-4 text-sm text-gray-700">
+          <div
+            ref={skillsPanelRef}
+            className="section-gap panel p-4 text-sm text-gray-700"
+          >
             <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
               <h3 className="section-title">{ui.skills}</h3>
               <div className="text-xs text-(--muted)">

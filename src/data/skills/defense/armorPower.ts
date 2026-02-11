@@ -17,7 +17,7 @@ export const armorPower: SkillEntity = {
       prerequisites: [
         { type: 'attribute', attribute: 'str', minimum: 15 },
         { type: 'attribute', attribute: 'con', minimum: 15 },
-        { type: 'level', minimum: 10 },
+        { type: 'level', minimum: 11 },
       ],
       effects: [
         {
