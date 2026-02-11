@@ -14,6 +14,7 @@ export const rangedAdvancedWeapons: SkillEntity = {
       description: 'Allows the use of advanced ranged weapons',
       deltaDescription: 'Unlock advanced ranged weapons.',
       totalDescription: 'Can use advanced ranged weapons.',
+      prerequisites: [{ type: 'attribute', attribute: 'dex', minimum: 13 }],
       effects: [
         {
           target: 'proficiency.rangedAdvancedWeapons',
@@ -31,7 +32,7 @@ export const rangedAdvancedWeapons: SkillEntity = {
       totalDescription: '+1 attack with advanced ranged weapons.',
       prerequisites: [
         { type: 'skill', skillId: 'rangedAdvancedWeapons', tier: 1 },
-        { type: 'level', minimum: 4 },
+        { type: 'level', minimum: 5 },
       ],
       effects: [
         { target: 'attack_bonus_ranged_advanced', operation: 'add', value: 1 },
@@ -46,6 +47,7 @@ export const rangedAdvancedWeapons: SkillEntity = {
       prerequisites: [
         { type: 'skill', skillId: 'rangedAdvancedWeapons', tier: 2 },
         { type: 'level', minimum: 8 },
+        { type: 'attribute', attribute: 'dex', minimum: 15 },
       ],
       effects: [
         { target: 'attack_bonus_ranged_advanced', operation: 'add', value: 1 },

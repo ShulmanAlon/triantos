@@ -11,9 +11,11 @@ export const melee2hWeapons: SkillEntity = {
       tier: 1,
       name: 'Proficient',
       description: 'Proficient with 2-handed melee weapons (no -4 penalty)',
-      deltaDescription: 'Proficient with 2-handed melee weapons (no -4 penalty).',
-      totalDescription: 'Proficient with 2-handed melee weapons (no -4 penalty).',
-      prerequisites: [{ type: 'attribute', attribute: 'str', minimum: 15 }],
+      deltaDescription:
+        'Proficient with 2-handed melee weapons (no -4 penalty).',
+      totalDescription:
+        'Proficient with 2-handed melee weapons (no -4 penalty).',
+      prerequisites: [{ type: 'attribute', attribute: 'str', minimum: 13 }],
       effects: [
         {
           target: 'proficiency.melee2hWeapons',
@@ -31,7 +33,7 @@ export const melee2hWeapons: SkillEntity = {
       totalDescription: '+1 attack with 2-handed melee weapons.',
       prerequisites: [
         { type: 'skill', skillId: 'melee2hWeapons', tier: 1 },
-        { type: 'level', minimum: 4 },
+        { type: 'level', minimum: 5 },
       ],
       effects: [
         { target: 'attack_bonus_melee_2h', operation: 'add', value: 1 },
@@ -46,7 +48,7 @@ export const melee2hWeapons: SkillEntity = {
       prerequisites: [
         { type: 'skill', skillId: 'melee2hWeapons', tier: 2 },
         { type: 'level', minimum: 8 },
-        { type: 'attribute', attribute: 'str', minimum: 17 },
+        { type: 'attribute', attribute: 'str', minimum: 15 },
       ],
       effects: [
         { target: 'attack_bonus_melee_2h', operation: 'add', value: 1 },

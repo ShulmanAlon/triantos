@@ -15,7 +15,7 @@ export const energyShield: SkillEntity = {
       deltaDescription: 'Unlock Energy Shield use.',
       totalDescription: 'Can use Energy Shield.',
       prerequisites: [
-        { type: 'level', minimum: 6 },
+        { type: 'level', minimum: 5 },
         { type: 'attribute', attribute: 'int', minimum: 11 },
       ],
       effects: [

@@ -13,7 +13,7 @@ export const meleeEnergyWeapons: SkillEntity = {
       description: 'Proficient with energy melee weapons (no -4 penalty)',
       deltaDescription: 'Proficient with energy melee weapons (no -4 penalty).',
       totalDescription: 'Proficient with energy melee weapons (no -4 penalty).',
-      prerequisites: [{ type: 'level', minimum: 6 }],
+      prerequisites: [{ type: 'level', minimum: 5 }],
       effects: [
         {
           target: 'proficiency.meleeEnergyWeapons',
@@ -31,7 +31,7 @@ export const meleeEnergyWeapons: SkillEntity = {
       totalDescription: '+1 attack with energy melee weapons.',
       prerequisites: [
         { type: 'skill', skillId: 'meleeEnergyWeapons', tier: 1 },
-        { type: 'level', minimum: 10 },
+        { type: 'level', minimum: 8 },
       ],
       effects: [
         { target: 'attack_bonus_melee_energy', operation: 'add', value: 1 },
@@ -45,7 +45,7 @@ export const meleeEnergyWeapons: SkillEntity = {
       totalDescription: '+2 attack with energy melee weapons.',
       prerequisites: [
         { type: 'skill', skillId: 'meleeEnergyWeapons', tier: 2 },
-        { type: 'level', minimum: 14 },
+        { type: 'level', minimum: 11 },
       ],
       effects: [
         { target: 'attack_bonus_melee_energy', operation: 'add', value: 1 },

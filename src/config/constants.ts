@@ -64,6 +64,7 @@ export const STAT_TARGETS = [
   'ac_armor_magic',
   'ac_shield_base',
   'ac_shield_magic',
+  'spell_resistance_bonus',
   'spellSlots',
   'ranged_attack_range',
   'piloting_check',

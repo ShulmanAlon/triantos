@@ -58,7 +58,8 @@ export type TierName =
   | 'Basic'
   | 'Advanced'
   | 'Expert'
-  | 'Master';
+  | 'Master'
+  | `Tier ${number}`;
 
 // --- Tier Unlock Logic (unified) ---
 

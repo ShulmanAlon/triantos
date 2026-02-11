@@ -14,7 +14,7 @@ export const rangedLongAim: SkillEntity = {
       deltaDescription: '+10% range with ranged weapons.',
       totalDescription: '+10% range with ranged weapons.',
       prerequisites: [
-        { type: 'level', minimum: 4 },
+        { type: 'level', minimum: 5 },
         { type: 'attribute', attribute: 'dex', minimum: 15 },
       ],
       effects: [

@@ -1,8 +1,11 @@
 export { humanQuickLearner } from './racial/humanQuickLearner';
+export { humanSpellResistance } from './racial/humanSpellResistance';
 export { elfMagicAffinity } from './racial/elfMagicAffinity';
 export { elfImmunity } from './racial/elfImmunity';
 export { elfDarkvision } from './racial/elfDarkvision';
-export { dwarfMagicResistance } from './racial/dwarfMagicResistance';
+export { elfSpellResistance } from './racial/elfSpellResistance';
 export { dwarfDarkvision } from './racial/dwarfDarkvision';
+export { dwarfSpellResistance } from './racial/dwarfSpellResistance';
 export { dwarfMagicDamageReduction } from './racial/dwarfMagicDamageReduction';
 export { halflingLuckyCriticals } from './racial/halflingLuckyCriticals';
+export { halflingSpellResistance } from './racial/halflingSpellResistance';

@@ -215,10 +215,13 @@ export const medicine: SkillEntity = {
       ...makeTier(1, 'Initial', 'Medicine checks at -4 penalty.'),
       freeForClasses: [...freeForAllClasses],
     },
-    makeTier(2, 'Basic', 'No penalty to medicine checks.', [
-      { type: 'skill', skillId: 'medicine', tier: 1 },
-      { type: 'attribute', attribute: 'wis', minimum: 11 },
-    ]),
+    {
+      ...makeTier(2, 'Basic', 'No penalty to medicine checks.', [
+        { type: 'skill', skillId: 'medicine', tier: 1 },
+        { type: 'attribute', attribute: 'wis', minimum: 11 },
+      ]),
+      freeForClasses: [{ classId: 'Cleric', atLevel: 1 }],
+    },
     makeTier(3, 'Advanced', '+3 to medicine checks.', [
       { type: 'skill', skillId: 'medicine', tier: 2 },
       { type: 'level', minimum: 4 },

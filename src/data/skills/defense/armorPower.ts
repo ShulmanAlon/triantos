@@ -15,6 +15,7 @@ export const armorPower: SkillEntity = {
       deltaDescription: 'Unlock Power-Armor use.',
       totalDescription: 'Can use Power-Armor.',
       prerequisites: [
+        { type: 'skill', skillId: 'armorHeavy', tier: 2 },
         { type: 'attribute', attribute: 'str', minimum: 15 },
         { type: 'attribute', attribute: 'con', minimum: 15 },
         { type: 'level', minimum: 11 },

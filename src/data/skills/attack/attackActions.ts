@@ -17,8 +17,8 @@ export const meleeEnergyOverdrive: SkillEntity = {
       totalDescription:
         'Selectable per round; doubles weapon damage dice only.',
       prerequisites: [
-        { type: 'level', minimum: 10 },
-        { type: 'attribute', attribute: 'int', minimum: 13 },
+        { type: 'level', minimum: 11 },
+        { type: 'attribute', attribute: 'int', minimum: 11 },
       ],
       effects: [],
     },
@@ -42,8 +42,8 @@ export const rangedEnergyOverdrive: SkillEntity = {
       totalDescription:
         'Selectable per round; doubles weapon damage dice only.',
       prerequisites: [
-        { type: 'level', minimum: 12 },
-        { type: 'attribute', attribute: 'int', minimum: 13 },
+        { type: 'level', minimum: 11 },
+        { type: 'attribute', attribute: 'int', minimum: 11 },
       ],
       effects: [],
     },
@@ -65,7 +65,7 @@ export const meleeFury: SkillEntity = {
       deltaDescription: 'Selectable per round: -4 attack, +3 damage.',
       totalDescription: 'Selectable per round: -4 attack, +3 damage.',
       prerequisites: [
-        { type: 'level', minimum: 6 },
+        { type: 'level', minimum: 5 },
         { type: 'attribute', attribute: 'str', minimum: 17 },
       ],
       effects: [],
@@ -91,8 +91,8 @@ export const rangedCarefulAim: SkillEntity = {
       totalDescription:
         'Selectable per round; double aiming time for +5 attack bonus (handheld only).',
       prerequisites: [
-        { type: 'level', minimum: 6 },
-        { type: 'attribute', attribute: 'dex', minimum: 15 },
+        { type: 'level', minimum: 5 },
+        { type: 'attribute', attribute: 'dex', minimum: 13 },
       ],
       effects: [],
     },

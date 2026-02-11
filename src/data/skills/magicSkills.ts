@@ -1,5 +1,6 @@
 export {
-  spellPenetration,
+  spellPenetrationMage,
+  spellPenetrationCleric,
   magicAttunementFire,
   magicAttunementCold,
   magicAttunementElectricity,

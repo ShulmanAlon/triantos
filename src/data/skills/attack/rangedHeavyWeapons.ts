@@ -15,7 +15,7 @@ export const rangedHeavyWeapons: SkillEntity = {
       deltaDescription: 'Proficient with heavy ranged weapons (no -4 penalty).',
       totalDescription: 'Proficient with heavy ranged weapons (no -4 penalty).',
       prerequisites: [
-        { type: 'level', minimum: 4 },
+        { type: 'level', minimum: 5 },
         { type: 'attribute', attribute: 'str', minimum: 15 },
         { type: 'attribute', attribute: 'dex', minimum: 11 },
       ],
@@ -36,7 +36,7 @@ export const rangedHeavyWeapons: SkillEntity = {
       totalDescription: '+1 attack with heavy ranged weapons.',
       prerequisites: [
         { type: 'skill', skillId: 'rangedHeavyWeapons', tier: 1 },
-        { type: 'level', minimum: 10 },
+        { type: 'level', minimum: 8 },
       ],
       effects: [
         { target: 'attack_bonus_ranged_heavy', operation: 'add', value: 1 },
@@ -50,7 +50,7 @@ export const rangedHeavyWeapons: SkillEntity = {
       totalDescription: '+2 attack with heavy ranged weapons.',
       prerequisites: [
         { type: 'skill', skillId: 'rangedHeavyWeapons', tier: 2 },
-        { type: 'level', minimum: 14 },
+        { type: 'level', minimum: 11 },
       ],
       effects: [
         { target: 'attack_bonus_ranged_heavy', operation: 'add', value: 1 },

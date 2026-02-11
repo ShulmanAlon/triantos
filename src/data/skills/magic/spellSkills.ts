@@ -1,12 +1,12 @@
 import { SkillEntity } from '@/types/skills';
 
-export const spellPenetration: SkillEntity = {
-  id: 'spellPenetration',
-  name: 'Spell Penetration',
+export const spellPenetrationMage: SkillEntity = {
+  id: 'spellPenetrationMage',
+  name: 'Spell Penetration - Mage',
   family: 'magic',
   skillPointType: 'core',
-  description: 'Spells are harder to resist against.',
-  forbiddenClasses: ['Fighter'],
+  description: 'Spells are harder to resist against (mage).',
+  forbiddenClasses: ['Fighter', 'Cleric'],
   tiers: [
     {
       tier: 1,
@@ -27,7 +27,7 @@ export const spellPenetration: SkillEntity = {
       deltaDescription: '-2 to target resistance checks (-4 total).',
       totalDescription: '-4 total to target resistance checks.',
       prerequisites: [
-        { type: 'skill', skillId: 'spellPenetration', tier: 1 },
+        { type: 'skill', skillId: 'spellPenetrationMage', tier: 1 },
         { type: 'level', minimum: 11 },
         { type: 'attribute', attribute: 'int', minimum: 15 },
       ],
@@ -40,9 +40,58 @@ export const spellPenetration: SkillEntity = {
       deltaDescription: '-2 to target resistance checks (-6 total).',
       totalDescription: '-6 total to target resistance checks.',
       prerequisites: [
-        { type: 'skill', skillId: 'spellPenetration', tier: 2 },
+        { type: 'skill', skillId: 'spellPenetrationMage', tier: 2 },
         { type: 'level', minimum: 14 },
         { type: 'attribute', attribute: 'int', minimum: 17 },
+      ],
+      effects: [],
+    },
+  ],
+};
+
+export const spellPenetrationCleric: SkillEntity = {
+  id: 'spellPenetrationCleric',
+  name: 'Spell Penetration - Cleric',
+  family: 'magic',
+  skillPointType: 'core',
+  description: 'Spells are harder to resist against (cleric).',
+  forbiddenClasses: ['Fighter', 'MagicUser'],
+  tiers: [
+    {
+      tier: 1,
+      name: 'Advanced',
+      description: '-2 to target resistance checks.',
+      deltaDescription: '-2 to target resistance checks.',
+      totalDescription: '-2 to target resistance checks.',
+      prerequisites: [
+        { type: 'level', minimum: 8 },
+        { type: 'attribute', attribute: 'wis', minimum: 13 },
+      ],
+      effects: [],
+    },
+    {
+      tier: 2,
+      name: 'Expert',
+      description: '-4 total to target resistance checks.',
+      deltaDescription: '-2 to target resistance checks (-4 total).',
+      totalDescription: '-4 total to target resistance checks.',
+      prerequisites: [
+        { type: 'skill', skillId: 'spellPenetrationCleric', tier: 1 },
+        { type: 'level', minimum: 11 },
+        { type: 'attribute', attribute: 'wis', minimum: 15 },
+      ],
+      effects: [],
+    },
+    {
+      tier: 3,
+      name: 'Master',
+      description: '-6 total to target resistance checks.',
+      deltaDescription: '-2 to target resistance checks (-6 total).',
+      totalDescription: '-6 total to target resistance checks.',
+      prerequisites: [
+        { type: 'skill', skillId: 'spellPenetrationCleric', tier: 2 },
+        { type: 'level', minimum: 14 },
+        { type: 'attribute', attribute: 'wis', minimum: 17 },
       ],
       effects: [],
     },

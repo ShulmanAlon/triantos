@@ -343,12 +343,19 @@ const SKILL_METADATA: Record<SkillId, Partial<SkillEntity>> = {
   },
 
   // Magic
-  spellPenetration: {
+  spellPenetrationMage: {
     group: 'passive',
     category: 'magic',
     subcategory: 'spell',
     categoryOrder: 10,
     sortOrder: 1,
+  },
+  spellPenetrationCleric: {
+    group: 'passive',
+    category: 'magic',
+    subcategory: 'spell',
+    categoryOrder: 10,
+    sortOrder: 2,
   },
   magicAttunementFire: {
     group: 'passive',
@@ -429,53 +436,71 @@ const SKILL_METADATA: Record<SkillId, Partial<SkillEntity>> = {
   },
 
   // Racial (passive)
-  elfMagicAffinity: {
+  humanQuickLearner: {
     group: 'passive',
     category: 'racial',
     categoryOrder: 10,
     sortOrder: 1,
   },
-  elfDarkvision: {
+  humanSpellResistance: {
     group: 'passive',
     category: 'racial',
     categoryOrder: 10,
     sortOrder: 2,
   },
-  elfImmunity: {
+  elfMagicAffinity: {
     group: 'passive',
     category: 'racial',
     categoryOrder: 10,
     sortOrder: 3,
   },
-  dwarfDarkvision: {
+  elfDarkvision: {
     group: 'passive',
     category: 'racial',
     categoryOrder: 10,
     sortOrder: 4,
   },
-  dwarfMagicResistance: {
+  elfImmunity: {
     group: 'passive',
     category: 'racial',
     categoryOrder: 10,
     sortOrder: 5,
   },
-  dwarfMagicDamageReduction: {
+  elfSpellResistance: {
     group: 'passive',
     category: 'racial',
     categoryOrder: 10,
     sortOrder: 6,
   },
-  halflingLuckyCriticals: {
+  dwarfDarkvision: {
     group: 'passive',
     category: 'racial',
     categoryOrder: 10,
     sortOrder: 7,
   },
-  humanQuickLearner: {
+  dwarfSpellResistance: {
     group: 'passive',
     category: 'racial',
     categoryOrder: 10,
     sortOrder: 8,
+  },
+  dwarfMagicDamageReduction: {
+    group: 'passive',
+    category: 'racial',
+    categoryOrder: 10,
+    sortOrder: 9,
+  },
+  halflingLuckyCriticals: {
+    group: 'passive',
+    category: 'racial',
+    categoryOrder: 10,
+    sortOrder: 10,
+  },
+  halflingSpellResistance: {
+    group: 'passive',
+    category: 'racial',
+    categoryOrder: 10,
+    sortOrder: 11,
   },
 };
 

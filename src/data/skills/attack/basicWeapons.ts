@@ -36,7 +36,7 @@ export const basicWeapons: SkillEntity = {
       totalDescription: '+1 attack with basic weapons.',
       prerequisites: [
         { type: 'skill', skillId: 'basicWeapons', tier: 1 },
-        { type: 'level', minimum: 4 },
+        { type: 'level', minimum: 5 },
       ],
       effects: [{ target: 'attack_bonus_basic', operation: 'add', value: 1 }],
     },

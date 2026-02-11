@@ -32,7 +32,7 @@ export const rangedGunner: SkillEntity = {
       totalDescription: '+2 attack with mounted weapons.',
       prerequisites: [
         { type: 'skill', skillId: 'rangedGunner', tier: 1 },
-        { type: 'level', minimum: 6 },
+        { type: 'level', minimum: 5 },
         { type: 'attribute', attribute: 'dex', minimum: 13 },
       ],
       effects: [{ target: 'attack_bonus_mounted', operation: 'add', value: 2 }],
@@ -45,7 +45,7 @@ export const rangedGunner: SkillEntity = {
       totalDescription: '+4 attack with mounted weapons.',
       prerequisites: [
         { type: 'skill', skillId: 'rangedGunner', tier: 2 },
-        { type: 'level', minimum: 10 },
+        { type: 'level', minimum: 11 },
         { type: 'attribute', attribute: 'dex', minimum: 15 },
         { type: 'attribute', attribute: 'wis', minimum: 11 },
       ],

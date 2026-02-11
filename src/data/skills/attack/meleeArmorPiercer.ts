@@ -11,13 +11,14 @@ export const meleeArmorPiercer: SkillEntity = {
     {
       tier: 1,
       name: 'Proficient',
-      description: 'Ignore half-damage penalty with slashing and piercing weapons.',
+      description:
+        'Ignore half-damage penalty with slashing and piercing weapons.',
       deltaDescription:
         'Ignore half-damage penalty with slashing and piercing weapons.',
       totalDescription:
         'Ignore half-damage penalty with slashing and piercing weapons.',
       prerequisites: [
-        { type: 'level', minimum: 6 },
+        { type: 'level', minimum: 5 },
         { type: 'attribute', attribute: 'str', minimum: 11 },
         { type: 'attribute', attribute: 'dex', minimum: 13 },
       ],
