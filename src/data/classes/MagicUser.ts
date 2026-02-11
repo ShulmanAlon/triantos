@@ -24,7 +24,9 @@ export const magicUser: GameClass = {
     },
     {
       level: 3,
-      skill: [{ onlyForRace: 'Human', skillPoints: 1, skillPointType: 'human' }],
+      skill: [
+        { onlyForRace: 'Human', skillPoints: 1, skillPointType: 'human' },
+      ],
       baseAttackBonus: 1,
       spells: { 1: 2, 2: 1 },
     },
@@ -43,7 +45,9 @@ export const magicUser: GameClass = {
     },
     {
       level: 6,
-      skill: [{ onlyForRace: 'Human', skillPoints: 1, skillPointType: 'human' }],
+      skill: [
+        { onlyForRace: 'Human', skillPoints: 1, skillPointType: 'human' },
+      ],
       baseAttackBonus: 2,
       spells: { 1: 3, 2: 2, 3: 2 },
     },
@@ -62,7 +66,9 @@ export const magicUser: GameClass = {
     },
     {
       level: 9,
-      skill: [{ onlyForRace: 'Human', skillPoints: 1, skillPointType: 'human' }],
+      skill: [
+        { onlyForRace: 'Human', skillPoints: 1, skillPointType: 'human' },
+      ],
       baseAttackBonus: 2,
       spells: { 1: 4, 2: 3, 3: 3, 4: 2, 5: 1 },
     },
@@ -80,11 +86,53 @@ export const magicUser: GameClass = {
     },
     {
       level: 12,
-      skill: [{ onlyForRace: 'Human', skillPoints: 1, skillPointType: 'human' }],
+      skill: [
+        { onlyForRace: 'Human', skillPoints: 1, skillPointType: 'human' },
+      ],
       baseAttackBonus: 3,
       abilityPoint: 1,
       spells: { 1: 5, 2: 4, 3: 4, 4: 3, 5: 2, 6: 2 },
     },
-    // TODO: ... continue through level 18
+    {
+      level: 13,
+      skill: [{ skillPoints: 1, skillPointType: 'utility' }],
+      baseAttackBonus: 3,
+      spells: { 1: 5, 2: 4, 3: 4, 4: 3, 5: 3, 6: 2 },
+    },
+    {
+      level: 14,
+      skill: [{ skillPoints: 1, skillPointType: 'core' }],
+      baseAttackBonus: 4,
+      spells: { 1: 5, 2: 5, 3: 4, 4: 4, 5: 3, 6: 2 },
+    },
+    {
+      level: 15,
+      skill: [
+        { onlyForRace: 'Human', skillPoints: 1, skillPointType: 'human' },
+      ],
+      baseAttackBonus: 4,
+      spells: { 1: 5, 2: 5, 3: 4, 4: 4, 5: 3, 6: 3, 7: 1 },
+    },
+    {
+      level: 16,
+      skill: [{ skillPoints: 1, skillPointType: 'utility' }],
+      baseAttackBonus: 4,
+      abilityPoint: 1,
+      spells: { 1: 5, 2: 5, 3: 5, 4: 4, 5: 4, 6: 3, 7: 2 },
+    },
+    {
+      level: 17,
+      skill: [{ skillPoints: 1, skillPointType: 'core' }],
+      baseAttackBonus: 4,
+      spells: { 1: 6, 2: 5, 3: 5, 4: 4, 5: 4, 6: 3, 7: 2 },
+    },
+    {
+      level: 18,
+      skill: [
+        { onlyForRace: 'Human', skillPoints: 1, skillPointType: 'human' },
+      ],
+      baseAttackBonus: 5,
+      spells: { 1: 6, 2: 6, 3: 5, 4: 5, 5: 4, 6: 4, 7: 3 },
+    },
   ],
 };

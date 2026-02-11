@@ -22,7 +22,9 @@ export const fighter: GameClass = {
     },
     {
       level: 3,
-      skill: [{ onlyForRace: 'Human', skillPoints: 1, skillPointType: 'human' }],
+      skill: [
+        { onlyForRace: 'Human', skillPoints: 1, skillPointType: 'human' },
+      ],
       baseAttackBonus: 3,
     },
     {
@@ -38,7 +40,9 @@ export const fighter: GameClass = {
     },
     {
       level: 6,
-      skill: [{ onlyForRace: 'Human', skillPoints: 1, skillPointType: 'human' }],
+      skill: [
+        { onlyForRace: 'Human', skillPoints: 1, skillPointType: 'human' },
+      ],
       baseAttackBonus: 4,
     },
     {
@@ -54,7 +58,9 @@ export const fighter: GameClass = {
     },
     {
       level: 9,
-      skill: [{ onlyForRace: 'Human', skillPoints: 1, skillPointType: 'human' }],
+      skill: [
+        { onlyForRace: 'Human', skillPoints: 1, skillPointType: 'human' },
+      ],
       baseAttackBonus: 6,
     },
     {
@@ -67,15 +73,50 @@ export const fighter: GameClass = {
       skill: [{ skillPoints: 1, skillPointType: 'core' }],
       baseAttackBonus: 7,
       feature: '2 attacks',
+      attacksPerRound: 2,
     },
     {
       level: 12,
-      skill: [{ onlyForRace: 'Human', skillPoints: 1, skillPointType: 'human' }],
+      skill: [
+        { onlyForRace: 'Human', skillPoints: 1, skillPointType: 'human' },
+      ],
       baseAttackBonus: 7,
-      // TODO: Move to intended level when progression is finalized.
-      attacksPerRound: 2,
       abilityPoint: 1,
     },
-    // TODO: ... continue through level 18
+    {
+      level: 13,
+      skill: [{ skillPoints: 1, skillPointType: 'utility' }],
+      baseAttackBonus: 8,
+    },
+    {
+      level: 14,
+      skill: [{ skillPoints: 1, skillPointType: 'core' }],
+      baseAttackBonus: 8,
+    },
+    {
+      level: 15,
+      skill: [
+        { onlyForRace: 'Human', skillPoints: 1, skillPointType: 'human' },
+      ],
+      baseAttackBonus: 9,
+    },
+    {
+      level: 16,
+      skill: [{ skillPoints: 1, skillPointType: 'utility' }],
+      baseAttackBonus: 9,
+      abilityPoint: 1,
+    },
+    {
+      level: 17,
+      skill: [{ skillPoints: 1, skillPointType: 'core' }],
+      baseAttackBonus: 10,
+    },
+    {
+      level: 18,
+      skill: [
+        { onlyForRace: 'Human', skillPoints: 1, skillPointType: 'human' },
+      ],
+      baseAttackBonus: 10,
+    },
   ],
 };
