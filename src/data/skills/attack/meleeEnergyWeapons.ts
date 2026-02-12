@@ -1,11 +1,14 @@
 import { SkillEntity } from '@/types/skills';
+import { weaponListForProficiency } from './weaponSkillDescriptions';
+
+const meleeEnergyWeaponsList = weaponListForProficiency('meleeEnergyWeapons');
 
 export const meleeEnergyWeapons: SkillEntity = {
   id: 'meleeEnergyWeapons',
   name: 'Proficiency - Energy Melee Weapons',
   family: 'attack',
   skillPointType: 'core',
-  description: 'Allows proficient use of: Power Fist, Plasma Cutter',
+  description: `Allows proficient use of: ${meleeEnergyWeaponsList}`,
   tiers: [
     {
       tier: 1,

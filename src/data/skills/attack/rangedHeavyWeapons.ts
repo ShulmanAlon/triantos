@@ -1,12 +1,14 @@
 import { SkillEntity } from '@/types/skills';
+import { weaponListForProficiency } from './weaponSkillDescriptions';
+
+const rangedHeavyWeaponsList = weaponListForProficiency('rangedHeavyWeapons');
 
 export const rangedHeavyWeapons: SkillEntity = {
   id: 'rangedHeavyWeapons',
   name: 'Proficiency - Heavy Ranged Weapons',
   family: 'attack',
   skillPointType: 'core',
-  description:
-    'Allows proficient use of: Minigun, HVRL, Heavy Blaster Repeater',
+  description: `Allows proficient use of: ${rangedHeavyWeaponsList}`,
   tiers: [
     {
       tier: 1,

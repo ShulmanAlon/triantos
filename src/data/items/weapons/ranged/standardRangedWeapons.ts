@@ -1,4 +1,5 @@
 import { GameItem } from '@/types/items';
+import { requiresWeaponProficiency } from '../weaponProficiencyMap';
 
 export const bowCrossbow: GameItem = {
   id: 'bowCrossbow',
@@ -10,7 +11,7 @@ export const bowCrossbow: GameItem = {
   ],
   ammo: 'arrow',
   ammoConsumption: 1,
-  requiresProficiency: ['rangedAdvancedWeapons'],
+  requiresProficiency: requiresWeaponProficiency('bowCrossbow'),
 };
 
 export const energyPistol: GameItem = {
@@ -23,7 +24,7 @@ export const energyPistol: GameItem = {
   ],
   ammo: 'energy',
   ammoConsumption: 1,
-  requiresProficiency: ['rangedAdvancedWeapons'],
+  requiresProficiency: requiresWeaponProficiency('energyPistol'),
 };
 
 export const liberatorHandgun: GameItem = {
@@ -36,7 +37,7 @@ export const liberatorHandgun: GameItem = {
   ],
   ammo: 'energy',
   ammoConsumption: 2,
-  requiresProficiency: ['rangedAdvancedWeapons'],
+  requiresProficiency: requiresWeaponProficiency('liberatorHandgun'),
 };
 
 export const creosantRifle: GameItem = {
@@ -49,7 +50,7 @@ export const creosantRifle: GameItem = {
   ],
   ammo: 'energy',
   ammoConsumption: 1,
-  requiresProficiency: ['rangedAdvancedWeapons'],
+  requiresProficiency: requiresWeaponProficiency('creosantRifle'),
 };
 
 export const assaultRifle: GameItem = {
@@ -62,7 +63,7 @@ export const assaultRifle: GameItem = {
   ],
   ammo: 'energy',
   ammoConsumption: 3,
-  requiresProficiency: ['rangedAdvancedWeapons'],
+  requiresProficiency: requiresWeaponProficiency('assaultRifle'),
 };
 
 export const huntsmanRifle: GameItem = {
@@ -75,7 +76,7 @@ export const huntsmanRifle: GameItem = {
   ],
   ammo: 'energy',
   ammoConsumption: 2,
-  requiresProficiency: ['rangedAdvancedWeapons'],
+  requiresProficiency: requiresWeaponProficiency('huntsmanRifle'),
 };
 
 export const sniperRifle: GameItem = {
@@ -88,7 +89,7 @@ export const sniperRifle: GameItem = {
   ],
   ammo: 'energy',
   ammoConsumption: 4,
-  requiresProficiency: ['rangedAdvancedWeapons'],
+  requiresProficiency: requiresWeaponProficiency('sniperRifle'),
 };
 
 export const minigun: GameItem = {
@@ -101,7 +102,7 @@ export const minigun: GameItem = {
   ],
   ammo: 'energy',
   ammoConsumption: 10,
-  requiresProficiency: ['rangedHeavyWeapons'],
+  requiresProficiency: requiresWeaponProficiency('minigun'),
 };
 
 export const heavyBlasterRepeater: GameItem = {
@@ -114,7 +115,7 @@ export const heavyBlasterRepeater: GameItem = {
   ],
   ammo: 'energy',
   ammoConsumption: 5,
-  requiresProficiency: ['rangedHeavyWeapons'],
+  requiresProficiency: requiresWeaponProficiency('heavyBlasterRepeater'),
 };
 
 export const dimpleGrenade: GameItem = {
@@ -127,7 +128,7 @@ export const dimpleGrenade: GameItem = {
   ],
   ammo: 'self',
   ammoConsumption: 1,
-  requiresProficiency: ['rangedAdvancedWeapons'],
+  requiresProficiency: requiresWeaponProficiency('dimpleGrenade'),
 };
 
 export const powerShotgun: GameItem = {
@@ -142,7 +143,7 @@ export const powerShotgun: GameItem = {
       value: { diceRoll: 3, diceType: 6 },
     },
   ],
-  requiresProficiency: ['rangedAdvancedWeapons'],
+  requiresProficiency: requiresWeaponProficiency('powerShotgun'),
   ammo: 'energy',
   ammoConsumption: 3,
 };
@@ -157,6 +158,6 @@ export const hvrl: GameItem = {
   ],
   ammo: 'self',
   ammoConsumption: 1,
-  requiresProficiency: ['rangedHeavyWeapons'],
+  requiresProficiency: requiresWeaponProficiency('hvrl'),
   notes: 'Takes one action to load and one to fire.',
 };

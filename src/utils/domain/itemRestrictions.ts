@@ -30,7 +30,10 @@ export const getItemRestrictionReasons = (
     reasons.push('Clerics cannot use slashing or piercing weapons.');
   }
 
-  if (item.type === 'armor' && classId === 'MagicUser') {
+  const isActualArmor =
+    item.type === 'armor' &&
+    (hasTag('lightArmor') || hasTag('heavyArmor') || hasTag('powerArmor'));
+  if (isActualArmor && classId === 'MagicUser') {
     reasons.push('Magic Users cannot use armor.');
   }
 

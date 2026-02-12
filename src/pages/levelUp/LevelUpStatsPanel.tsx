@@ -10,6 +10,9 @@ export const LevelUpStatsPanel = ({
   hpGain,
 }: LevelUpStatsPanelProps) => {
   if (!nextStats) return null;
+  const spellSlots = Object.entries(nextStats.spellSlots ?? {})
+    .map(([level, slots]) => [Number(level), slots] as const)
+    .sort(([a], [b]) => a - b);
 
   return (
     <div className="panel p-3 space-y-2 text-sm text-gray-700">
@@ -23,12 +26,39 @@ export const LevelUpStatsPanel = ({
       <p>
         <strong>Attacks / Round:</strong> {nextStats.attacksPerRound}
       </p>
-      <p>
-        <strong>Spells:</strong>{' '}
-        {Object.entries(nextStats.spellSlots ?? {})
-          .map(([lvl, slots]) => `Lvl ${lvl}: ${slots}`)
-          .join(', ') || 'None'}
-      </p>
+      <div className="space-y-1">
+        <strong>Spells:</strong>
+        {spellSlots.length > 0 ? (
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-max border-collapse text-xs">
+              <tbody>
+                <tr>
+                  <th className="pr-3 py-1 text-left font-semibold text-(--muted)">
+                    Spell level
+                  </th>
+                  {spellSlots.map(([level]) => (
+                    <td key={level} className="px-2 py-1 text-center">
+                      {level}
+                    </td>
+                  ))}
+                </tr>
+                <tr>
+                  <th className="pr-3 py-1 text-left font-semibold text-(--muted)">
+                    Allocation
+                  </th>
+                  {spellSlots.map(([level, slots]) => (
+                    <td key={level} className="px-2 py-1 text-center">
+                      {slots}
+                    </td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p>None</p>
+        )}
+      </div>
     </div>
   );
 };

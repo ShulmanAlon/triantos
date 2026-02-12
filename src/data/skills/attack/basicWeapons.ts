@@ -1,4 +1,7 @@
 import { SkillEntity } from '@/types/skills';
+import { weaponListForProficiency } from './weaponSkillDescriptions';
+
+const basicWeaponsList = weaponListForProficiency('basicWeapons');
 
 export const basicWeapons: SkillEntity = {
   id: 'basicWeapons',
@@ -6,7 +9,7 @@ export const basicWeapons: SkillEntity = {
   family: 'attack',
   skillPointType: 'core',
   description:
-    'Improves the use of basic weapons, including: Unarmed, Knife, Dagger, Mace, Hammer, Sword, Axe, Bow, Crossbow, Energy Pistol, Liberator Handgun, Creosant Rifle, Dimple Grenade',
+    `Improves the use of basic weapons, including: ${basicWeaponsList}`,
   tiers: [
     {
       tier: 1,

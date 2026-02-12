@@ -1,4 +1,9 @@
 import { SkillEntity } from '@/types/skills';
+import { weaponListForProficiency } from './weaponSkillDescriptions';
+
+const rangedAdvancedWeaponsList = weaponListForProficiency(
+  'rangedAdvancedWeapons'
+);
 
 export const rangedAdvancedWeapons: SkillEntity = {
   id: 'rangedAdvancedWeapons',
@@ -6,7 +11,7 @@ export const rangedAdvancedWeapons: SkillEntity = {
   family: 'attack',
   skillPointType: 'core',
   description:
-    'Allows and improves the use of advanced ranged weapons, including: Power Shotgun, Assault Rifle, Huntsman Rifle, Sniper Rifle',
+    `Allows and improves the use of advanced ranged weapons, including: ${rangedAdvancedWeaponsList}`,
   tiers: [
     {
       tier: 1,

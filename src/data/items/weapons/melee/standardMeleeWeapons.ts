@@ -1,4 +1,5 @@
 import { GameItem } from '@/types/items';
+import { requiresWeaponProficiency } from '../weaponProficiencyMap';
 
 export const knife: GameItem = {
   id: 'knife',
@@ -8,7 +9,7 @@ export const knife: GameItem = {
   baseDamage: [
     { target: 'damage.slash', operation: 'add', value: { diceRoll: 1, diceType: 4 } },
   ],
-  requiresProficiency: ['basicWeapons'],
+  requiresProficiency: requiresWeaponProficiency('knife'),
 };
 
 export const unarmed: GameItem = {
@@ -19,7 +20,7 @@ export const unarmed: GameItem = {
   baseDamage: [
     { target: 'damage.blunt', operation: 'add', value: { diceRoll: 1, diceType: 2 } },
   ],
-  requiresProficiency: ['basicWeapons'],
+  requiresProficiency: requiresWeaponProficiency('unarmed'),
 };
 
 export const dagger: GameItem = {
@@ -30,7 +31,7 @@ export const dagger: GameItem = {
   baseDamage: [
     { target: 'damage.pierce', operation: 'add', value: { diceRoll: 1, diceType: 4 } },
   ],
-  requiresProficiency: ['basicWeapons'],
+  requiresProficiency: requiresWeaponProficiency('dagger'),
 };
 
 export const mace: GameItem = {
@@ -41,7 +42,7 @@ export const mace: GameItem = {
   baseDamage: [
     { target: 'damage.blunt', operation: 'add', value: { diceRoll: 1, diceType: 8 } },
   ],
-  requiresProficiency: ['basicWeapons'],
+  requiresProficiency: requiresWeaponProficiency('mace'),
 };
 
 export const hammer: GameItem = {
@@ -52,7 +53,7 @@ export const hammer: GameItem = {
   baseDamage: [
     { target: 'damage.blunt', operation: 'add', value: { diceRoll: 1, diceType: 8 } },
   ],
-  requiresProficiency: ['basicWeapons'],
+  requiresProficiency: requiresWeaponProficiency('hammer'),
 };
 
 export const sword: GameItem = {
@@ -63,7 +64,7 @@ export const sword: GameItem = {
   baseDamage: [
     { target: 'damage.slash', operation: 'add', value: { diceRoll: 1, diceType: 10 } },
   ],
-  requiresProficiency: ['basicWeapons'],
+  requiresProficiency: requiresWeaponProficiency('sword'),
 };
 
 export const axe: GameItem = {
@@ -74,7 +75,7 @@ export const axe: GameItem = {
   baseDamage: [
     { target: 'damage.slash', operation: 'add', value: { diceRoll: 1, diceType: 10 } },
   ],
-  requiresProficiency: ['basicWeapons'],
+  requiresProficiency: requiresWeaponProficiency('axe'),
 };
 
 export const powerFist: GameItem = {
@@ -87,7 +88,7 @@ export const powerFist: GameItem = {
   ],
   ammo: 'energy',
   ammoConsumption: 1,
-  requiresProficiency: ['meleeEnergyWeapons'],
+  requiresProficiency: requiresWeaponProficiency('powerFist'),
 };
 
 export const warhammer: GameItem = {
@@ -98,7 +99,7 @@ export const warhammer: GameItem = {
   baseDamage: [
     { target: 'damage.blunt', operation: 'add', value: { diceRoll: 1, diceType: 10 } },
   ],
-  requiresProficiency: ['melee2hWeapons'],
+  requiresProficiency: requiresWeaponProficiency('warhammer'),
 };
 
 export const battleaxe: GameItem = {
@@ -109,7 +110,7 @@ export const battleaxe: GameItem = {
   baseDamage: [
     { target: 'damage.slash', operation: 'add', value: { diceRoll: 2, diceType: 6 } },
   ],
-  requiresProficiency: ['melee2hWeapons'],
+  requiresProficiency: requiresWeaponProficiency('battleaxe'),
 };
 
 export const longsword: GameItem = {
@@ -120,7 +121,7 @@ export const longsword: GameItem = {
   baseDamage: [
     { target: 'damage.slash', operation: 'add', value: { diceRoll: 2, diceType: 6 } },
   ],
-  requiresProficiency: ['melee2hWeapons'],
+  requiresProficiency: requiresWeaponProficiency('longsword'),
 };
 
 export const greatsword: GameItem = {
@@ -131,7 +132,7 @@ export const greatsword: GameItem = {
   baseDamage: [
     { target: 'damage.slash', operation: 'add', value: { diceRoll: 2, diceType: 8 } },
   ],
-  requiresProficiency: ['melee2hWeapons'],
+  requiresProficiency: requiresWeaponProficiency('greatsword'),
 };
 
 export const plasmaCutter: GameItem = {
@@ -146,7 +147,7 @@ export const plasmaCutter: GameItem = {
       value: { diceRoll: 2, diceType: 8 },
     },
   ],
-  requiresProficiency: ['meleeEnergyWeapons'],
+  requiresProficiency: requiresWeaponProficiency('plasmaCutter'),
   ammo: 'energy',
   ammoConsumption: 2,
 };

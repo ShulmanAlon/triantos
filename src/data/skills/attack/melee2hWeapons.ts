@@ -1,11 +1,14 @@
 import { SkillEntity } from '@/types/skills';
+import { weaponListForProficiency } from './weaponSkillDescriptions';
+
+const melee2hWeaponsList = weaponListForProficiency('melee2hWeapons');
 
 export const melee2hWeapons: SkillEntity = {
   id: 'melee2hWeapons',
   name: 'Proficiency - 2-Handed Melee Weapons',
   family: 'attack',
   skillPointType: 'core',
-  description: 'Allows proficient use of: Battleaxe, Longsword, Greatsword',
+  description: `Allows proficient use of: ${melee2hWeaponsList}`,
   tiers: [
     {
       tier: 1,
