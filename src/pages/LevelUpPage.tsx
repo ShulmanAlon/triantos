@@ -267,16 +267,25 @@ export default function CharacterLevelUpPage() {
     human: skillPool.human - skillUsed.human,
   };
 
-  const acquiredSkills =
-    selectedClassData && character && skillsData
-      ? getAcquiredSkillSelectionsUpToLevel(
-          skillBuckets,
-          skillsData,
-          selectedClassData.id,
-          character.race_id as RaceId,
-          nextLevel
-        )
-      : [];
+  const acquiredSkills = useMemo(
+    () =>
+      selectedClassData && character && skillsData
+        ? getAcquiredSkillSelectionsUpToLevel(
+            skillBuckets,
+            skillsData,
+            selectedClassData.id,
+            character.race_id as RaceId,
+            nextLevel
+          )
+        : [],
+    [
+      character,
+      nextLevel,
+      selectedClassData,
+      skillBuckets,
+      skillsData,
+    ]
+  );
 
   const acquiredThisLevel = useMemo(() => {
     if (!skillsData || !selectedClassData || !character) return [];
