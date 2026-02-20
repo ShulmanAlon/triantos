@@ -3,6 +3,7 @@ import { GameItem } from '@/types/items';
 export const plateArmor: GameItem = {
   id: 'plateArmor',
   name: 'Plate Armor',
+  sortOrder: 220,
   type: 'armor',
   tags: ['heavyArmor'],
   modifiers: [{ target: 'ac_armor_base', operation: 'add', value: 6 }],
@@ -12,6 +13,7 @@ export const plateArmor: GameItem = {
 export const chainMail: GameItem = {
   id: 'chainMail',
   name: 'Chain Mail',
+  sortOrder: 210,
   type: 'armor',
   tags: ['heavyArmor'],
   modifiers: [{ target: 'ac_armor_base', operation: 'add', value: 4 }],
@@ -21,6 +23,7 @@ export const chainMail: GameItem = {
 export const ultronNanoArmor: GameItem = {
   id: 'ultronNanoArmor',
   name: 'Ultron Nano Armor',
+  sortOrder: 230,
   type: 'armor',
   tags: ['heavyArmor'],
   modifiers: [{ target: 'ac_armor_base', operation: 'add', value: 7 }],

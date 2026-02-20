@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useParams, useNavigate, Navigate } from 'react-router-dom';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { Button } from '@/components/ui/Button';
 import EditCampaignModal from '@/components/EditCampaignModal';
@@ -40,12 +40,9 @@ export default function CampaignPage() {
   const isLoading = campaignLoading || charactersLoading;
   const hasError = campaignError || charactersError;
 
-  useEffect(() => {
-    if (!campaign) return;
-    if (!campaign.deleted) return;
-    toast.info('This campaign has been deleted.');
-    navigate('/dashboard');
-  }, [campaign, navigate, toast]);
+  if (campaign?.deleted) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   return (
     <main className="space-y-6">

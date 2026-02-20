@@ -46,6 +46,13 @@ export default function EquipmentLoadoutModal({
   characterRaceId,
   characterAttributes,
 }: Props) {
+  const sortByOrder = (a: GameItem, b: GameItem) => {
+    const aOrder = a.sortOrder ?? Number.MAX_SAFE_INTEGER;
+    const bOrder = b.sortOrder ?? Number.MAX_SAFE_INTEGER;
+    if (aOrder !== bOrder) return aOrder - bOrder;
+    return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
+  };
+
   const [loadouts, setLoadouts] = useState<EquipmentLoadout[]>(
     equipmentLoadouts.loadouts
   );
@@ -58,11 +65,11 @@ export default function EquipmentLoadoutModal({
   const activeLoadout = loadouts.find((l) => l.id === selectedLoadoutId);
 
   const armorItems = useMemo(
-    () => items.filter((i) => i.type === 'armor'),
+    () => items.filter((i) => i.type === 'armor').sort(sortByOrder),
     [items]
   );
   const weaponItems = useMemo(
-    () => items.filter((i) => i.type === 'weapon'),
+    () => items.filter((i) => i.type === 'weapon').sort(sortByOrder),
     [items]
   );
   const unarmedWeapon = useMemo(
@@ -70,11 +77,14 @@ export default function EquipmentLoadoutModal({
     [weaponItems]
   );
   const shieldItems = useMemo(
-    () => items.filter((i) => i.type === 'shield' && !i.tags.includes('energyShield')),
+    () =>
+      items
+        .filter((i) => i.type === 'shield' && !i.tags.includes('energyShield'))
+        .sort(sortByOrder),
     [items]
   );
   const energyShieldItems = useMemo(
-    () => items.filter((i) => i.tags.includes('energyShield')),
+    () => items.filter((i) => i.tags.includes('energyShield')).sort(sortByOrder),
     [items]
   );
   // TODO: Add items order logic (weapons, armor, shield, energy shield).
@@ -163,7 +173,7 @@ export default function EquipmentLoadoutModal({
             {SLOT_LABELS.armor}
             <select
               className="border rounded px-2 py-1"
-              value={activeLoadout?.items['armor'] ?? ''}
+              value={activeLoadout?.items['armor'] ?? 'clothing'}
               onChange={(e) =>
                 updateLoadoutItem('armor', e.target.value || null)
               }
@@ -203,7 +213,7 @@ export default function EquipmentLoadoutModal({
               }
               disabled={isTwoHanded}
             >
-              <option value="">None</option>
+              <option value="">No Shield</option>
               {shieldItems.map((item) => {
                 const allowedByRules = isItemAllowed(item, restrictionContext);
                 const allowed = allowedByRules && isProficient(item);
@@ -243,7 +253,7 @@ export default function EquipmentLoadoutModal({
                 updateLoadoutItem('energy_shield', e.target.value || null)
               }
             >
-              <option value="">None</option>
+              <option value="">No Energy Shield</option>
               {energyShieldItems.map((item) => {
                 const allowedByRules = isItemAllowed(item, restrictionContext);
                 const allowed = allowedByRules && isProficient(item);

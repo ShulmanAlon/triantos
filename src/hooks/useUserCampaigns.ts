@@ -12,7 +12,11 @@ export function useUserCampaigns() {
   const user = useCurrentUser();
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      setCampaigns([]);
+      setLoading(false);
+      return;
+    }
 
     const fetchCampaigns = async () => {
       setLoading(true);
@@ -24,10 +28,19 @@ export function useUserCampaigns() {
         setError(error.message);
         setCampaigns([]);
       } else {
-        const normalized = ((data as CampaignInterface[] | null) ?? []).map((c) => ({
-          ...c,
-          members: (c.members ?? []) as CampaignInterface['members'],
-        }));
+        const normalized = ((data as CampaignInterface[] | null) ?? []).map((c) => {
+          const members = Array.isArray(c.members) ? c.members : [];
+          return {
+            ...c,
+            members: members.filter(
+              (m): m is { user_id: string; username: string } =>
+                !!m &&
+                typeof m === 'object' &&
+                typeof (m as { user_id?: unknown }).user_id === 'string' &&
+                typeof (m as { username?: unknown }).username === 'string'
+            ),
+          };
+        });
         const filtered = normalized.filter((c) => {
           const isOwner = c.owner_id === user.id;
           const isMember = c.members.some((m) => m.user_id === user.id);

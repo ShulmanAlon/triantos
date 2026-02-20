@@ -6,6 +6,7 @@ import { RaceId } from './race';
 export interface GameItem {
   id: string;
   name: string;
+  sortOrder?: number; // Optional UI ordering hint for dropdowns/lists.
   type: ItemType; // 'armor', 'weapon', 'shield', 'utility', etc.
   slot?: EquipSlot; // 'body', 'hands', 'head', etc.
   tags: ItemTag[]; // 'lightArmor', 'energy', '2h', 'plasma', etc.

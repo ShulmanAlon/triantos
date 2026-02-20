@@ -4,6 +4,7 @@ import { requiresWeaponProficiency } from '../weaponProficiencyMap';
 export const bow: GameItem = {
   id: 'bow',
   name: 'Bow',
+  sortOrder: 400,
   type: 'weapon',
   tags: ['ranged', 'pierce', 'large', 'silent', '2h'],
   baseDamage: [
@@ -21,6 +22,7 @@ export const bow: GameItem = {
 export const crossbow: GameItem = {
   id: 'crossbow',
   name: 'Crossbow',
+  sortOrder: 410,
   type: 'weapon',
   tags: ['ranged', 'pierce', 'medium', 'silent', '2h'],
   baseDamage: [
@@ -38,6 +40,7 @@ export const crossbow: GameItem = {
 export const energyPistol: GameItem = {
   id: 'energyPistol',
   name: 'Energy Pistol',
+  sortOrder: 300,
   type: 'weapon',
   tags: ['ranged', 'energy', 'small', '1h'],
   baseDamage: [
@@ -55,6 +58,7 @@ export const energyPistol: GameItem = {
 export const liberatorHandgun: GameItem = {
   id: 'liberatorHandgun',
   name: 'Liberator Handgun',
+  sortOrder: 310,
   type: 'weapon',
   tags: ['ranged', 'energy', 'medium', '1h'],
   baseDamage: [
@@ -72,6 +76,7 @@ export const liberatorHandgun: GameItem = {
 export const creosantRifle: GameItem = {
   id: 'creosantRifle',
   name: 'Creosant Rifle',
+  sortOrder: 420,
   type: 'weapon',
   tags: ['ranged', 'energy', 'medium', '2h'],
   baseDamage: [
@@ -89,6 +94,7 @@ export const creosantRifle: GameItem = {
 export const assaultRifle: GameItem = {
   id: 'assaultRifle',
   name: 'Assault Rifle',
+  sortOrder: 450,
   type: 'weapon',
   tags: ['ranged', 'energy', 'medium', '2h'],
   baseDamage: [
@@ -106,6 +112,7 @@ export const assaultRifle: GameItem = {
 export const huntsmanRifle: GameItem = {
   id: 'huntsmanRifle',
   name: 'Huntsman Rifle',
+  sortOrder: 430,
   type: 'weapon',
   tags: ['ranged', 'energy', 'medium', 'crit19', '2h'],
   baseDamage: [
@@ -123,6 +130,7 @@ export const huntsmanRifle: GameItem = {
 export const sniperRifle: GameItem = {
   id: 'sniperRifle',
   name: 'Sniper Rifle',
+  sortOrder: 440,
   type: 'weapon',
   tags: ['ranged', 'energy', 'large', 'crit19', '2h'],
   baseDamage: [
@@ -140,6 +148,7 @@ export const sniperRifle: GameItem = {
 export const minigun: GameItem = {
   id: 'minigun',
   name: 'Minigun',
+  sortOrder: 480,
   type: 'weapon',
   tags: ['ranged', 'energy', 'large', 'heavy', 'silent', '2h'],
   baseDamage: [
@@ -157,6 +166,7 @@ export const minigun: GameItem = {
 export const heavyBlasterRepeater: GameItem = {
   id: 'heavyBlasterRepeater',
   name: 'Heavy Blaster Repeater',
+  sortOrder: 470,
   type: 'weapon',
   tags: ['ranged', 'energy', 'large', 'veryHeavy', '2h'],
   baseDamage: [
@@ -174,6 +184,7 @@ export const heavyBlasterRepeater: GameItem = {
 export const dimpleGrenade: GameItem = {
   id: 'dimpleGrenade',
   name: 'Dimple Grenade',
+  sortOrder: 320,
   type: 'weapon',
   tags: ['ranged', 'energy', 'small', '1h'],
   baseDamage: [
@@ -191,6 +202,7 @@ export const dimpleGrenade: GameItem = {
 export const powerShotgun: GameItem = {
   id: 'powerShotgun',
   name: 'Power Shotgun',
+  sortOrder: 460,
   type: 'weapon',
   tags: ['ranged', 'energy', '2h', 'medium'],
   baseDamage: [
@@ -208,6 +220,7 @@ export const powerShotgun: GameItem = {
 export const hvrl: GameItem = {
   id: 'hvrl',
   name: 'HVRL - Handheld Variable Rocket Launcher',
+  sortOrder: 490,
   type: 'weapon',
   tags: ['ranged', 'large', 'heavy', '2h'],
   baseDamage: [

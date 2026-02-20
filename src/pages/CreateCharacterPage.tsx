@@ -28,6 +28,7 @@ import {
   getSkillTierAvailability,
   validateLevelSkillSelections,
 } from '@/utils/skills/skillProgression';
+import { normalizeLoadoutItems } from '@/utils/domain/loadouts';
 import {
   CharacterProgression,
   EquipmentLoadouts,
@@ -185,10 +186,10 @@ export default function CharacterCreatePage() {
     const equipment_loadouts: EquipmentLoadouts = {
       activeId: 'loadout-1',
       loadouts: [
-        { id: 'loadout-1', name: 'Loadout 1', items: {} },
-        { id: 'loadout-2', name: 'Loadout 2', items: {} },
-        { id: 'loadout-3', name: 'Loadout 3', items: {} },
-        { id: 'loadout-4', name: 'Loadout 4', items: {} },
+        { id: 'loadout-1', name: 'Loadout 1', items: normalizeLoadoutItems({}) },
+        { id: 'loadout-2', name: 'Loadout 2', items: normalizeLoadoutItems({}) },
+        { id: 'loadout-3', name: 'Loadout 3', items: normalizeLoadoutItems({}) },
+        { id: 'loadout-4', name: 'Loadout 4', items: normalizeLoadoutItems({}) },
       ],
     };
 

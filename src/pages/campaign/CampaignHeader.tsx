@@ -18,7 +18,8 @@ export const CampaignHeader = ({
   onOpenHandbook,
   onBack,
 }: CampaignHeaderProps) => {
-  const memberNames = campaign.members
+  const members = Array.isArray(campaign.members) ? campaign.members : [];
+  const memberNames = members
     .filter((member) => member.user_id !== campaign.owner_id)
     .map((member) => member.username);
   const visibleMembers = memberNames.slice(0, 4);

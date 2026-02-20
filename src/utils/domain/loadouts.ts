@@ -32,6 +32,9 @@ export const normalizeLoadoutItems = (
   for (const key of EQUIPMENT_SLOT_KEYS) {
     if (!(key in next)) next[key] = null;
   }
+  if (!next.armor) {
+    next.armor = 'clothing';
+  }
   if (!next.weapon_primary) {
     next.weapon_primary = 'unarmed';
   }
