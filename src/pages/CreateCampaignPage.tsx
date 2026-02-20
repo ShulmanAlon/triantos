@@ -45,19 +45,6 @@ export default function CreateCampaign() {
       return;
     }
 
-    const { error: memberError } = await supabase
-      .from(TABLES.CAMPAIGN_MEMBERS)
-      .insert({
-        user_id: user.id,
-        campaign_id: campaign.id,
-      });
-
-    if (memberError) {
-      const message = 'Campaign created, but failed to register as DM.';
-      setError(message);
-      toast.error(message);
-    }
-
     setLoading(false);
     navigate(`/campaign/${campaign.id}`);
   };

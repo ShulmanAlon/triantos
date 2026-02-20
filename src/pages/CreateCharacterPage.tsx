@@ -210,15 +210,8 @@ export default function CharacterCreatePage() {
         deleted: false,
       });
 
-    const { error: upsertError } = await supabase
-      .from(TABLES.CAMPAIGN_MEMBERS)
-      .upsert([{ campaign_id: campaignId, user_id: user.id }], {
-        onConflict: 'campaign_id, user_id',
-      });
-
-    if (insertError || upsertError) {
-      const message =
-        (insertError?.message ?? null) || (upsertError?.message ?? null);
+    if (insertError) {
+      const message = insertError?.message ?? null;
       setError(message);
       if (message) toast.error(message);
       setSaving(false);

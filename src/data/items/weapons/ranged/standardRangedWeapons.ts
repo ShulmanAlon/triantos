@@ -1,17 +1,38 @@
 import { GameItem } from '@/types/items';
 import { requiresWeaponProficiency } from '../weaponProficiencyMap';
 
-export const bowCrossbow: GameItem = {
-  id: 'bowCrossbow',
-  name: 'Bow / Crossbow',
+export const bow: GameItem = {
+  id: 'bow',
+  name: 'Bow',
   type: 'weapon',
-  tags: ['ranged', 'pierce', 'small', 'silent', '2h'],
+  tags: ['ranged', 'pierce', 'large', 'silent', '2h'],
   baseDamage: [
-    { target: 'damage.pierce', operation: 'add', value: { diceRoll: 1, diceType: 6 } },
+    {
+      target: 'damage.pierce',
+      operation: 'add',
+      value: { diceRoll: 1, diceType: 6 },
+    },
   ],
   ammo: 'arrow',
   ammoConsumption: 1,
-  requiresProficiency: requiresWeaponProficiency('bowCrossbow'),
+  requiresProficiency: requiresWeaponProficiency('bow'),
+};
+
+export const crossbow: GameItem = {
+  id: 'crossbow',
+  name: 'Crossbow',
+  type: 'weapon',
+  tags: ['ranged', 'pierce', 'medium', 'silent', '2h'],
+  baseDamage: [
+    {
+      target: 'damage.pierce',
+      operation: 'add',
+      value: { diceRoll: 1, diceType: 6 },
+    },
+  ],
+  ammo: 'arrow',
+  ammoConsumption: 1,
+  requiresProficiency: requiresWeaponProficiency('crossbow'),
 };
 
 export const energyPistol: GameItem = {
@@ -20,7 +41,11 @@ export const energyPistol: GameItem = {
   type: 'weapon',
   tags: ['ranged', 'energy', 'small', '1h'],
   baseDamage: [
-    { target: 'damage.energy', operation: 'add', value: { diceRoll: 1, diceType: 4 } },
+    {
+      target: 'damage.energy',
+      operation: 'add',
+      value: { diceRoll: 1, diceType: 4 },
+    },
   ],
   ammo: 'energy',
   ammoConsumption: 1,
@@ -33,7 +58,11 @@ export const liberatorHandgun: GameItem = {
   type: 'weapon',
   tags: ['ranged', 'energy', 'medium', '1h'],
   baseDamage: [
-    { target: 'damage.energy', operation: 'add', value: { diceRoll: 1, diceType: 8 } },
+    {
+      target: 'damage.energy',
+      operation: 'add',
+      value: { diceRoll: 1, diceType: 8 },
+    },
   ],
   ammo: 'energy',
   ammoConsumption: 2,
@@ -46,7 +75,11 @@ export const creosantRifle: GameItem = {
   type: 'weapon',
   tags: ['ranged', 'energy', 'medium', '2h'],
   baseDamage: [
-    { target: 'damage.energy', operation: 'add', value: { diceRoll: 1, diceType: 8 } },
+    {
+      target: 'damage.energy',
+      operation: 'add',
+      value: { diceRoll: 1, diceType: 8 },
+    },
   ],
   ammo: 'energy',
   ammoConsumption: 1,
@@ -59,7 +92,11 @@ export const assaultRifle: GameItem = {
   type: 'weapon',
   tags: ['ranged', 'energy', 'medium', '2h'],
   baseDamage: [
-    { target: 'damage.energy', operation: 'add', value: { diceRoll: 3, diceType: 4 } },
+    {
+      target: 'damage.energy',
+      operation: 'add',
+      value: { diceRoll: 3, diceType: 4 },
+    },
   ],
   ammo: 'energy',
   ammoConsumption: 3,
@@ -72,7 +109,11 @@ export const huntsmanRifle: GameItem = {
   type: 'weapon',
   tags: ['ranged', 'energy', 'medium', 'crit19', '2h'],
   baseDamage: [
-    { target: 'damage.energy', operation: 'add', value: { diceRoll: 1, diceType: 10 } },
+    {
+      target: 'damage.energy',
+      operation: 'add',
+      value: { diceRoll: 1, diceType: 10 },
+    },
   ],
   ammo: 'energy',
   ammoConsumption: 2,
@@ -85,7 +126,11 @@ export const sniperRifle: GameItem = {
   type: 'weapon',
   tags: ['ranged', 'energy', 'large', 'crit19', '2h'],
   baseDamage: [
-    { target: 'damage.energy', operation: 'add', value: { diceRoll: 2, diceType: 6 } },
+    {
+      target: 'damage.energy',
+      operation: 'add',
+      value: { diceRoll: 2, diceType: 6 },
+    },
   ],
   ammo: 'energy',
   ammoConsumption: 4,
@@ -98,7 +143,11 @@ export const minigun: GameItem = {
   type: 'weapon',
   tags: ['ranged', 'energy', 'large', 'heavy', 'silent', '2h'],
   baseDamage: [
-    { target: 'damage.energy', operation: 'add', value: { diceRoll: 4, diceType: 6 } },
+    {
+      target: 'damage.energy',
+      operation: 'add',
+      value: { diceRoll: 4, diceType: 6 },
+    },
   ],
   ammo: 'energy',
   ammoConsumption: 10,
@@ -111,7 +160,11 @@ export const heavyBlasterRepeater: GameItem = {
   type: 'weapon',
   tags: ['ranged', 'energy', 'large', 'veryHeavy', '2h'],
   baseDamage: [
-    { target: 'damage.energy', operation: 'add', value: { diceRoll: 2, diceType: 10 } },
+    {
+      target: 'damage.energy',
+      operation: 'add',
+      value: { diceRoll: 2, diceType: 10 },
+    },
   ],
   ammo: 'energy',
   ammoConsumption: 5,
@@ -124,7 +177,11 @@ export const dimpleGrenade: GameItem = {
   type: 'weapon',
   tags: ['ranged', 'energy', 'small', '1h'],
   baseDamage: [
-    { target: 'damage.energy', operation: 'add', value: { diceRoll: 10, diceType: 6 } },
+    {
+      target: 'damage.energy',
+      operation: 'add',
+      value: { diceRoll: 10, diceType: 6 },
+    },
   ],
   ammo: 'self',
   ammoConsumption: 1,
@@ -154,7 +211,11 @@ export const hvrl: GameItem = {
   type: 'weapon',
   tags: ['ranged', 'large', 'heavy', '2h'],
   baseDamage: [
-    { target: 'damage.energy', operation: 'add', value: { diceRoll: 20, diceType: 6 } },
+    {
+      target: 'damage.energy',
+      operation: 'add',
+      value: { diceRoll: 20, diceType: 6 },
+    },
   ],
   ammo: 'self',
   ammoConsumption: 1,

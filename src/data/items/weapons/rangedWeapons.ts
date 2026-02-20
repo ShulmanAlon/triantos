@@ -1,6 +1,7 @@
 export { powerShotgunPlus2 } from './ranged/rangedWeaponVariants';
 export {
-  bowCrossbow,
+  bow,
+  crossbow,
   energyPistol,
   liberatorHandgun,
   creosantRifle,
