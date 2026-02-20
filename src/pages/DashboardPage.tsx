@@ -21,9 +21,14 @@ export default function DashboardPage() {
                 Manage your active and past campaigns.
               </p>
             </div>
-            <Button onClick={() => navigate('/create-campaign')}>
-              Create New Campaign
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" onClick={() => navigate('/join-campaign')}>
+                Join Campaign
+              </Button>
+              <Button onClick={() => navigate('/create-campaign')}>
+                Create New Campaign
+              </Button>
+            </div>
           </div>
 
           {campaigns.length === 0 ? (

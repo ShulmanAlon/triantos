@@ -27,6 +27,10 @@ export const CampaignCharacters = ({
   onCreate,
 }: CampaignCharactersProps) => {
   const { language } = useLanguage();
+  const canCreateCharacter =
+    !!user &&
+    (campaign.owner_id === user.id ||
+      campaign.members.some((member) => member.user_id === user.id));
   const visibleCharacters = useMemo(() => {
     if (!user) return [];
     const isAdmin = user.role === USER_ROLES.ADMIN;
@@ -66,9 +70,11 @@ export const CampaignCharacters = ({
             {visibleCharacters.length} total
           </p>
         </div>
-        <Button variant="outline" onClick={onCreate}>
-          New Character
-        </Button>
+        {canCreateCharacter && (
+          <Button variant="outline" onClick={onCreate}>
+            New Character
+          </Button>
+        )}
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {visibleCharacters.map((char) => (

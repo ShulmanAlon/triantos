@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { Button } from '@/components/ui/Button';
@@ -10,6 +10,7 @@ import { LoadingErrorWrapper } from '@/components/LoadingErrorWrapper';
 import { useToast } from '@/context/ToastContext';
 import { CampaignHeader } from '@/pages/campaign/CampaignHeader';
 import { CampaignCharacters } from '@/pages/campaign/CampaignCharacters';
+import { CampaignMembersManager } from '@/pages/campaign/CampaignMembersManager';
 
 export default function CampaignPage() {
   const { id: campaignId } = useParams<{ id: string }>();
@@ -23,13 +24,14 @@ export default function CampaignPage() {
     campaign,
     loading: campaignLoading,
     error: campaignError,
+    refetch: refetchCampaign,
     updateCampaign,
   } = useCampaignById(campaignId);
   const {
     characters,
     loading: charactersLoading,
     error: charactersError,
-  } = useCharactersByCampaignId(campaign?.campaign_id);
+  } = useCharactersByCampaignId(campaign && !campaign.deleted ? campaign.campaign_id : undefined);
 
   const canEditCampaign =
     user !== null &&
@@ -37,6 +39,13 @@ export default function CampaignPage() {
 
   const isLoading = campaignLoading || charactersLoading;
   const hasError = campaignError || charactersError;
+
+  useEffect(() => {
+    if (!campaign) return;
+    if (!campaign.deleted) return;
+    toast.info('This campaign has been deleted.');
+    navigate('/dashboard');
+  }, [campaign, navigate, toast]);
 
   return (
     <main className="space-y-6">
@@ -67,6 +76,18 @@ export default function CampaignPage() {
               }
               />
             </div>
+            {canEditCampaign && (
+              <div className="section-gap">
+                <CampaignMembersManager
+                  campaignId={campaign.campaign_id}
+                  ownerId={campaign.owner_id}
+                  memberUsernames={Object.fromEntries(
+                    campaign.members.map((m) => [m.user_id, m.username])
+                  )}
+                  onChanged={refetchCampaign}
+                />
+              </div>
+            )}
             {canEditCampaign && (
               <Button
                 variant="destructive"

@@ -12,6 +12,7 @@ const DashboardPage = lazy(() => import('@/pages/DashboardPage'));
 const CreateCampaign = lazy(() => import('@/pages/CreateCampaignPage'));
 const CampaignPage = lazy(() => import('@/pages/CampaignPage'));
 const CreateCharacter = lazy(() => import('@/pages/CreateCharacterPage'));
+const JoinCampaignPage = lazy(() => import('@/pages/JoinCampaignPage'));
 const CharacterSheet = lazy(() => import('@/pages/CharacterSheetPage'));
 const CharacterLevelUpPage = lazy(() => import('@/pages/LevelUpPage'));
 const CampaignHandbookPage = lazy(() => import('@/pages/CampaignHandbookPage'));
@@ -48,6 +49,14 @@ function App() {
                   element={
                     <RequireAuth>
                       <CreateCampaign />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path="/join-campaign"
+                  element={
+                    <RequireAuth>
+                      <JoinCampaignPage />
                     </RequireAuth>
                   }
                 />
