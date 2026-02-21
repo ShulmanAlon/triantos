@@ -12,7 +12,7 @@ import { USER_ROLES } from '@/config/userRoles';
 import { useCharacterById } from '@/hooks/useCharacterById';
 import { LoadingErrorWrapper } from '@/components/LoadingErrorWrapper';
 import { SkillEntity } from '@/types/skills';
-import { buildSkillSummary } from '@/utils/domain/skills';
+import { buildSkillSummary, getHighestSkillTiers, getSkillTier } from '@/utils/domain/skills';
 import { getAcquiredSkillSelectionsUpToLevel } from '@/utils/skills/skillProgression';
 import EquipmentLoadoutModal from '@/components/EquipmentLoadoutModal';
 import { EquipmentLoadouts, EquipmentSlotKey, CharacterWithCampaign } from '@/types/characters';
@@ -34,6 +34,7 @@ import { GameItem } from '@/types/items';
 import { AttributeMap } from '@/types/attributes';
 import { CharacterSheetHeader } from '@/pages/characterSheet/CharacterSheetHeader';
 import { CharacterSheetModals } from '@/pages/characterSheet/CharacterSheetModals';
+import { getClassLevelDataById } from '@/utils/classUtils';
 
 const getArmorTypeLabel = (
   armorType: ReturnType<typeof getArmorType>
@@ -261,6 +262,56 @@ export const CharacterSheet = () => {
     ]
   );
 
+  const combatSummaryExtras = useMemo(() => {
+    if (!character || character.class_id !== 'Cleric') return undefined;
+    const highestBySkill = getHighestSkillTiers(skillSelections);
+    const turnUndeadTier = highestBySkill.get('turnUndead')?.tier ?? 0;
+    const turnAbyssTier = highestBySkill.get('turnAbyssal')?.tier ?? 0;
+    const turnIntensityTier = highestBySkill.get('turnIntensity')?.tier ?? 0;
+    const turnAreaTier = highestBySkill.get('turnAreaOfEffect')?.tier ?? 0;
+    const turnIntensityDescription =
+      getSkillTier('turnIntensity', turnIntensityTier)?.totalDescription ??
+      'No turn intensity selected.';
+    const turnAreaDescription =
+      getSkillTier('turnAreaOfEffect', turnAreaTier)?.totalDescription ??
+      'No turn range selected.';
+    const classSpellPower =
+      getClassLevelDataById(character.class_id, character.level)?.spellPower ??
+      (finalStats?.base.spellSlots ? character.level : 0);
+    return {
+      turnPowers: [
+        {
+          title: 'Turn Undead',
+          enabled: turnUndeadTier > 0,
+          description:
+            turnUndeadTier > 0
+              ? 'Attempt to repel undead creatures.'
+              : 'Unlock this in magic skills.',
+          intensity: turnIntensityDescription,
+          area: turnAreaDescription,
+        },
+        {
+          title: 'Turn Abyssal',
+          enabled: turnAbyssTier > 0,
+          description:
+            turnAbyssTier > 0
+              ? 'Attempt to repel abyssal creatures.'
+              : 'Requires the Turn Abyssal skill tier.',
+          intensity: turnIntensityDescription,
+          area: turnAreaDescription,
+        },
+        {
+          title: 'Cleric Casting',
+          enabled: !!finalStats?.final.spellPower,
+          description:
+            'Spell power uses class progression + spell penetration + (2 x WIS modifier) + spell level.',
+          intensity: `Class progression power: ${classSpellPower}`,
+          area: 'See spell effect text per spell',
+        },
+      ],
+    };
+  }, [character, finalStats?.base.spellSlots, finalStats?.final.spellPower, skillSelections]);
+
   const handleLevelDown = () => {
     if (!character || character.level <= 1) return;
     const currentLevelBucket = progressionBuckets.find(
@@ -372,6 +423,7 @@ export const CharacterSheet = () => {
               setShowLoadoutModal(true);
             }}
             equipmentSummary={equipmentSummary}
+            combatSummaryExtras={combatSummaryExtras}
             finalStats={finalStats?.final}
             derived={derivedStats}
             />

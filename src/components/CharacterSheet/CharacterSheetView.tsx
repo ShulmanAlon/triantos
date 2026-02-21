@@ -23,6 +23,7 @@ import { getLoadoutDisplayName } from '@/utils/domain/loadouts';
 import {
   getSkillGroup,
   getSkillById,
+  getSkillCheckBonus,
   sortSkillsForDisplay,
   SkillSummary,
 } from '@/utils/domain/skills';
@@ -37,6 +38,18 @@ type EquipmentSummary = {
   rangedDamageParts?: { label: string; value: string }[];
   meleeDamageSummary?: string;
   meleeDamageParts?: { label: string; value: string }[];
+};
+
+type TurnPowerSummary = {
+  title: string;
+  enabled: boolean;
+  description: string;
+  intensity: string;
+  area: string;
+};
+
+type CombatSummaryExtras = {
+  turnPowers?: TurnPowerSummary[];
 };
 
 interface CharacterSheetProps {
@@ -55,6 +68,7 @@ interface CharacterSheetProps {
   finalStats?: FinalCharacterStats['final'];
   equipmentSummary?: EquipmentSummary;
   skills?: SkillSummary[];
+  combatSummaryExtras?: CombatSummaryExtras;
 }
 
 const getStatValue = (block?: StatBlock<number>): number | null => {
@@ -67,6 +81,16 @@ const getStatValue = (block?: StatBlock<number>): number | null => {
       )
     : block.entries;
   return Math.max(...filtered.map((entry) => entry.total));
+};
+
+const getSpellLevelRange = (classId: ClassId | undefined): number[] => {
+  if (classId === 'MagicUser') {
+    return Array.from({ length: 9 }, (_, idx) => idx + 1);
+  }
+  if (classId === 'Cleric') {
+    return Array.from({ length: 7 }, (_, idx) => idx + 1);
+  }
+  return [];
 };
 
 export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
@@ -85,6 +109,7 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
   finalStats,
   equipmentSummary,
   skills = [],
+  combatSummaryExtras,
 }) => {
   const { language } = useLanguage();
   const ui = uiLabels[language];
@@ -95,6 +120,10 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
     actionable: false,
     passive: false,
   });
+  const spellLevels = React.useMemo(
+    () => getSpellLevelRange(selectedClassId),
+    [selectedClassId]
+  );
   if (!derived) return null;
 
   const SectionHeader = ({ title }: { title: string }) => (
@@ -177,6 +206,7 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
           finalStats={finalStats}
           derived={derived}
           equipmentSummary={equipmentSummary}
+          extras={combatSummaryExtras}
         />
       )}
 
@@ -226,18 +256,50 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
         />
       </div>
 
-      {derived.spellSlots && (
+      {spellLevels.length > 0 && (
         <div className="mt-4 lg:grid lg:grid-cols-2 lg:gap-4">
           <div className="panel p-4">
             <SectionHeader title={ui.spellSlots} />
-            <ul className="ml-4 list-disc text-sm text-(--muted)">
-              {Object.entries(derived.spellSlots).map(([level, slots]) => (
-                <li key={level}>
-                  {ui.levelSpell} {level}: {slots}{' '}
-                  {slots !== 1 ? ui.spells : ui.spell}
-                </li>
-              ))}
-            </ul>
+            <div className="overflow-x-auto mt-3">
+              <table className="w-full min-w-max border-collapse text-xs text-(--muted)">
+                <tbody>
+                  <tr>
+                    <th className="pr-3 py-1 text-left font-semibold border-r border-b border-black/10">
+                      Spell level
+                    </th>
+                    {spellLevels.map((level, index) => (
+                      <td
+                        key={`spell-level-${level}`}
+                        className={`px-2 py-1 text-center border-b border-black/10 ${
+                          index < spellLevels.length - 1
+                            ? 'border-r border-black/10'
+                            : ''
+                        }`}
+                      >
+                        {level}
+                      </td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <th className="pr-3 py-1 text-left font-semibold border-r border-black/10">
+                      Allocation
+                    </th>
+                    {spellLevels.map((level, index) => (
+                      <td
+                        key={`spell-slots-${level}`}
+                        className={`px-2 py-1 text-center ${
+                          index < spellLevels.length - 1
+                            ? 'border-r border-black/10'
+                            : ''
+                        }`}
+                      >
+                        {derived.spellSlots?.[level] ?? '-'}
+                      </td>
+                    ))}
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}
@@ -273,6 +335,10 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
             const sortedGroup = sortedEntities.map(
               (entity) => groupedSkills.find((s) => s.id === entity.id)!
             );
+            const spellResistanceValue =
+              finalStats && getStatValue(finalStats.spellResistance)
+                ? getStatValue(finalStats.spellResistance) ?? 0
+                : 0;
 
             return (
               <div key={key} className="panel p-4">
@@ -293,60 +359,125 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
                     {isExpanded ? 'Hide Details' : 'Show Details'}
                   </button>
                 </div>
-                <div className="mt-4 columns-1 sm:columns-2 gap-4">
-                  {sortedGroup.map((skill, index) => (
-                    <details
-                      key={`${skill.name}-${skill.tier}-${index}`}
-                      className="mb-2 break-inside-avoid rounded-xl border border-black/10 px-3 py-2 text-sm text-(--muted)"
-                      open={isExpanded ? true : undefined}
-                    >
-                      <summary className="cursor-pointer font-medium">
-                        {(() => {
+                {key === 'basic' ? (
+                  <div className="mt-4 overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="text-left text-xs text-(--muted)">
+                          <th className="py-1 pr-3">Skill</th>
+                          <th className="py-1 pr-3">Check</th>
+                          <th className="py-1">Vs Spells</th>
+                          <th className="py-1 pl-3">Description</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {sortedGroup.map((skill, index) => {
                           const entity = getSkillById(skill.id);
-                          const hasMultipleTiers =
-                            entity && entity.tiers.length > 1;
-                          const tierLabel = skill.tierName ?? 'Tier';
-                          const isNumericTierName = /^Tier\s+\d+$/i.test(
-                            tierLabel
-                          );
-                          const tierText = hasMultipleTiers
-                            ? isNumericTierName
-                              ? tierLabel
-                              : `${tierLabel} (Tier ${skill.tier})`
-                            : '';
-                          const abilityLabel =
-                            key === 'basic' && entity?.abilityModifier
-                              ? `${entity.abilityModifier.toUpperCase()} Modifier`
-                              : null;
+                          const attrMod = entity?.abilityModifier
+                            ? getModifier(attributes[entity.abilityModifier])
+                            : 0;
+                          const skillBonus = getSkillCheckBonus(skill.id, skill.tier);
+                          const attributeContribution = attrMod * 2;
+                          const checkBonus = skillBonus + attributeContribution;
+                          const spellCheckBonus = checkBonus + spellResistanceValue;
+                          const signedCheck = checkBonus >= 0 ? `+${checkBonus}` : `${checkBonus}`;
+                          const signedSpell =
+                            spellCheckBonus >= 0 ? `+${spellCheckBonus}` : `${spellCheckBonus}`;
+                          const signedSkillBonus =
+                            skillBonus >= 0 ? `+${skillBonus}` : `${skillBonus}`;
+                          const signedAttrContribution =
+                            attributeContribution >= 0
+                              ? `+${attributeContribution}`
+                              : `${attributeContribution}`;
+                          const signedSpellResistance =
+                            spellResistanceValue >= 0
+                              ? `+${spellResistanceValue}`
+                              : `${spellResistanceValue}`;
+                          const attrLabel = entity?.abilityModifier
+                            ? `${entity.abilityModifier.toUpperCase()} mod * 2`
+                            : 'attribute mod * 2';
                           return (
-                            <>
-                              {skill.name}
-                              {abilityLabel && (
-                                <span className="ml-2 text-[11px] font-semibold text-(--muted)">
-                                  {abilityLabel}
-                                </span>
-                              )}
-                              {tierText && (
-                                <span className="text-(--muted)">
-                                  {' '}
-                                  — {tierText}
-                                </span>
-                              )}
-                              {skill.totalDescription && (
-                                <span>, {skill.totalDescription}</span>
-                              )}
-                            </>
+                            <tr key={`${skill.name}-${skill.tier}-${index}`} className="border-t border-black/5">
+                              <td className="py-2 pr-3">
+                                <div className="font-medium text-(--ink)">{skill.name}</div>
+                                {entity?.abilityModifier && (
+                                  <div className="text-[11px] text-(--muted)">
+                                    {entity.abilityModifier.toUpperCase()} mod x2
+                                  </div>
+                                )}
+                              </td>
+                              <td className="py-2 pr-3 font-mono">
+                                1d20 {signedCheck}
+                                {isExpanded && (
+                                  <div className="mt-1 text-[11px] text-(--muted)">
+                                    1d20 {signedSkillBonus} (skill) {signedAttrContribution} ({attrLabel})
+                                  </div>
+                                )}
+                              </td>
+                              <td className="py-2 font-mono">
+                                1d20 {signedSpell}
+                                {isExpanded && (
+                                  <div className="mt-1 text-[11px] text-(--muted)">
+                                    1d20 {signedSkillBonus} (skill) {signedAttrContribution} ({attrLabel}) {signedSpellResistance} (spell resistance)
+                                  </div>
+                                )}
+                              </td>
+                              <td className="py-2 pl-3 text-xs text-(--muted)">
+                                {skill.skillDescription ?? '—'}
+                              </td>
+                            </tr>
                           );
-                        })()}
-                      </summary>
-                      {skill.skillDescription && (
-                        <div className="mt-2 text-xs text-(--muted) whitespace-pre-line">
-                          {skill.skillDescription}
-                        </div>
-                      )}
-                    </details>
-                  ))}
-                </div>
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="mt-4 columns-1 sm:columns-2 gap-4">
+                    {sortedGroup.map((skill, index) => (
+                      <details
+                        key={`${skill.name}-${skill.tier}-${index}`}
+                        className="mb-2 break-inside-avoid rounded-xl border border-black/10 px-3 py-2 text-sm text-(--muted)"
+                        open={isExpanded ? true : undefined}
+                      >
+                        <summary className="cursor-pointer font-medium">
+                          {(() => {
+                            const entity = getSkillById(skill.id);
+                            const hasMultipleTiers =
+                              entity && entity.tiers.length > 1;
+                            const tierLabel = skill.tierName ?? 'Tier';
+                            const isNumericTierName = /^Tier\s+\d+$/i.test(
+                              tierLabel
+                            );
+                            const tierText = hasMultipleTiers
+                              ? isNumericTierName
+                                ? tierLabel
+                                : `${tierLabel} (Tier ${skill.tier})`
+                              : '';
+                            return (
+                              <>
+                                {skill.name}
+                                {tierText && (
+                                  <span className="text-(--muted)">
+                                    {' '}
+                                    — {tierText}
+                                  </span>
+                                )}
+                                {skill.totalDescription && (
+                                  <span>, {skill.totalDescription}</span>
+                                )}
+                              </>
+                            );
+                          })()}
+                        </summary>
+                        {skill.skillDescription && (
+                          <div className="mt-2 text-xs text-(--muted) whitespace-pre-line">
+                            {skill.skillDescription}
+                          </div>
+                        )}
+                      </details>
+                    ))}
+                  </div>
+                )}
               </div>
             );
           })}
@@ -360,10 +491,12 @@ function CombatSummary({
   finalStats,
   derived,
   equipmentSummary,
+  extras,
 }: {
   finalStats: FinalCharacterStats['final'];
   derived: DerivedStats;
   equipmentSummary?: EquipmentSummary;
+  extras?: CombatSummaryExtras;
 }) {
   const [showDetails, setShowDetails] = React.useState(true);
   return (
@@ -409,6 +542,46 @@ function CombatSummary({
           </div>
           <StatBreakdown block={finalStats.ac} showDetails={showDetails} />
         </div>
+        <div className="rounded-xl p-3 border border-black/5">
+          <div className="text-xs font-semibold text-(--ink)">Spell Resistance</div>
+          <div className="text-[22px] font-bold">
+            {getStatValue(finalStats.spellResistance) ?? 0}
+          </div>
+          <StatBreakdown
+            block={finalStats.spellResistance}
+            showDetails={showDetails}
+          />
+        </div>
+        {finalStats.spellPower && (
+          <div className="rounded-xl p-3 border border-black/5">
+            <div className="text-xs font-semibold text-(--ink)">Spell Power</div>
+            <div className="text-base font-semibold">
+              {(getStatValue(finalStats.spellPower) ?? 0) >= 0
+                ? `+${getStatValue(finalStats.spellPower) ?? 0}`
+                : `${getStatValue(finalStats.spellPower) ?? 0}`}{' '}
+              + spell level
+            </div>
+            {finalStats.spellPowerByLevel &&
+              Object.keys(finalStats.spellPowerByLevel).length > 0 && (
+                <SummaryDetails showDetails={showDetails}>
+                  <div className="rounded-lg p-2 space-y-1">
+                    {Object.entries(finalStats.spellPowerByLevel).map(
+                      ([level, value]) => (
+                        <div
+                          key={`spell-power-${level}`}
+                          className="flex items-center justify-between"
+                        >
+                          <span>Level {level}</span>
+                          <span>{value >= 0 ? `+${value}` : value}</span>
+                        </div>
+                      )
+                    )}
+                  </div>
+                </SummaryDetails>
+              )}
+            <StatBreakdown block={finalStats.spellPower} showDetails={showDetails} />
+          </div>
+        )}
         {equipmentSummary?.showMeleeSummary && (
           <div className="rounded-xl p-3 border border-black/5">
             <div className="text-xs font-semibold text-(--ink)">
@@ -490,6 +663,38 @@ function CombatSummary({
           </div>
         )}
       </div>
+      {extras?.turnPowers && extras.turnPowers.length > 0 && (
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+          {extras.turnPowers.map((turnPower) => (
+            <div
+              key={turnPower.title}
+              className="rounded-xl p-3 border border-black/5"
+            >
+              <div className="text-xs font-semibold text-(--ink)">
+                {turnPower.title}
+              </div>
+              <div className="text-sm text-(--muted) mt-1">
+                {turnPower.enabled ? 'Enabled' : 'Unavailable'}
+              </div>
+              <div className="mt-2 text-xs text-(--muted)">
+                {turnPower.description}
+              </div>
+              <SummaryDetails showDetails={showDetails}>
+                <div className="rounded-lg p-2 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span>Power</span>
+                    <span>{turnPower.intensity}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span>Range</span>
+                    <span>{turnPower.area}</span>
+                  </div>
+                </div>
+              </SummaryDetails>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

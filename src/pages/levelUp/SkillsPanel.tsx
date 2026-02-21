@@ -54,6 +54,7 @@ export const SkillsPanel = ({
     actionable: false,
     passive: false,
   });
+  const [showSkillDescriptions, setShowSkillDescriptions] = React.useState(false);
   const groupedSkills = sortedSkills.reduce(
     (acc, skill) => {
       const group = getSkillGroup(skill);
@@ -71,6 +72,15 @@ export const SkillsPanel = ({
 
   return (
     <div className="space-y-6">
+      <div className="flex justify-end">
+        <button
+          type="button"
+          onClick={() => setShowSkillDescriptions((prev) => !prev)}
+          className="text-[11px] font-semibold uppercase tracking-wide rounded-full border border-black/10 px-3 py-1 hover:bg-black/5"
+        >
+          {showSkillDescriptions ? 'Hide Skill Descriptions' : 'Show Skill Descriptions'}
+        </button>
+      </div>
       {(
         [
           { key: 'basic', title: 'Basic Skills' },
@@ -188,20 +198,23 @@ export const SkillsPanel = ({
 
           if (tierRows.length === 0) return null;
 
-          return (
+        return (
             <div
               key={skill.id}
-              className="mb-3 break-inside-avoid space-y-2 border-b border-black/10 pb-3 last:border-b-0"
+            className="mb-3 break-inside-avoid rounded-xl border border-black/10 p-3"
             >
-              <div className="text-sm font-semibold text-gray-800">
-                {skill.name}
+            <div className="text-sm font-semibold text-gray-800">
+              {skill.name}
                 {key === 'basic' && skill.abilityModifier && (
                   <span className="ml-2 text-[11px] font-semibold text-(--muted)">
                     {formatAbilityModifier(skill.abilityModifier)}
                   </span>
                 )}
               </div>
-              <div className="space-y-2">{tierRows}</div>
+              {showSkillDescriptions && skill.description && (
+                <div className="text-xs text-(--muted)">{skill.description}</div>
+              )}
+              <div className="mt-2 divide-y divide-black/10">{tierRows}</div>
             </div>
           );
               })}

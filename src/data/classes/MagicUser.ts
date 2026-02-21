@@ -9,6 +9,7 @@ export const magicUser: GameClass = {
   progression: [
     {
       level: 1,
+      spellPower: 11,
       skill: [
         { skillPoints: 1, skillPointType: 'utility' },
         { onlyForRace: 'Human', skillPoints: 1, skillPointType: 'human' },
@@ -18,12 +19,14 @@ export const magicUser: GameClass = {
     },
     {
       level: 2,
+      spellPower: 11,
       skill: [{ skillPoints: 1, skillPointType: 'core' }],
       baseAttackBonus: 0,
       spells: { 1: 2 },
     },
     {
       level: 3,
+      spellPower: 11,
       skill: [
         { onlyForRace: 'Human', skillPoints: 1, skillPointType: 'human' },
       ],
@@ -32,6 +35,7 @@ export const magicUser: GameClass = {
     },
     {
       level: 4,
+      spellPower: 12,
       skill: [{ skillPoints: 1, skillPointType: 'utility' }],
       baseAttackBonus: 1,
       abilityPoint: 1,
@@ -39,12 +43,14 @@ export const magicUser: GameClass = {
     },
     {
       level: 5,
+      spellPower: 12,
       skill: [{ skillPoints: 1, skillPointType: 'core' }],
       baseAttackBonus: 1,
       spells: { 1: 3, 2: 2, 3: 1 },
     },
     {
       level: 6,
+      spellPower: 12,
       skill: [
         { onlyForRace: 'Human', skillPoints: 1, skillPointType: 'human' },
       ],
@@ -53,12 +59,14 @@ export const magicUser: GameClass = {
     },
     {
       level: 7,
+      spellPower: 12,
       skill: [{ skillPoints: 1, skillPointType: 'utility' }],
       baseAttackBonus: 2,
       spells: { 1: 3, 2: 3, 3: 2, 4: 1 },
     },
     {
       level: 8,
+      spellPower: 13,
       skill: [{ skillPoints: 1, skillPointType: 'core' }],
       baseAttackBonus: 2,
       abilityPoint: 1,
@@ -66,6 +74,7 @@ export const magicUser: GameClass = {
     },
     {
       level: 9,
+      spellPower: 13,
       skill: [
         { onlyForRace: 'Human', skillPoints: 1, skillPointType: 'human' },
       ],
@@ -74,18 +83,21 @@ export const magicUser: GameClass = {
     },
     {
       level: 10,
+      spellPower: 13,
       skill: [{ skillPoints: 1, skillPointType: 'utility' }],
       baseAttackBonus: 3,
       spells: { 1: 4, 2: 4, 3: 3, 4: 2, 5: 2 },
     },
     {
       level: 11,
+      spellPower: 13,
       skill: [{ skillPoints: 1, skillPointType: 'core' }],
       baseAttackBonus: 3,
       spells: { 1: 4, 2: 4, 3: 3, 4: 3, 5: 2, 6: 1 },
     },
     {
       level: 12,
+      spellPower: 14,
       skill: [
         { onlyForRace: 'Human', skillPoints: 1, skillPointType: 'human' },
       ],
@@ -95,18 +107,21 @@ export const magicUser: GameClass = {
     },
     {
       level: 13,
+      spellPower: 14,
       skill: [{ skillPoints: 1, skillPointType: 'utility' }],
       baseAttackBonus: 3,
       spells: { 1: 5, 2: 4, 3: 4, 4: 3, 5: 3, 6: 2 },
     },
     {
       level: 14,
+      spellPower: 14,
       skill: [{ skillPoints: 1, skillPointType: 'core' }],
       baseAttackBonus: 4,
       spells: { 1: 5, 2: 5, 3: 4, 4: 4, 5: 3, 6: 2 },
     },
     {
       level: 15,
+      spellPower: 14,
       skill: [
         { onlyForRace: 'Human', skillPoints: 1, skillPointType: 'human' },
       ],
@@ -115,6 +130,7 @@ export const magicUser: GameClass = {
     },
     {
       level: 16,
+      spellPower: 15,
       skill: [{ skillPoints: 1, skillPointType: 'utility' }],
       baseAttackBonus: 4,
       abilityPoint: 1,
@@ -122,12 +138,14 @@ export const magicUser: GameClass = {
     },
     {
       level: 17,
+      spellPower: 15,
       skill: [{ skillPoints: 1, skillPointType: 'core' }],
       baseAttackBonus: 4,
       spells: { 1: 6, 2: 5, 3: 5, 4: 4, 5: 4, 6: 3, 7: 2 },
     },
     {
       level: 18,
+      spellPower: 15,
       skill: [
         { onlyForRace: 'Human', skillPoints: 1, skillPointType: 'human' },
       ],

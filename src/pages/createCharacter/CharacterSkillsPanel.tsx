@@ -186,7 +186,7 @@ export const CharacterSkillsPanel = ({
         return (
           <div
             key={skill.id}
-            className="mb-3 break-inside-avoid space-y-2 border-b border-black/10 pb-3 last:border-b-0"
+            className="mb-3 break-inside-avoid rounded-xl border border-black/10 p-3"
           >
             <div className="text-sm font-semibold text-gray-800">
               {skill.name}
@@ -196,7 +196,7 @@ export const CharacterSkillsPanel = ({
                 </span>
               )}
             </div>
-            <div className="space-y-2">{tierRows}</div>
+            <div className="mt-2 divide-y divide-black/10">{tierRows}</div>
           </div>
         );
               })}

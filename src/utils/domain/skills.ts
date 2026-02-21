@@ -15,6 +15,21 @@ export const getSkillTier = (
   return skillsById.get(skillId)?.tiers.find((t) => t.tier === tier);
 };
 
+export const getSkillCheckBonus = (
+  skillId: SkillId,
+  tierNumber: number
+): number => {
+  const tier = getSkillTier(skillId, tierNumber);
+  const text = `${tier?.totalDescription ?? ''} ${tier?.description ?? ''}`.trim();
+  if (!text) return 0;
+  if (/no bonus|no penalty/i.test(text)) return 0;
+  const explicitPenalty = text.match(/-\s*(\d+)\s*penalty/i);
+  if (explicitPenalty) return -Number(explicitPenalty[1]);
+  const explicitTotal = text.match(/([+-]\d+)\s*(?:total)?/i);
+  if (explicitTotal) return Number(explicitTotal[1]);
+  return 0;
+};
+
 const SKILL_GROUP_ORDER: Record<SkillGroup, number> = {
   basic: 0,
   actionable: 1,

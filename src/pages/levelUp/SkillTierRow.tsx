@@ -45,9 +45,11 @@ export const SkillTierRow = ({
       : `${tier.name} (Tier ${tier.tier})`
     : `Tier ${tier.tier}`;
   return (
-    <div className="flex items-start justify-between gap-4 border rounded-xl p-3">
+    <div className="flex items-start justify-between gap-4 py-3">
       <div>
-        <div className="font-medium text-gray-800">{tierLabel}</div>
+        <div className="text-xs font-semibold uppercase tracking-wide text-(--muted)">
+          {tierLabel}
+        </div>
         {(tier.deltaDescription ?? tier.description) && (
           <div className="text-xs text-gray-600">
             {tier.deltaDescription ?? tier.description}

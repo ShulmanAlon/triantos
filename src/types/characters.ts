@@ -111,6 +111,9 @@ export type FinalCharacterStats = {
     hpTemp: StatBlock<number>;
     meleeAttack: StatBlock<number>;
     rangedAttack: StatBlock<number>;
+    spellResistance: StatBlock<number>;
+    spellPower?: StatBlock<number>;
+    spellPowerByLevel?: Record<number, number>;
     spellSlots?: Record<number, number>;
     ac: StatBlock;
   };

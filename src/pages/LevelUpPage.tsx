@@ -37,6 +37,15 @@ import { LevelUpHeader } from '@/pages/levelUp/LevelUpHeader';
 import { LevelUpStatsPanel } from '@/pages/levelUp/LevelUpStatsPanel';
 import { SkillsPanel } from '@/pages/levelUp/SkillsPanel';
 import { AttributePointSection } from '@/pages/levelUp/AttributePointSection';
+import { getCharacterEffects } from '@/utils/skills/getCharacterEffects';
+import { interpretEffects } from '@/utils/skills/interpretEffects';
+
+const HIDDEN_LEVELUP_SKILL_IDS = new Set([
+  'humanSpellResistance',
+  'elfSpellResistance',
+  'dwarfSpellResistance',
+  'halflingSpellResistance',
+]);
 
 const ensureNextLevelBucket = (
   buckets: LevelUpBucket[],
@@ -286,6 +295,31 @@ export default function CharacterLevelUpPage() {
       skillsData,
     ]
   );
+  const currentLevelAcquiredSkills = useMemo(
+    () =>
+      selectedClassData && character && skillsData
+        ? getAcquiredSkillSelectionsUpToLevel(
+            progressionBuckets,
+            skillsData,
+            selectedClassData.id,
+            character.race_id as RaceId,
+            currentLevel
+          )
+        : [],
+    [character, currentLevel, progressionBuckets, selectedClassData, skillsData]
+  );
+  const spellResistanceCurrent = useMemo(() => {
+    if (!skillsData) return 0;
+    const effects = getCharacterEffects(currentLevelAcquiredSkills, skillsData);
+    const derived = interpretEffects(effects);
+    return derived.modifiers['spell_resistance_bonus'] ?? 0;
+  }, [currentLevelAcquiredSkills, skillsData]);
+  const spellResistanceNext = useMemo(() => {
+    if (!skillsData) return 0;
+    const effects = getCharacterEffects(acquiredSkills, skillsData);
+    const derived = interpretEffects(effects);
+    return derived.modifiers['spell_resistance_bonus'] ?? 0;
+  }, [acquiredSkills, skillsData]);
 
   const acquiredThisLevel = useMemo(() => {
     if (!skillsData || !selectedClassData || !character) return [];
@@ -354,6 +388,26 @@ export default function CharacterLevelUpPage() {
     0,
     (nextBaseStats?.hp ?? 0) - (currentBaseStats?.hp ?? 0)
   );
+  const baseSpellPowerCurrent = useMemo(() => {
+    if (!character) return null;
+    if (character.class_id !== 'MagicUser' && character.class_id !== 'Cleric') {
+      return null;
+    }
+    return (
+      getClassLevelDataById(character.class_id as ClassId, currentLevel)
+        ?.spellPower ?? 0
+    );
+  }, [character, currentLevel]);
+  const baseSpellPowerNext = useMemo(() => {
+    if (!character) return null;
+    if (character.class_id !== 'MagicUser' && character.class_id !== 'Cleric') {
+      return null;
+    }
+    return (
+      getClassLevelDataById(character.class_id as ClassId, nextLevel)?.spellPower ??
+      0
+    );
+  }, [character, nextLevel]);
 
   const hasSkillTier = (skillId: SkillId, tier: number): boolean =>
     acquiredSkills.some(
@@ -452,7 +506,15 @@ export default function CharacterLevelUpPage() {
             rightContent={
               selectedClassData &&
               attributesReady && (
-                <LevelUpStatsPanel nextStats={nextBaseStats} hpGain={hpGain} />
+                <LevelUpStatsPanel
+                  classId={character.class_id}
+                  nextStats={nextBaseStats}
+                  hpGain={hpGain}
+                  spellResistanceCurrent={spellResistanceCurrent}
+                  spellResistanceNext={spellResistanceNext}
+                  baseSpellPowerCurrent={baseSpellPowerCurrent}
+                  baseSpellPowerNext={baseSpellPowerNext}
+                />
               )
             }
           />
@@ -514,7 +576,9 @@ export default function CharacterLevelUpPage() {
               </div>
 
               <SkillsPanel
-                skills={skillsData}
+                skills={skillsData.filter(
+                  (skill) => !HIDDEN_LEVELUP_SKILL_IDS.has(skill.id)
+                )}
                 showAcquired={showAcquiredSkills}
                 acquiredThisLevel={acquiredThisLevelSet}
                 showLocked={showLockedSkills}

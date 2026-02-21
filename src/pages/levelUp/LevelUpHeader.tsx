@@ -41,16 +41,39 @@ export const LevelUpHeader = ({
       </div>
     )}
 
-    <div className="mb-4 grid gap-4 lg:grid-cols-[1.2fr_0.8fr] items-stretch">
-      <div className="text-base text-gray-800 panel p-3 flex flex-col justify-between">
-        <div>
-          <span className="font-semibold">Level:</span> {currentLevel} → {nextLevel}
+    <div className="mb-4 grid gap-4 lg:grid-cols-2 items-stretch">
+      <div className="panel p-4 text-sm text-gray-800 h-full">
+        <div className="section-rule">
+          <h3 className="section-title">Character Snapshot</h3>
         </div>
-        <div>
-          <span className="font-semibold">Class:</span> {classId}
+        <div className="mt-3 grid grid-cols-2 gap-3">
+          <div className="rounded-lg border border-black/10 p-3">
+            <div className="text-[11px] font-semibold uppercase tracking-wide text-(--muted)">
+              Current Level
+            </div>
+            <div className="text-lg font-bold">{currentLevel}</div>
+          </div>
+          <div className="rounded-lg border border-black/10 p-3">
+            <div className="text-[11px] font-semibold uppercase tracking-wide text-(--muted)">
+              Next Level
+            </div>
+            <div className="text-lg font-bold">{nextLevel}</div>
+          </div>
+          <div className="rounded-lg border border-black/10 p-3">
+            <div className="text-[11px] font-semibold uppercase tracking-wide text-(--muted)">
+              Class
+            </div>
+            <div className="font-semibold">{classId}</div>
+          </div>
+          <div className="rounded-lg border border-black/10 p-3">
+            <div className="text-[11px] font-semibold uppercase tracking-wide text-(--muted)">
+              Race
+            </div>
+            <div className="font-semibold">{raceId}</div>
+          </div>
         </div>
-        <div>
-          <span className="font-semibold">Race:</span> {raceId}
+        <div className="mt-3 text-xs text-(--muted)">
+          Preparing level {nextLevel} updates for this character.
         </div>
       </div>
       {rightContent && <div className="h-full">{rightContent}</div>}
