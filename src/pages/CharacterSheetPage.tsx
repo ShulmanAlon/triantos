@@ -34,7 +34,6 @@ import { GameItem } from '@/types/items';
 import { AttributeMap } from '@/types/attributes';
 import { CharacterSheetHeader } from '@/pages/characterSheet/CharacterSheetHeader';
 import { CharacterSheetModals } from '@/pages/characterSheet/CharacterSheetModals';
-import { getClassLevelDataById } from '@/utils/classUtils';
 
 const getArmorTypeLabel = (
   armorType: ReturnType<typeof getArmorType>
@@ -275,42 +274,31 @@ export const CharacterSheet = () => {
     const turnAreaDescription =
       getSkillTier('turnAreaOfEffect', turnAreaTier)?.totalDescription ??
       'No turn range selected.';
-    const classSpellPower =
-      getClassLevelDataById(character.class_id, character.level)?.spellPower ??
-      (finalStats?.base.spellSlots ? character.level : 0);
-    return {
-      turnPowers: [
-        {
-          title: 'Turn Undead',
-          enabled: turnUndeadTier > 0,
-          description:
-            turnUndeadTier > 0
-              ? 'Attempt to repel undead creatures.'
-              : 'Unlock this in magic skills.',
-          intensity: turnIntensityDescription,
-          area: turnAreaDescription,
-        },
-        {
-          title: 'Turn Abyssal',
-          enabled: turnAbyssTier > 0,
-          description:
-            turnAbyssTier > 0
-              ? 'Attempt to repel abyssal creatures.'
-              : 'Requires the Turn Abyssal skill tier.',
-          intensity: turnIntensityDescription,
-          area: turnAreaDescription,
-        },
-        {
-          title: 'Cleric Casting',
-          enabled: !!finalStats?.final.spellPower,
-          description:
-            'Spell power uses class progression + spell penetration + (2 x WIS modifier) + spell level.',
-          intensity: `Class progression power: ${classSpellPower}`,
-          area: 'See spell effect text per spell',
-        },
-      ],
-    };
-  }, [character, finalStats?.base.spellSlots, finalStats?.final.spellPower, skillSelections]);
+    const turnPowers = [
+      {
+        title: 'Turn Undead',
+        enabled: turnUndeadTier > 0,
+        description:
+          turnUndeadTier > 0
+            ? 'Attempt to repel undead creatures.'
+            : 'Unlock this in magic skills.',
+        intensity: turnIntensityDescription,
+        area: turnAreaDescription,
+      },
+      ...(turnAbyssTier > 0
+        ? [
+            {
+              title: 'Turn Abyssal',
+              enabled: true,
+              description: 'Attempt to repel abyssal creatures.',
+              intensity: turnIntensityDescription,
+              area: turnAreaDescription,
+            },
+          ]
+        : []),
+    ];
+    return turnPowers.length > 0 ? { turnPowers } : undefined;
+  }, [character, skillSelections]);
 
   const handleLevelDown = () => {
     if (!character || character.level <= 1) return;

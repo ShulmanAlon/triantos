@@ -136,6 +136,7 @@ export function getFinalStats(
                 source: `${casterAttribute === 'int' ? 'INT' : 'WIS'} Modifier x2`,
                 value: casterAttributeBonus,
               },
+              { source: 'Spell Level', value: 0 },
             ],
           },
         ],

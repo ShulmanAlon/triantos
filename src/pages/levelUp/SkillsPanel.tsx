@@ -54,7 +54,7 @@ export const SkillsPanel = ({
     actionable: false,
     passive: false,
   });
-  const [showSkillDescriptions, setShowSkillDescriptions] = React.useState(false);
+  const [showSkillDescriptions, setShowSkillDescriptions] = React.useState(true);
   const groupedSkills = sortedSkills.reduce(
     (acc, skill) => {
       const group = getSkillGroup(skill);

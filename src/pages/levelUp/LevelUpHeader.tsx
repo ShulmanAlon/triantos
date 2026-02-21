@@ -72,9 +72,6 @@ export const LevelUpHeader = ({
             <div className="font-semibold">{raceId}</div>
           </div>
         </div>
-        <div className="mt-3 text-xs text-(--muted)">
-          Preparing level {nextLevel} updates for this character.
-        </div>
       </div>
       {rightContent && <div className="h-full">{rightContent}</div>}
     </div>

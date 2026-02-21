@@ -5,15 +5,15 @@ export const spellPenetrationMage: SkillEntity = {
   name: 'Spell Penetration - Mage',
   family: 'magic',
   skillPointType: 'core',
-  description: 'Spells are harder to resist against (mage).',
+  description: 'Increase spell power (mage).',
   forbiddenClasses: ['Fighter', 'Cleric'],
   tiers: [
     {
       tier: 1,
       name: 'Advanced',
-      description: '-2 to target resistance checks.',
-      deltaDescription: '-2 to target resistance checks.',
-      totalDescription: '-2 to target resistance checks.',
+      description: '+2 to spell power.',
+      deltaDescription: '+2 to spell power.',
+      totalDescription: '+2 total to spell power.',
       prerequisites: [
         { type: 'level', minimum: 8 },
         { type: 'attribute', attribute: 'int', minimum: 13 },
@@ -23,9 +23,9 @@ export const spellPenetrationMage: SkillEntity = {
     {
       tier: 2,
       name: 'Expert',
-      description: '-4 total to target resistance checks.',
-      deltaDescription: '-2 to target resistance checks (-4 total).',
-      totalDescription: '-4 total to target resistance checks.',
+      description: '+4 total to spell power.',
+      deltaDescription: '+2 to spell power (+4 total).',
+      totalDescription: '+4 total to spell power.',
       prerequisites: [
         { type: 'skill', skillId: 'spellPenetrationMage', tier: 1 },
         { type: 'level', minimum: 11 },
@@ -36,9 +36,9 @@ export const spellPenetrationMage: SkillEntity = {
     {
       tier: 3,
       name: 'Master',
-      description: '-6 total to target resistance checks.',
-      deltaDescription: '-2 to target resistance checks (-6 total).',
-      totalDescription: '-6 total to target resistance checks.',
+      description: '+6 total to spell power.',
+      deltaDescription: '+2 to spell power (+6 total).',
+      totalDescription: '+6 total to spell power.',
       prerequisites: [
         { type: 'skill', skillId: 'spellPenetrationMage', tier: 2 },
         { type: 'level', minimum: 14 },
@@ -54,15 +54,15 @@ export const spellPenetrationCleric: SkillEntity = {
   name: 'Spell Penetration - Cleric',
   family: 'magic',
   skillPointType: 'core',
-  description: 'Spells are harder to resist against (cleric).',
+  description: 'Increase spell power (cleric).',
   forbiddenClasses: ['Fighter', 'MagicUser'],
   tiers: [
     {
       tier: 1,
       name: 'Advanced',
-      description: '-2 to target resistance checks.',
-      deltaDescription: '-2 to target resistance checks.',
-      totalDescription: '-2 to target resistance checks.',
+      description: '+2 to spell power.',
+      deltaDescription: '+2 to spell power.',
+      totalDescription: '+2 total to spell power.',
       prerequisites: [
         { type: 'level', minimum: 8 },
         { type: 'attribute', attribute: 'wis', minimum: 13 },
@@ -72,9 +72,9 @@ export const spellPenetrationCleric: SkillEntity = {
     {
       tier: 2,
       name: 'Expert',
-      description: '-4 total to target resistance checks.',
-      deltaDescription: '-2 to target resistance checks (-4 total).',
-      totalDescription: '-4 total to target resistance checks.',
+      description: '+4 total to spell power.',
+      deltaDescription: '+2 to spell power (+4 total).',
+      totalDescription: '+4 total to spell power.',
       prerequisites: [
         { type: 'skill', skillId: 'spellPenetrationCleric', tier: 1 },
         { type: 'level', minimum: 11 },
@@ -85,9 +85,9 @@ export const spellPenetrationCleric: SkillEntity = {
     {
       tier: 3,
       name: 'Master',
-      description: '-6 total to target resistance checks.',
-      deltaDescription: '-2 to target resistance checks (-6 total).',
-      totalDescription: '-6 total to target resistance checks.',
+      description: '+6 total to spell power.',
+      deltaDescription: '+2 to spell power (+6 total).',
+      totalDescription: '+6 total to spell power.',
       prerequisites: [
         { type: 'skill', skillId: 'spellPenetrationCleric', tier: 2 },
         { type: 'level', minimum: 14 },

@@ -52,6 +52,13 @@ type CombatSummaryExtras = {
   turnPowers?: TurnPowerSummary[];
 };
 
+const HIDDEN_CHARACTER_SHEET_SKILL_IDS = new Set([
+  'humanSpellResistance',
+  'elfSpellResistance',
+  'dwarfSpellResistance',
+  'halflingSpellResistance',
+]);
+
 interface CharacterSheetProps {
   characterName: string;
   playerName: string;
@@ -320,6 +327,7 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
             ] as const
           ).map(({ key, title }) => {
             const groupedSkills = skills.filter((skill) => {
+              if (HIDDEN_CHARACTER_SHEET_SKILL_IDS.has(skill.id)) return false;
               const entity = getSkillById(skill.id);
               if (!entity) return false;
               return getSkillGroup(entity) === key;
@@ -399,10 +407,12 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
                           return (
                             <tr key={`${skill.name}-${skill.tier}-${index}`} className="border-t border-black/5">
                               <td className="py-2 pr-3">
-                                <div className="font-medium text-(--ink)">{skill.name}</div>
+                                <div className="font-medium text-(--ink)">
+                                  {skill.name} (T{skill.tier})
+                                </div>
                                 {entity?.abilityModifier && (
                                   <div className="text-[11px] text-(--muted)">
-                                    {entity.abilityModifier.toUpperCase()} mod x2
+                                    {entity.abilityModifier.toUpperCase()}
                                   </div>
                                 )}
                               </td>
@@ -423,7 +433,12 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
                                 )}
                               </td>
                               <td className="py-2 pl-3 text-xs text-(--muted)">
-                                {skill.skillDescription ?? '—'}
+                                <div>{skill.skillDescription ?? '—'}</div>
+                                {isExpanded && skill.totalDescription && (
+                                  <div className="mt-1 border-t border-black/10 pt-1">
+                                    Tier details: {skill.totalDescription}
+                                  </div>
+                                )}
                               </td>
                             </tr>
                           );
@@ -498,7 +513,15 @@ function CombatSummary({
   equipmentSummary?: EquipmentSummary;
   extras?: CombatSummaryExtras;
 }) {
-  const [showDetails, setShowDetails] = React.useState(true);
+  const [showDetails, setShowDetails] = React.useState(false);
+  const meleeAttackTotal =
+    getStatValue(finalStats.meleeAttack) ?? derived.baseAttackBonus;
+  const meleeAttackRollLabel =
+    meleeAttackTotal >= 0 ? `1d20 + ${meleeAttackTotal}` : `1d20 - ${Math.abs(meleeAttackTotal)}`;
+  const rangedAttackTotal =
+    getStatValue(finalStats.rangedAttack) ?? derived.baseAttackBonus;
+  const rangedAttackRollLabel =
+    rangedAttackTotal >= 0 ? `1d20 + ${rangedAttackTotal}` : `1d20 - ${Math.abs(rangedAttackTotal)}`;
   return (
     <div className="mt-4 panel p-4">
       <div className="flex items-center justify-between mb-2 gap-3">
@@ -513,11 +536,7 @@ function CombatSummary({
           {showDetails ? 'Hide Details' : 'Show Details'}
         </button>
       </div>
-      <div className="rounded-xl p-3 border border-black/5 mb-3">
-        <div className="text-xs font-semibold text-(--ink)">Attacks / Round</div>
-        <div className="text-[22px] font-bold">{derived.attacksPerRound}</div>
-      </div>
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         <div className="rounded-xl p-3 border border-black/5">
           <div className="text-xs font-semibold text-(--ink)">HP</div>
           <div className="text-[22px] font-bold">
@@ -527,13 +546,6 @@ function CombatSummary({
             block={finalStats.hpBreakdown}
             showDetails={showDetails}
           />
-        </div>
-        <div className="rounded-xl p-3 border border-black/5">
-          <div className="text-xs font-semibold text-(--ink)">Temp HP</div>
-          <div className="text-[22px] font-bold">
-            {getStatValue(finalStats.hpTemp) ?? 0}
-          </div>
-          <StatBreakdown block={finalStats.hpTemp} showDetails={showDetails} />
         </div>
         <div className="rounded-xl p-3 border border-black/5">
           <div className="text-xs font-semibold text-(--ink)">AC</div>
@@ -552,46 +564,44 @@ function CombatSummary({
             showDetails={showDetails}
           />
         </div>
+        <div className="rounded-xl p-3 border border-black/5">
+          <div className="text-xs font-semibold text-(--ink)">Temp HP</div>
+          <div className="text-[22px] font-bold">
+            {getStatValue(finalStats.hpTemp) ?? 0}
+          </div>
+          <StatBreakdown block={finalStats.hpTemp} showDetails={showDetails} />
+        </div>
         {finalStats.spellPower && (
           <div className="rounded-xl p-3 border border-black/5">
             <div className="text-xs font-semibold text-(--ink)">Spell Power</div>
-            <div className="text-base font-semibold">
-              {(getStatValue(finalStats.spellPower) ?? 0) >= 0
-                ? `+${getStatValue(finalStats.spellPower) ?? 0}`
-                : `${getStatValue(finalStats.spellPower) ?? 0}`}{' '}
-              + spell level
+            <div className="text-[22px] font-bold">
+              {getStatValue(finalStats.spellPower) ?? 0} + spell level
             </div>
-            {finalStats.spellPowerByLevel &&
-              Object.keys(finalStats.spellPowerByLevel).length > 0 && (
-                <SummaryDetails showDetails={showDetails}>
-                  <div className="rounded-lg p-2 space-y-1">
-                    {Object.entries(finalStats.spellPowerByLevel).map(
-                      ([level, value]) => (
-                        <div
-                          key={`spell-power-${level}`}
-                          className="flex items-center justify-between"
-                        >
-                          <span>Level {level}</span>
-                          <span>{value >= 0 ? `+${value}` : value}</span>
-                        </div>
-                      )
-                    )}
-                  </div>
-                </SummaryDetails>
-              )}
             <StatBreakdown block={finalStats.spellPower} showDetails={showDetails} />
           </div>
         )}
+        <div className="rounded-xl p-3 border border-black/5">
+          <div className="text-xs font-semibold text-(--ink)">Attacks / Round</div>
+          <div className="text-[22px] font-bold">{derived.attacksPerRound}</div>
+        </div>
         {equipmentSummary?.showMeleeSummary && (
           <div className="rounded-xl p-3 border border-black/5">
-            <div className="text-xs font-semibold text-(--ink)">
-              Melee Attack
-            </div>
-            <div className="text-[22px] font-bold">
-              {getStatValue(finalStats.meleeAttack) ?? derived.baseAttackBonus}
-            </div>
+            <div className="text-xs font-semibold text-(--ink)">Melee Attack</div>
+            <div className="text-[22px] font-bold">{meleeAttackRollLabel}</div>
             <StatBreakdown
               block={finalStats.meleeAttack}
+              showDetails={showDetails}
+            />
+          </div>
+        )}
+        {equipmentSummary?.showRangedSummary && (
+          <div className="rounded-xl p-3 border border-black/5">
+            <div className="text-xs font-semibold text-(--ink)">
+              Ranged Attack
+            </div>
+            <div className="text-[22px] font-bold">{rangedAttackRollLabel}</div>
+            <StatBreakdown
+              block={finalStats.rangedAttack}
               showDetails={showDetails}
             />
           </div>
@@ -601,7 +611,7 @@ function CombatSummary({
             <div className="text-xs font-semibold text-(--ink)">
               Melee Damage
             </div>
-            <div className="text-base font-semibold">
+            <div className="text-[22px] font-bold">
               {equipmentSummary.meleeDamageSummary ?? '—'}
             </div>
             {equipmentSummary.meleeDamageParts &&
@@ -625,23 +635,9 @@ function CombatSummary({
         {equipmentSummary?.showRangedSummary && (
           <div className="rounded-xl p-3 border border-black/5">
             <div className="text-xs font-semibold text-(--ink)">
-              Ranged Attack
-            </div>
-            <div className="text-[22px] font-bold">
-              {getStatValue(finalStats.rangedAttack) ?? derived.baseAttackBonus}
-            </div>
-            <StatBreakdown
-              block={finalStats.rangedAttack}
-              showDetails={showDetails}
-            />
-          </div>
-        )}
-        {equipmentSummary?.showRangedSummary && (
-          <div className="rounded-xl p-3 border border-black/5">
-            <div className="text-xs font-semibold text-(--ink)">
               Ranged Damage
             </div>
-            <div className="text-base font-semibold">
+            <div className="text-[22px] font-bold">
               {equipmentSummary.rangedDamageSummary ?? '—'}
             </div>
             {equipmentSummary.rangedDamageParts &&
@@ -673,20 +669,20 @@ function CombatSummary({
               <div className="text-xs font-semibold text-(--ink)">
                 {turnPower.title}
               </div>
-              <div className="text-sm text-(--muted) mt-1">
-                {turnPower.enabled ? 'Enabled' : 'Unavailable'}
+              <div className="text-[22px] font-bold">
+                {turnPower.intensity}
               </div>
-              <div className="mt-2 text-xs text-(--muted)">
+              <div className="mt-1 text-xs text-(--muted)">
                 {turnPower.description}
               </div>
               <SummaryDetails showDetails={showDetails}>
                 <div className="rounded-lg p-2 space-y-1">
                   <div className="flex items-center justify-between">
-                    <span>Power</span>
+                    <span>Turn Intensity</span>
                     <span>{turnPower.intensity}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span>Range</span>
+                    <span>Power Radius</span>
                     <span>{turnPower.area}</span>
                   </div>
                 </div>
@@ -806,7 +802,9 @@ function StatBreakdown({
               >
                 <span>{component.source}</span>
                 <span>
-                  {component.source === 'Base'
+                  {component.source === 'Spell Level'
+                    ? '+SL'
+                    : component.source === 'Base'
                     ? component.value
                     : component.value >= 0
                       ? `+${component.value}`

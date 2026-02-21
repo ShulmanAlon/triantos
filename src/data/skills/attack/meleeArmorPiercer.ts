@@ -5,6 +5,7 @@ export const meleeArmorPiercer: SkillEntity = {
   name: 'Armor Piercer',
   family: 'attack',
   skillPointType: 'core',
+  forbiddenClasses: ['Cleric'],
   description:
     'Every armor has a weak point, you no longer deal half damage with slashing and piercing weapons',
   tiers: [

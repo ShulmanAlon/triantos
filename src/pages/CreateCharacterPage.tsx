@@ -43,10 +43,26 @@ import { CharacterImagePicker } from '@/pages/createCharacter/CharacterImagePick
 import { DerivedStatsPanel } from '@/pages/createCharacter/DerivedStatsPanel';
 import { CharacterSkillsPanel } from '@/pages/createCharacter/CharacterSkillsPanel';
 import { AttributeAllocator } from '@/components/CharacterCreator/AttributeAllocatorView';
+import { getCharacterEffects } from '@/utils/skills/getCharacterEffects';
+import { interpretEffects } from '@/utils/skills/interpretEffects';
+import { getHighestSkillTiers } from '@/utils/domain/skills';
+import { getModifier } from '@/utils/modifier';
 
 type CreationStep = 'class' | 'race' | 'attributes' | 'skills';
 
 const initialAttributes: AttributeMap = { ...ARRGS_BASELINE };
+const HIDDEN_RACIAL_ABILITY_IDS = new Set([
+  'humanSpellResistance',
+  'elfSpellResistance',
+  'dwarfSpellResistance',
+  'halflingSpellResistance',
+]);
+const HIDDEN_CREATION_SKILL_IDS = new Set([
+  'humanSpellResistance',
+  'elfSpellResistance',
+  'dwarfSpellResistance',
+  'halflingSpellResistance',
+]);
 
 export default function CharacterCreatePage() {
   const { id: campaignId } = useParams<{ id: string }>();
@@ -111,6 +127,7 @@ export default function CharacterCreatePage() {
   const skills = skillsData ?? [];
   const racialSkillsAtLevel = selectedRaceId
     ? skills.flatMap((skill) => {
+        if (HIDDEN_RACIAL_ABILITY_IDS.has(skill.id)) return [];
         const tiers = skill.tiers
           .filter((tier) =>
             tier.freeForRaces?.some(
@@ -292,6 +309,32 @@ export default function CharacterCreatePage() {
           level,
         )
       : [];
+  const derivedFromAcquiredSkills = skillsData
+    ? interpretEffects(getCharacterEffects(acquiredSkills, skillsData))
+    : null;
+  const spellResistance = derivedFromAcquiredSkills?.modifiers['spell_resistance_bonus'] ?? 0;
+  const highestBySkill = getHighestSkillTiers(acquiredSkills);
+  const casterAttribute =
+    selectedClassId === 'MagicUser'
+      ? 'int'
+      : selectedClassId === 'Cleric'
+        ? 'wis'
+        : null;
+  const casterPenetrationTier =
+    selectedClassId === 'MagicUser'
+      ? highestBySkill.get('spellPenetrationMage')?.tier ?? 0
+      : selectedClassId === 'Cleric'
+        ? highestBySkill.get('spellPenetrationCleric')?.tier ?? 0
+        : 0;
+  const classSpellPower =
+    getClassLevelDataById(selectedClassId, level)?.spellPower ??
+    (derivedStats?.spellSlots ? level : 0);
+  const spellPowerBase =
+    casterAttribute === null
+      ? null
+      : classSpellPower +
+        casterPenetrationTier * 2 +
+        getModifier(attributes[casterAttribute]) * 2;
 
   const skillValidation =
     selectedClassData && selectedRaceId && skillsData
@@ -454,7 +497,12 @@ export default function CharacterCreatePage() {
             </div>
             {selectedClassData && (
               <div className="section-gap">
-                <DerivedStatsPanel stats={derivedStats} />
+                <DerivedStatsPanel
+                  classId={selectedClassId}
+                  stats={derivedStats}
+                  spellResistance={spellResistance}
+                  spellPowerBase={spellPowerBase}
+                />
               </div>
             )}
           </>
@@ -501,7 +549,7 @@ export default function CharacterCreatePage() {
             </div>
 
             <CharacterSkillsPanel
-              skills={skills}
+              skills={skills.filter((skill) => !HIDDEN_CREATION_SKILL_IDS.has(skill.id))}
               skillRemaining={skillRemaining}
               currentSelections={currentSelections}
               showAcquired={showAcquiredSkills}

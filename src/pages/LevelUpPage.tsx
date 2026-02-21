@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/Button';
 import { LoadingErrorWrapper } from '@/components/LoadingErrorWrapper';
 import { useLanguage } from '@/context/LanguageContext';
 import { SkillEntity } from '@/types/skills';
-import { getSkillName } from '@/utils/domain/skills';
+import { getHighestSkillTiers, getSkillName } from '@/utils/domain/skills';
 import { uiLabels } from '@/i18n/ui';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useCharacterById } from '@/hooks/useCharacterById';
@@ -39,6 +39,7 @@ import { SkillsPanel } from '@/pages/levelUp/SkillsPanel';
 import { AttributePointSection } from '@/pages/levelUp/AttributePointSection';
 import { getCharacterEffects } from '@/utils/skills/getCharacterEffects';
 import { interpretEffects } from '@/utils/skills/interpretEffects';
+import { getModifier } from '@/utils/modifier';
 
 const HIDDEN_LEVELUP_SKILL_IDS = new Set([
   'humanSpellResistance',
@@ -393,21 +394,41 @@ export default function CharacterLevelUpPage() {
     if (character.class_id !== 'MagicUser' && character.class_id !== 'Cleric') {
       return null;
     }
+    const highestCurrent = getHighestSkillTiers(currentLevelAcquiredSkills);
+    const spellPenetrationTier =
+      character.class_id === 'MagicUser'
+        ? highestCurrent.get('spellPenetrationMage')?.tier ?? 0
+        : highestCurrent.get('spellPenetrationCleric')?.tier ?? 0;
+    const casterAttribute = character.class_id === 'MagicUser' ? 'int' : 'wis';
+    const classPower =
+      getClassLevelDataById(character.class_id as ClassId, currentLevel)?.spellPower ??
+      0;
     return (
-      getClassLevelDataById(character.class_id as ClassId, currentLevel)
-        ?.spellPower ?? 0
+      classPower +
+      spellPenetrationTier * 2 +
+      getModifier(character.attributes[casterAttribute]) * 2
     );
-  }, [character, currentLevel]);
+  }, [character, currentLevel, currentLevelAcquiredSkills]);
   const baseSpellPowerNext = useMemo(() => {
     if (!character) return null;
     if (character.class_id !== 'MagicUser' && character.class_id !== 'Cleric') {
       return null;
     }
-    return (
+    const highestNext = getHighestSkillTiers(acquiredSkills);
+    const spellPenetrationTier =
+      character.class_id === 'MagicUser'
+        ? highestNext.get('spellPenetrationMage')?.tier ?? 0
+        : highestNext.get('spellPenetrationCleric')?.tier ?? 0;
+    const casterAttribute = character.class_id === 'MagicUser' ? 'int' : 'wis';
+    const classPower =
       getClassLevelDataById(character.class_id as ClassId, nextLevel)?.spellPower ??
-      0
+      0;
+    return (
+      classPower +
+      spellPenetrationTier * 2 +
+      getModifier(attributes[casterAttribute]) * 2
     );
-  }, [character, nextLevel]);
+  }, [acquiredSkills, attributes, character, nextLevel]);
 
   const hasSkillTier = (skillId: SkillId, tier: number): boolean =>
     acquiredSkills.some(
