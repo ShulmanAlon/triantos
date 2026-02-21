@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabaseClient';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import ImageUrlModal from '@/components/ImageUrlModal';
-import { TABLES } from '@/config/dbTables';
 import { useToast } from '@/context/ToastContext';
 import { CampaignImagePicker } from '@/pages/createCampaign/CampaignImagePicker';
 import { Button } from '@/components/ui/Button';
@@ -26,18 +25,16 @@ export default function CreateCampaign() {
     setLoading(true);
     setError(null);
 
-    const { data: campaign, error: insertError } = await supabase
-      .from(TABLES.CAMPAIGNS)
-      .insert({
-        name,
-        description,
-        image_url: imageUrl,
-        owner_id: user.id,
-      })
-      .select()
-      .single();
+    const { data: campaignId, error: insertError } = await supabase.rpc(
+      'create_campaign_secure',
+      {
+        p_name: name,
+        p_description: description || null,
+        p_image_url: imageUrl || null,
+      }
+    );
 
-    if (insertError || !campaign) {
+    if (insertError || !campaignId) {
       const message = insertError?.message || 'Failed to create campaign';
       setError(message);
       toast.error(message);
@@ -46,7 +43,7 @@ export default function CreateCampaign() {
     }
 
     setLoading(false);
-    navigate(`/campaign/${campaign.id}`);
+    navigate(`/campaign/${campaignId}`);
   };
 
   return (
