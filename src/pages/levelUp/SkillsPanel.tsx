@@ -3,6 +3,7 @@ import { SkillEntity, SkillPointType } from '@/types/skills';
 import { getSkillGroup, sortSkillsForDisplay } from '@/utils/domain/skills';
 import { SkillSelectionEntry, SkillPointPool } from '@/types/characters';
 import { SkillTierRow } from './SkillTierRow';
+import { useUiPreference } from '@/hooks/useUiPreference';
 
 type SkillAvailability = {
   status: 'available' | 'locked' | 'ineligible' | 'acquired';
@@ -54,7 +55,10 @@ export const SkillsPanel = ({
     actionable: false,
     passive: false,
   });
-  const [showSkillDescriptions, setShowSkillDescriptions] = React.useState(true);
+  const [showSkillDescriptions, setShowSkillDescriptions] = useUiPreference(
+    'levelUp.skills.showDescriptions',
+    true,
+  );
   const groupedSkills = sortedSkills.reduce(
     (acc, skill) => {
       const group = getSkillGroup(skill);

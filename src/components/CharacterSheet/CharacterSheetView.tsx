@@ -13,6 +13,7 @@ import { getAttributeNameById } from '@/utils/attributeUtils';
 import { ATTRIBUTE_ORDER } from '@/config/constants';
 import { ImageWithPlaceholder } from '@/components/ImageWithPlaceholder';
 import { getCharacterBlurImage, getCharacterImage } from '@/utils/imageUtils';
+import { useUiPreference } from '@/hooks/useUiPreference';
 import {
   DerivedStats,
   EquipmentLoadout,
@@ -122,11 +123,14 @@ export const CharacterSheetView: React.FC<CharacterSheetProps> = ({
   const ui = uiLabels[language];
   const classRestrictions = getClassRestrictionsById(selectedClassId, language).filter(Boolean);
   const raceRestrictions = getRaceRestrictionsById(selectedRaceId, language).filter(Boolean);
-  const [skillDetailsOpen, setSkillDetailsOpen] = React.useState({
-    basic: false,
-    actionable: false,
-    passive: false,
-  });
+  const [skillDetailsOpen, setSkillDetailsOpen] = useUiPreference(
+    'characterSheet.skills.detailsOpen',
+    {
+      basic: false,
+      actionable: false,
+      passive: false,
+    },
+  );
   const spellLevels = React.useMemo(
     () => getSpellLevelRange(selectedClassId),
     [selectedClassId]
@@ -513,7 +517,10 @@ function CombatSummary({
   equipmentSummary?: EquipmentSummary;
   extras?: CombatSummaryExtras;
 }) {
-  const [showDetails, setShowDetails] = React.useState(false);
+  const [showDetails, setShowDetails] = useUiPreference(
+    'characterSheet.combatSummary.showDetails',
+    false,
+  );
   const meleeAttackTotal =
     getStatValue(finalStats.meleeAttack) ?? derived.baseAttackBonus;
   const meleeAttackRollLabel =

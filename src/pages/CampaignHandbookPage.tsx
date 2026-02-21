@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { allSkills } from '@/data/skills/allSkills';
 import { getSkillGroup, getSkillName, sortSkillsForDisplay } from '@/utils/domain/skills';
 import { SkillEntity } from '@/types/skills';
+import { useUiPreference } from '@/hooks/useUiPreference';
 
 const SKILL_SECTIONS = [
   { key: 'basic', title: 'Basic Skills' },
@@ -30,15 +31,21 @@ export default function CampaignHandbookPage() {
 
   const [campaign, setCampaign] = useState<CampaignData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [showPrerequisites, setShowPrerequisites] = useState(false);
+  const [showPrerequisites, setShowPrerequisites] = useUiPreference(
+    'campaignHandbook.skills.showPrerequisites',
+    false,
+  );
   const [searchQuery, setSearchQuery] = useState('');
   const [familyFilter, setFamilyFilter] = useState<'all' | SkillEntity['family']>('all');
   const [pointTypeFilter, setPointTypeFilter] = useState<'all' | SkillEntity['skillPointType']>('all');
-  const [expandedSections, setExpandedSections] = useState({
-    basic: true,
-    actionable: true,
-    passive: true,
-  });
+  const [expandedSections, setExpandedSections] = useUiPreference(
+    'campaignHandbook.skills.expandedSections',
+    {
+      basic: true,
+      actionable: true,
+      passive: true,
+    },
+  );
   const sortedSkills = useMemo(() => sortSkillsForDisplay(allSkills), []);
   const familyOptions = useMemo(
     () => Array.from(new Set(sortedSkills.map((skill) => skill.family))),

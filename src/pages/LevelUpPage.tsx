@@ -406,7 +406,7 @@ export default function CharacterLevelUpPage() {
     return (
       classPower +
       spellPenetrationTier * 2 +
-      getModifier(character.attributes[casterAttribute]) * 2
+      getModifier(character.attributes[casterAttribute])
     );
   }, [character, currentLevel, currentLevelAcquiredSkills]);
   const baseSpellPowerNext = useMemo(() => {
@@ -426,7 +426,7 @@ export default function CharacterLevelUpPage() {
     return (
       classPower +
       spellPenetrationTier * 2 +
-      getModifier(attributes[casterAttribute]) * 2
+      getModifier(attributes[casterAttribute])
     );
   }, [acquiredSkills, attributes, character, nextLevel]);
 

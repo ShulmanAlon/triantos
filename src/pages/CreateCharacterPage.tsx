@@ -334,7 +334,7 @@ export default function CharacterCreatePage() {
       ? null
       : classSpellPower +
         casterPenetrationTier * 2 +
-        getModifier(attributes[casterAttribute]) * 2;
+        getModifier(attributes[casterAttribute]);
 
   const skillValidation =
     selectedClassData && selectedRaceId && skillsData

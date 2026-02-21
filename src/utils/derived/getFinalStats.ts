@@ -108,7 +108,7 @@ export function getFinalStats(
     getClassLevelDataById(gameClass.id, level)?.spellPower ??
     (base.spellSlots ? level : 0);
   const casterAttributeBonus = casterAttribute
-    ? getModifier(attributes[casterAttribute]) * 2
+    ? getModifier(attributes[casterAttribute])
     : 0;
   const canCast = casterAttribute !== null;
   const baseSpellPower = canCast
@@ -133,7 +133,7 @@ export function getFinalStats(
               { source: 'Class Progression', value: classSpellPower },
               { source: 'Spell Penetration Skill', value: spellPenetrationBonus },
               {
-                source: `${casterAttribute === 'int' ? 'INT' : 'WIS'} Modifier x2`,
+                source: `${casterAttribute === 'int' ? 'INT' : 'WIS'} Modifier`,
                 value: casterAttributeBonus,
               },
               { source: 'Spell Level', value: 0 },
